@@ -4,20 +4,20 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 ## Current Status
 
-**v0.1.0**: 2 rules implemented out of 265 planned.
+**v0.2.0**: 8 rules implemented (one critical rule per category prefix).
 
 ## Rule Categories
 
 | Prefix | Category | Implemented | Planned |
 |--------|----------|-------------|---------|
-| E0xxx | Template Errors | 1 | ~30 |
-| E1xxx | Functions | 1 | ~25 |
-| E2xxx | Parameters | 0 | ~20 |
-| E3xxx | Resources | 0 | ~100 |
-| E4xxx | Metadata | 0 | ~10 |
-| E6xxx | Outputs | 0 | ~15 |
-| E7xxx | Mappings | 0 | ~10 |
-| E8xxx | Conditions | 0 | ~15 |
+| E0xxx | Template Errors | 1 | ~6 |
+| E1xxx | Functions | 1 | ~30 |
+| E2xxx | Parameters | 1 | ~7 |
+| E3xxx | Resources | 1 | ~40+ |
+| E4xxx | Metadata | 1 | ~2 |
+| E6xxx | Outputs | 1 | ~9 |
+| E7xxx | Mappings | 1 | ~3 |
+| E8xxx | Conditions | 1 | ~7 |
 | W* | Warnings | 0 | ~40 |
 | I* | Informational | 0 | ~20 |
 
@@ -34,6 +34,42 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 | Rule | Description | Status |
 |------|-------------|--------|
 | E1001 | Ref to undefined resource or parameter | ✅ Implemented |
+
+### E2xxx - Parameters
+
+| Rule | Description | Status |
+|------|-------------|--------|
+| E2015 | Default value within constraints | ✅ Implemented |
+
+### E3xxx - Resources
+
+| Rule | Description | Status |
+|------|-------------|--------|
+| E3003 | Required properties present | 🚧 Partial (common resources) |
+
+### E4xxx - Metadata
+
+| Rule | Description | Status |
+|------|-------------|--------|
+| E4002 | Metadata section structure | ✅ Implemented |
+
+### E6xxx - Outputs
+
+| Rule | Description | Status |
+|------|-------------|--------|
+| E6002 | Output has required Value property | ✅ Implemented |
+
+### E7xxx - Mappings
+
+| Rule | Description | Status |
+|------|-------------|--------|
+| E7001 | Mapping configuration valid | ✅ Implemented |
+
+### E8xxx - Conditions
+
+| Rule | Description | Status |
+|------|-------------|--------|
+| E8002 | Referenced conditions are defined | ✅ Implemented |
 
 ## Rule Severity Levels
 
