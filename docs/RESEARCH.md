@@ -893,8 +893,8 @@ This matrix shows all cfn-lint rules with implementation status, criticality lev
 | E6005 | Output condition references | CRITICAL | 2 | ✅ |
 | E6010 | Output limit (200) | CRITICAL | 1 | ✅ |
 | E6011 | Output name length | IMPORTANT | 1 | ⬜ |
-| E6101 | Output values are strings | CRITICAL | 3 | ⬜ |
-| E6102 | Export values are strings | CRITICAL | 3 | ⬜ |
+| E6101 | Output values are strings | CRITICAL | 3 | ✅ |
+| E6102 | Export values are strings | CRITICAL | 3 | ✅ |
 
 ### E7xxx - Mappings
 
@@ -942,10 +942,10 @@ This matrix shows all cfn-lint rules with implementation status, criticality lev
 | E2xxx | 7 | 4 | ✅ E2001, E2002, E2010, E2015 |
 | E3xxx | 40+ | 9 | ✅ E3001, E3002, E3004, E3005, E3006, E3007, E3010, E3015, 🚧 E3003 |
 | E4xxx | 2 | 1 | ✅ E4002 |
-| E6xxx | 9 | 5 | ✅ E6001, E6002, E6003, E6005, E6010 |
+| E6xxx | 9 | 7 | ✅ E6001, E6002, E6003, E6005, E6010, E6101, E6102 |
 | E7xxx | 3 | 2 | ✅ E7001, E7010 |
 | E8xxx | 7 | 7 | ✅ E8001-E8007 (all) |
-| **Total** | **100+** | **42** | **8/8 prefixes** |
+| **Total** | **100+** | **44** | **8/8 prefixes** |
 
 ## Sources
 
