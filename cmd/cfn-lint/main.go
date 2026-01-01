@@ -91,8 +91,8 @@ func outputMatches(matches []lint.Match, format string) error {
 	case "text":
 		for _, m := range matches {
 			fmt.Printf("%s:%d:%d: %s %s [%s]\n",
-				m.Filename, m.Line, m.Column,
-				m.Level, m.Message, m.Rule)
+				m.Location.Filename, m.Location.Start.LineNumber, m.Location.Start.ColumnNumber,
+				m.Level, m.Message, m.Rule.ID)
 		}
 	case "json":
 		// Ensure we output [] for empty slice, not null

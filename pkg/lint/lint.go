@@ -24,14 +24,34 @@ type Options struct {
 	IncludeExperimental bool
 }
 
-// Match represents a linting issue found in a template.
+// Match represents a linting issue found in a template (Python cfn-lint compatible format).
 type Match struct {
-	Rule     string `json:"rule"`
-	Message  string `json:"message"`
-	Level    string `json:"level"` // error, warning, info
-	Filename string `json:"filename"`
-	Line     int    `json:"line"`
-	Column   int    `json:"column"`
+	Rule     MatchRule     `json:"Rule"`
+	Location MatchLocation `json:"Location"`
+	Level    string        `json:"Level"`   // "Error", "Warning", "Informational"
+	Message  string        `json:"Message"`
+}
+
+// MatchRule contains rule metadata.
+type MatchRule struct {
+	ID               string `json:"Id"`
+	Description      string `json:"Description"`
+	ShortDescription string `json:"ShortDescription"`
+	Source           string `json:"Source"`
+}
+
+// MatchLocation contains the location of the issue.
+type MatchLocation struct {
+	Start    MatchPosition `json:"Start"`
+	End      MatchPosition `json:"End"`
+	Path     []any         `json:"Path"`
+	Filename string        `json:"Filename"`
+}
+
+// MatchPosition represents a line/column position.
+type MatchPosition struct {
+	LineNumber   int `json:"LineNumber"`
+	ColumnNumber int `json:"ColumnNumber"`
 }
 
 // New creates a new Linter with the given options.
@@ -47,12 +67,20 @@ func (l *Linter) LintFile(path string) ([]Match, error) {
 	tmpl, err := template.ParseFile(path)
 	if err != nil {
 		return []Match{{
-			Rule:     "E0000",
-			Message:  err.Error(),
-			Level:    "error",
-			Filename: path,
-			Line:     1,
-			Column:   1,
+			Rule: MatchRule{
+				ID:               "E0000",
+				Description:      "Checks that the template can be parsed",
+				ShortDescription: "Template parse error",
+				Source:           "https://github.com/lex00/cfn-lint-go",
+			},
+			Location: MatchLocation{
+				Start:    MatchPosition{LineNumber: 1, ColumnNumber: 1},
+				End:      MatchPosition{LineNumber: 1, ColumnNumber: 1},
+				Path:     []any{},
+				Filename: path,
+			},
+			Level:   "Error",
+			Message: err.Error(),
 		}}, nil
 	}
 
@@ -70,13 +98,27 @@ func (l *Linter) Lint(tmpl *template.Template, filename string) ([]Match, error)
 
 		ruleMatches := rule.Match(tmpl)
 		for _, rm := range ruleMatches {
+			// Convert []string path to []any for JSON compatibility
+			path := make([]any, len(rm.Path))
+			for i, p := range rm.Path {
+				path[i] = p
+			}
+
 			matches = append(matches, Match{
-				Rule:     rule.ID(),
-				Message:  rm.Message,
-				Level:    levelFromRuleID(rule.ID()),
-				Filename: filename,
-				Line:     rm.Line,
-				Column:   rm.Column,
+				Rule: MatchRule{
+					ID:               rule.ID(),
+					Description:      rule.Description(),
+					ShortDescription: rule.ShortDesc(),
+					Source:           rule.Source(),
+				},
+				Location: MatchLocation{
+					Start:    MatchPosition{LineNumber: rm.Line, ColumnNumber: rm.Column},
+					End:      MatchPosition{LineNumber: rm.Line, ColumnNumber: rm.Column},
+					Path:     path,
+					Filename: filename,
+				},
+				Level:   levelFromRuleID(rule.ID()),
+				Message: rm.Message,
 			})
 		}
 	}
@@ -95,16 +137,16 @@ func (l *Linter) isIgnored(ruleID string) bool {
 
 func levelFromRuleID(id string) string {
 	if len(id) == 0 {
-		return "error"
+		return "Error"
 	}
 	switch id[0] {
 	case 'E':
-		return "error"
+		return "Error"
 	case 'W':
-		return "warning"
+		return "Warning"
 	case 'I':
-		return "info"
+		return "Informational"
 	default:
-		return "error"
+		return "Error"
 	}
 }

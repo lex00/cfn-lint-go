@@ -58,13 +58,13 @@ func TestLevelFromRuleID(t *testing.T) {
 		id       string
 		expected string
 	}{
-		{"E1001", "error"},
-		{"E3002", "error"},
-		{"W1001", "warning"},
-		{"W9999", "warning"},
-		{"I1001", "info"},
-		{"", "error"},
-		{"X1001", "error"}, // Unknown prefix defaults to error
+		{"E1001", "Error"},
+		{"E3002", "Error"},
+		{"W1001", "Warning"},
+		{"W9999", "Warning"},
+		{"I1001", "Informational"},
+		{"", "Error"},
+		{"X1001", "Error"}, // Unknown prefix defaults to error
 	}
 
 	for _, tc := range tests {
@@ -79,19 +79,30 @@ func TestLevelFromRuleID(t *testing.T) {
 
 func TestMatch_JSON(t *testing.T) {
 	m := Match{
-		Rule:     "E1001",
-		Message:  "Test message",
-		Level:    "error",
-		Filename: "test.yaml",
-		Line:     10,
-		Column:   5,
+		Rule: MatchRule{
+			ID:               "E1001",
+			Description:      "Test description",
+			ShortDescription: "Test short",
+			Source:           "https://example.com",
+		},
+		Location: MatchLocation{
+			Start:    MatchPosition{LineNumber: 10, ColumnNumber: 5},
+			End:      MatchPosition{LineNumber: 10, ColumnNumber: 5},
+			Path:     []any{"Resources", "MyBucket"},
+			Filename: "test.yaml",
+		},
+		Level:   "Error",
+		Message: "Test message",
 	}
 
 	// Verify fields are set correctly
-	if m.Rule != "E1001" {
-		t.Errorf("Expected rule E1001, got %s", m.Rule)
+	if m.Rule.ID != "E1001" {
+		t.Errorf("Expected rule E1001, got %s", m.Rule.ID)
 	}
-	if m.Line != 10 {
-		t.Errorf("Expected line 10, got %d", m.Line)
+	if m.Location.Start.LineNumber != 10 {
+		t.Errorf("Expected line 10, got %d", m.Location.Start.LineNumber)
+	}
+	if m.Location.Filename != "test.yaml" {
+		t.Errorf("Expected filename test.yaml, got %s", m.Location.Filename)
 	}
 }
