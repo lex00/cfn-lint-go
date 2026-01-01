@@ -4,9 +4,9 @@ CloudFormation Linter for Go - a native Go port of [aws-cloudformation/cfn-lint]
 
 ## Status
 
-**v0.5.0 - Phase 4: Best Practice Rules**
+**v0.6.0 - Phase 5: Warning Rules**
 
-This is a Go port of the Python cfn-lint tool. Implements core framework with 64 rules covering template structure, intrinsic functions, and best practices. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
+This is a Go port of the Python cfn-lint tool. Implements core framework with 76 rules covering template structure, intrinsic functions, best practices, and warnings. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
 
 ### What's Implemented
 
@@ -18,7 +18,7 @@ This is a Go port of the Python cfn-lint tool. Implements core framework with 64
 - CLI `graph` command for dependency visualization
 - CLI `list-rules` command
 - `--ignore-rules` flag
-- 64 rules covering foundation, structure, intrinsics, and best practices:
+- 76 rules covering foundation, structure, intrinsics, best practices, and warnings:
   - **E0xxx**: E0000-E0003 (parse, transform, processing, config)
   - **E1xxx**: 20 rules for intrinsic functions (Ref, GetAtt, Sub, Join, Select, Split, Base64, Cidr, GetAZs, ImportValue, dynamic refs)
   - **E2xxx**: E2001-E2015 (param config, type, naming, length, limits, defaults)
@@ -27,10 +27,11 @@ This is a Go port of the Python cfn-lint tool. Implements core framework with 64
   - **E6xxx**: E6001-E6102 (output structure, types, naming, exports)
   - **E7xxx**: E7001-E7010 (mapping config, naming, limits)
   - **E8xxx**: E8001-E8007 (condition functions)
+  - **W1xxx-W8xxx**: 12 warning rules (unused resources, security, best practices)
 
 ### What's Planned
 
-- 50+ additional rules (see [docs/RULES.md](docs/RULES.md))
+- Schema-based validation (Phase 6)
 - SARIF, JUnit output formats
 - Rule ignoring via template metadata
 
@@ -135,6 +136,13 @@ func main() {
 | E6xxx | Outputs | 9 rules |
 | E7xxx | Mappings | 3 rules |
 | E8xxx | Conditions | 7 rules |
+| W1xxx | Template warnings | 2 rules |
+| W2xxx | Parameter warnings | 2 rules |
+| W3xxx | Resource warnings | 3 rules |
+| W4xxx | Metadata warnings | 1 rule |
+| W6xxx | Output warnings | 1 rule |
+| W7xxx | Mapping warnings | 1 rule |
+| W8xxx | Condition warnings | 2 rules |
 
 ## NOT in Scope
 
@@ -176,7 +184,8 @@ cfn-lint-go/
 │       ├── metadata/   # E4xxx
 │       ├── outputs/    # E6xxx
 │       ├── mappings/   # E7xxx
-│       └── conditions/ # E8xxx
+│       ├── conditions/ # E8xxx
+│       └── warnings/   # Wxxx
 ├── testdata/           # Test fixtures
 └── docs/               # Documentation
 ```
