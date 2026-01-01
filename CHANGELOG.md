@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Phase 2: Reference Validation rules (12 new rules):
+  - E1010: GetAtt to undefined resource
+  - E1011: FindInMap references undefined mapping
+  - E1019: Sub function validation (undefined variables)
+  - E1020: Ref value must be a string
+  - E1028: Fn::If structure error (undefined condition)
+  - E1040: GetAtt format error
+  - E1041: Ref format error
+  - E1050: Dynamic reference syntax error
+  - E3004: Circular resource dependency detected
+  - E3005: DependsOn references undefined resource
+  - E3015: Resource condition references undefined condition
+  - E6005: Output condition references undefined condition
+- Comprehensive tests for all Phase 2 rules
+
+### Changed
+
+- Total rule count: 30 -> 42
+
 ## [0.3.0] - 2026-01-01
 
 ### Added

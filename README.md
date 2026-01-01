@@ -4,9 +4,9 @@ CloudFormation Linter for Go - a native Go port of [aws-cloudformation/cfn-lint]
 
 ## Status
 
-**v0.3.0 - Phase 1: Foundation & Structure**
+**v0.4.0 - Phase 2: Reference Validation**
 
-This is a Go port of the Python cfn-lint tool. Implements core framework with 30 rules covering template validation. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
+This is a Go port of the Python cfn-lint tool. Implements core framework with 42 rules covering template and reference validation. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
 
 ### What's Implemented
 
@@ -18,19 +18,19 @@ This is a Go port of the Python cfn-lint tool. Implements core framework with 30
 - CLI `graph` command for dependency visualization
 - CLI `list-rules` command
 - `--ignore-rules` flag
-- 30 rules covering foundation and structure validation:
+- 42 rules covering foundation, structure, and reference validation:
   - **E0xxx**: E0000 (parse), E0001 (transform), E0002 (rule processing)
-  - **E1xxx**: E1001 (Ref), E1002 (size limit), E1005 (transform config)
+  - **E1xxx**: E1001 (Ref), E1002 (size), E1005 (transform), E1010 (GetAtt), E1011 (FindInMap), E1019 (Sub), E1020 (Ref type), E1028 (Fn::If), E1040 (GetAtt format), E1041 (Ref format), E1050 (dynamic refs)
   - **E2xxx**: E2001 (param config), E2002 (param type), E2010 (param limit), E2015 (defaults)
-  - **E3xxx**: E3001 (resource config), E3002 (Properties), E3003 (required props), E3006 (type format), E3007 (unique IDs), E3010 (limit)
+  - **E3xxx**: E3001 (resource config), E3002 (Properties), E3003 (required props), E3004 (circular deps), E3005 (DependsOn), E3006 (type format), E3007 (unique IDs), E3010 (limit), E3015 (conditions)
   - **E4xxx**: E4002 (metadata)
-  - **E6xxx**: E6001 (output structure), E6002 (Value required), E6003 (output types), E6010 (limit)
+  - **E6xxx**: E6001 (output structure), E6002 (Value required), E6003 (output types), E6005 (conditions), E6010 (limit)
   - **E7xxx**: E7001 (mapping config), E7010 (limit)
-  - **E8xxx**: E8001 (condition config), E8002 (undefined conditions), E8003-E8007 (Equals/And/Not/Or/Condition)
+  - **E8xxx**: E8001-E8007 (condition functions)
 
 ### What's Planned
 
-- 60+ additional rules (see [docs/RULES.md](docs/RULES.md))
+- 50+ additional rules (see [docs/RULES.md](docs/RULES.md))
 - SARIF, JUnit output formats
 - Rule ignoring via template metadata
 
