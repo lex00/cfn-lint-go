@@ -1,0 +1,53 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: A valid CloudFormation template for testing
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+
+Resources:
+  MyBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${AWS::StackName}-bucket"
+
+  MyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${AWS::StackName}-role"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+
+  MyFunction:
+    Type: AWS::Lambda::Function
+    DependsOn: MyRole
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-function"
+      Runtime: python3.12
+      Handler: index.handler
+      Role: !GetAtt MyRole.Arn
+      Code:
+        ZipFile: |
+          def handler(event, context):
+              return "Hello"
+
+Outputs:
+  BucketArn:
+    Description: The ARN of the bucket
+    Value: !GetAtt MyBucket.Arn
+    Export:
+      Name: !Sub "${AWS::StackName}-BucketArn"
+
+  FunctionArn:
+    Description: The ARN of the function
+    Value: !GetAtt MyFunction.Arn
