@@ -4,7 +4,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 ## Current Status
 
-**v0.6.1**: 76 rules implemented (Phase 1-5 complete, schema integration).
+**v0.7.0**: 76 rules implemented (Phase 1-5 complete, schema integration).
 
 ## Rule Categories
 
