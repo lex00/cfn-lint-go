@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Phase 3: Value Validation rules (2 new rules):
+  - E6101: Output Value must be a string
+  - E6102: Export Name must be a string
+- Comprehensive tests for all Phase 3 rules
+
+### Changed
+
+- Total rule count: 42 -> 44
+
+### Notes
+
+- E2900 (Deployment file parameters) deferred - requires parameter file infrastructure
+
 ## [0.4.0] - 2026-01-01
 
 ### Added

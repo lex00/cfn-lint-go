@@ -4,7 +4,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 ## Current Status
 
-**v0.4.0**: 42 rules implemented (Phase 1 + Phase 2: Reference Validation complete).
+**v0.4.1**: 44 rules implemented (Phase 1-3 complete).
 
 ## Rule Categories
 
@@ -15,7 +15,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 | E2xxx | Parameters | 4 | ~7 |
 | E3xxx | Resources | 9 | ~40+ |
 | E4xxx | Metadata | 1 | ~2 |
-| E6xxx | Outputs | 5 | ~9 |
+| E6xxx | Outputs | 7 | ~9 |
 | E7xxx | Mappings | 2 | ~3 |
 | E8xxx | Conditions | 7 | ~7 |
 | W* | Warnings | 0 | ~40 |
@@ -85,6 +85,8 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 | E6003 | Output property type error | ✅ Implemented |
 | E6005 | Output condition references undefined condition | ✅ Implemented |
 | E6010 | Output limit exceeded (200) | ✅ Implemented |
+| E6101 | Output Value must be a string | ✅ Implemented |
+| E6102 | Export Name must be a string | ✅ Implemented |
 
 ### E7xxx - Mappings
 
