@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- `pkg/schema` package integrating `cloudformation-schema-go` for CloudFormation resource specification access
+- Schema-based required property validation (E3003) using full CloudFormation resource specification
+
+### Changed
+
+- E3003 now uses live CloudFormation resource specification instead of hardcoded property map
+
+### Dependencies
+
+- Added `github.com/lex00/cloudformation-schema-go` v0.4.0
+
+## [0.6.1] - 2026-01-01
+
+### Changed
+
+- JSON output format now matches Python cfn-lint for drop-in compatibility
+  - Nested `Rule` object with `Id`, `Description`, `ShortDescription`, `Source`
+  - Nested `Location` with `Start`/`End` positions (`LineNumber`, `ColumnNumber`)
+  - `Path` array for JSON path to issue location
+  - PascalCase level values (`"Error"`, `"Warning"`, `"Informational"`)
+
 ## [0.6.0] - 2026-01-01
 
 ### Added
