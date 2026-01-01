@@ -4,9 +4,9 @@ CloudFormation Linter for Go - a native Go port of [aws-cloudformation/cfn-lint]
 
 ## Status
 
-**v0.4.1 - Phase 3: Value Validation**
+**v0.5.0 - Phase 4: Best Practice Rules**
 
-This is a Go port of the Python cfn-lint tool. Implements core framework with 44 rules covering template, reference, and value validation. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
+This is a Go port of the Python cfn-lint tool. Implements core framework with 64 rules covering template structure, intrinsic functions, and best practices. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
 
 ### What's Implemented
 
@@ -18,14 +18,14 @@ This is a Go port of the Python cfn-lint tool. Implements core framework with 44
 - CLI `graph` command for dependency visualization
 - CLI `list-rules` command
 - `--ignore-rules` flag
-- 44 rules covering foundation, structure, reference, and value validation:
-  - **E0xxx**: E0000 (parse), E0001 (transform), E0002 (rule processing)
-  - **E1xxx**: E1001 (Ref), E1002 (size), E1005 (transform), E1010 (GetAtt), E1011 (FindInMap), E1019 (Sub), E1020 (Ref type), E1028 (Fn::If), E1040 (GetAtt format), E1041 (Ref format), E1050 (dynamic refs)
-  - **E2xxx**: E2001 (param config), E2002 (param type), E2010 (param limit), E2015 (defaults)
-  - **E3xxx**: E3001 (resource config), E3002 (Properties), E3003 (required props), E3004 (circular deps), E3005 (DependsOn), E3006 (type format), E3007 (unique IDs), E3010 (limit), E3015 (conditions)
-  - **E4xxx**: E4002 (metadata)
-  - **E6xxx**: E6001 (output structure), E6002 (Value required), E6003 (output types), E6005 (conditions), E6010 (limit), E6101 (Value type), E6102 (Export type)
-  - **E7xxx**: E7001 (mapping config), E7010 (limit)
+- 64 rules covering foundation, structure, intrinsics, and best practices:
+  - **E0xxx**: E0000-E0003 (parse, transform, processing, config)
+  - **E1xxx**: 20 rules for intrinsic functions (Ref, GetAtt, Sub, Join, Select, Split, Base64, Cidr, GetAZs, ImportValue, dynamic refs)
+  - **E2xxx**: E2001-E2015 (param config, type, naming, length, limits, defaults)
+  - **E3xxx**: E3001-E3036 (resource config, properties, dependencies, policies)
+  - **E4xxx**: E4001-E4002 (interface metadata, structure)
+  - **E6xxx**: E6001-E6102 (output structure, types, naming, exports)
+  - **E7xxx**: E7001-E7010 (mapping config, naming, limits)
   - **E8xxx**: E8001-E8007 (condition functions)
 
 ### What's Planned
@@ -127,13 +127,13 @@ func main() {
 
 | Range | Category | Status |
 |-------|----------|--------|
-| E0xxx | Template errors | 3 rules |
-| E1xxx | Functions (Ref, GetAtt, Sub, etc.) | 11 rules |
-| E2xxx | Parameters | 4 rules |
-| E3xxx | Resources | 9 rules |
-| E4xxx | Metadata | 1 rule |
-| E6xxx | Outputs | 7 rules |
-| E7xxx | Mappings | 2 rules |
+| E0xxx | Template errors | 4 rules |
+| E1xxx | Functions (Ref, GetAtt, Sub, etc.) | 20 rules |
+| E2xxx | Parameters | 6 rules |
+| E3xxx | Resources | 12 rules |
+| E4xxx | Metadata | 2 rules |
+| E6xxx | Outputs | 9 rules |
+| E7xxx | Mappings | 3 rules |
 | E8xxx | Conditions | 7 rules |
 
 ## NOT in Scope
