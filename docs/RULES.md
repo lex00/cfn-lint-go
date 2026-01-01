@@ -4,7 +4,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 ## Current Status
 
-**v0.5.0**: 64 rules implemented (Phase 1-4 complete).
+**v0.6.0**: 76 rules implemented (Phase 1-5 complete).
 
 ## Rule Categories
 
@@ -18,7 +18,13 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 | E6xxx | Outputs | 9 | ~9 |
 | E7xxx | Mappings | 3 | ~3 |
 | E8xxx | Conditions | 7 | ~7 |
-| W* | Warnings | 0 | ~40 |
+| W1xxx | Template Warnings | 2 | ~5 |
+| W2xxx | Parameter Warnings | 2 | ~5 |
+| W3xxx | Resource Warnings | 3 | ~10 |
+| W4xxx | Metadata Warnings | 1 | ~2 |
+| W6xxx | Output Warnings | 1 | ~3 |
+| W7xxx | Mapping Warnings | 1 | ~2 |
+| W8xxx | Condition Warnings | 2 | ~3 |
 | I* | Informational | 0 | ~20 |
 
 ## Implemented Rules
@@ -126,6 +132,53 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 | E8005 | Fn::Not structure error | ✅ Implemented |
 | E8006 | Fn::Or structure error | ✅ Implemented |
 | E8007 | Condition intrinsic function error | ✅ Implemented |
+
+### W1xxx - Template Warnings
+
+| Rule | Description | Status |
+|------|-------------|--------|
+| W1001 | Ref/GetAtt to conditional resource | ✅ Implemented |
+| W1011 | Use dynamic references for secrets | ✅ Implemented |
+
+### W2xxx - Parameter Warnings
+
+| Rule | Description | Status |
+|------|-------------|--------|
+| W2001 | Unused parameter | ✅ Implemented |
+| W2010 | NoEcho parameter may be exposed | ✅ Implemented |
+
+### W3xxx - Resource Warnings
+
+| Rule | Description | Status |
+|------|-------------|--------|
+| W3002 | Package-required property with local path | ✅ Implemented |
+| W3005 | Redundant DependsOn | ✅ Implemented |
+| W3010 | Hardcoded availability zone | ✅ Implemented |
+
+### W4xxx - Metadata Warnings
+
+| Rule | Description | Status |
+|------|-------------|--------|
+| W4001 | Interface references undefined parameter | ✅ Implemented |
+
+### W6xxx - Output Warnings
+
+| Rule | Description | Status |
+|------|-------------|--------|
+| W6001 | ImportValue in Output | ✅ Implemented |
+
+### W7xxx - Mapping Warnings
+
+| Rule | Description | Status |
+|------|-------------|--------|
+| W7001 | Unused mapping | ✅ Implemented |
+
+### W8xxx - Condition Warnings
+
+| Rule | Description | Status |
+|------|-------------|--------|
+| W8001 | Unused condition | ✅ Implemented |
+| W8003 | Fn::Equals with static result | ✅ Implemented |
 
 ## Rule Severity Levels
 

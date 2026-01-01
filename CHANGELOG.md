@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-01-01
+
+### Added
+
+- Phase 5: Warning rules (12 new rules):
+  - W1001: Ref/GetAtt to conditional resource
+  - W1011: Use dynamic references for secrets
+  - W2001: Unused parameter detection
+  - W2010: NoEcho parameter may be exposed in outputs
+  - W3002: Package-required property with local path
+  - W3005: Redundant DependsOn (implicit dependency via Ref/GetAtt)
+  - W3010: Hardcoded availability zone
+  - W4001: Interface references undefined parameter
+  - W6001: ImportValue in Output (circular dependency risk)
+  - W7001: Unused mapping detection
+  - W8001: Unused condition detection
+  - W8003: Fn::Equals with static result (always true/false)
+- New `warnings` package for all warning rules
+- Comprehensive tests for all Phase 5 rules
+
+### Changed
+
+- Total rule count: 64 -> 76
+
 ## [0.5.0] - 2026-01-01
 
 ### Added
@@ -160,7 +184,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SAM transform support is not included (users should run `sam build` first)
 - See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy
 
-[Unreleased]: https://github.com/lex00/cfn-lint-go/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/lex00/cfn-lint-go/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.6.0
 [0.5.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.5.0
 [0.4.1]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.4.1
 [0.4.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.4.0
