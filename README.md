@@ -128,11 +128,11 @@ func main() {
 | Range | Category | Status |
 |-------|----------|--------|
 | E0xxx | Template errors | 3 rules |
-| E1xxx | Functions (Ref, GetAtt) | 3 rules |
+| E1xxx | Functions (Ref, GetAtt, Sub, etc.) | 11 rules |
 | E2xxx | Parameters | 4 rules |
-| E3xxx | Resources | 6 rules |
+| E3xxx | Resources | 9 rules |
 | E4xxx | Metadata | 1 rule |
-| E6xxx | Outputs | 4 rules |
+| E6xxx | Outputs | 5 rules |
 | E7xxx | Mappings | 2 rules |
 | E8xxx | Conditions | 7 rules |
 
