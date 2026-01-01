@@ -15,7 +15,10 @@ import "github.com/lex00/cfn-lint-go/pkg/lint"
 #### Linter
 
 ```go
-// Create a new linter
+// Create a new linter with default options
+linter := lint.New(lint.Options{})
+
+// Create a linter with options
 linter := lint.New(lint.Options{
     Regions:     []string{"us-east-1"},
     IgnoreRules: []string{"W1001"},
@@ -78,9 +81,12 @@ tmpl, err := template.Parse([]byte(yamlContent))
 
 ```go
 type Template struct {
+    Root                     *yaml.Node          // Raw YAML node tree
     AWSTemplateFormatVersion string
     Description              string
     Parameters               map[string]*Parameter
+    Mappings                 map[string]any
+    Conditions               map[string]any
     Resources                map[string]*Resource
     Outputs                  map[string]*Output
     Filename                 string
@@ -94,16 +100,33 @@ if tmpl.HasParameter("Environment") { ... }
 
 // Get all resource names
 names := tmpl.GetResourceNames()
+
+// Get all parameter names
+names := tmpl.GetParameterNames()
 ```
 
 #### Resource
 
 ```go
 type Resource struct {
-    Type       string
-    Properties map[string]any
+    Node       *yaml.Node       // YAML node (for line numbers)
+    Type       string           // e.g., "AWS::S3::Bucket"
+    Properties map[string]any   // Decoded properties with intrinsic functions
     DependsOn  []string
     Condition  string
+    Metadata   map[string]any
+}
+```
+
+#### Parameter
+
+```go
+type Parameter struct {
+    Node          *yaml.Node
+    Type          string
+    Default       any
+    AllowedValues []any
+    Description   string
 }
 ```
 
@@ -172,7 +195,7 @@ type Match struct {
     Message string
     Line    int
     Column  int
-    Path    []string
+    Path    []string  // JSON path to the problematic element
 }
 ```
 
@@ -250,7 +273,7 @@ func main() {
 ### Custom Rule
 
 ```go
-package main
+package myrules
 
 import (
     "github.com/lex00/cfn-lint-go/pkg/rules"
@@ -265,9 +288,9 @@ type NoHardcodedBuckets struct{}
 
 func (r *NoHardcodedBuckets) ID() string          { return "C0001" }
 func (r *NoHardcodedBuckets) ShortDesc() string   { return "No hardcoded bucket names" }
-func (r *NoHardcodedBuckets) Description() string { return "..." }
+func (r *NoHardcodedBuckets) Description() string { return "Bucket names should use parameters or references" }
 func (r *NoHardcodedBuckets) Source() string      { return "" }
-func (r *NoHardcodedBuckets) Tags() []string      { return []string{"custom"} }
+func (r *NoHardcodedBuckets) Tags() []string      { return []string{"custom", "s3"} }
 
 func (r *NoHardcodedBuckets) Match(tmpl *template.Template) []rules.Match {
     var matches []rules.Match
@@ -284,3 +307,39 @@ func (r *NoHardcodedBuckets) Match(tmpl *template.Template) []rules.Match {
     return matches
 }
 ```
+
+### Accessing Intrinsic Functions
+
+CloudFormation intrinsic functions are parsed into their long-form map representation:
+
+```go
+// Template YAML:
+//   BucketName: !Ref MyParam
+
+// Parsed as:
+props := res.Properties["BucketName"]
+// props = map[string]any{"Ref": "MyParam"}
+
+// Check for Ref
+if ref, ok := props.(map[string]any); ok {
+    if target, ok := ref["Ref"].(string); ok {
+        fmt.Println("References:", target)
+    }
+}
+```
+
+Supported intrinsic tags:
+- `!Ref` → `{"Ref": "..."}`
+- `!GetAtt` → `{"Fn::GetAtt": "..."}`
+- `!Sub` → `{"Fn::Sub": "..."}`
+- `!Join` → `{"Fn::Join": [...]}`
+- `!Select` → `{"Fn::Select": [...]}`
+- `!If` → `{"Fn::If": [...]}`
+- `!Condition` → `{"Condition": "..."}`
+- `!GetAZs` → `{"Fn::GetAZs": "..."}`
+- `!Base64` → `{"Fn::Base64": "..."}`
+- `!Cidr` → `{"Fn::Cidr": [...]}`
+- `!FindInMap` → `{"Fn::FindInMap": [...]}`
+- `!ImportValue` → `{"Fn::ImportValue": "..."}`
+- `!Split` → `{"Fn::Split": [...]}`
+- And more...

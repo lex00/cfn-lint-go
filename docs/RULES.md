@@ -2,20 +2,24 @@
 
 cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.com/aws-cloudformation/cfn-lint).
 
+## Current Status
+
+**v0.1.0**: 2 rules implemented out of 265 planned.
+
 ## Rule Categories
 
-| Prefix | Category | Count | Status |
-|--------|----------|-------|--------|
-| E0xxx | Template Errors | ~30 | 🟡 In Progress |
-| E1xxx | Functions | ~25 | 🟡 In Progress |
-| E2xxx | Parameters | ~20 | ⚪ Planned |
-| E3xxx | Resources | ~100 | ⚪ Planned |
-| E4xxx | Metadata | ~10 | ⚪ Planned |
-| E6xxx | Outputs | ~15 | ⚪ Planned |
-| E7xxx | Mappings | ~10 | ⚪ Planned |
-| E8xxx | Conditions | ~15 | ⚪ Planned |
-| W* | Warnings | ~40 | ⚪ Planned |
-| I* | Informational | ~20 | ⚪ Planned |
+| Prefix | Category | Implemented | Planned |
+|--------|----------|-------------|---------|
+| E0xxx | Template Errors | 1 | ~30 |
+| E1xxx | Functions | 1 | ~25 |
+| E2xxx | Parameters | 0 | ~20 |
+| E3xxx | Resources | 0 | ~100 |
+| E4xxx | Metadata | 0 | ~10 |
+| E6xxx | Outputs | 0 | ~15 |
+| E7xxx | Mappings | 0 | ~10 |
+| E8xxx | Conditions | 0 | ~15 |
+| W* | Warnings | 0 | ~40 |
+| I* | Informational | 0 | ~20 |
 
 ## Implemented Rules
 
@@ -23,13 +27,13 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 | Rule | Description | Status |
 |------|-------------|--------|
-| E0000 | Template parse error | ✅ |
+| E0000 | Template parse error | ✅ Implemented |
 
 ### E1xxx - Functions
 
 | Rule | Description | Status |
 |------|-------------|--------|
-| E1001 | Ref to undefined resource or parameter | ✅ |
+| E1001 | Ref to undefined resource or parameter | ✅ Implemented |
 
 ## Rule Severity Levels
 
@@ -39,13 +43,21 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 ## Ignoring Rules
 
-### CLI
+### Library API (Implemented)
+
+```go
+linter := lint.New(lint.Options{
+    IgnoreRules: []string{"E1001", "W3002"},
+})
+```
+
+### CLI (Planned)
 
 ```bash
 cfn-lint template.yaml --ignore-rules E1001,W3002
 ```
 
-### Template Metadata
+### Template Metadata (Planned)
 
 ```yaml
 Metadata:
@@ -54,19 +66,6 @@ Metadata:
       ignore_checks:
         - E1001
         - W3002
-```
-
-### Inline Comments
-
-```yaml
-Resources:
-  MyBucket:
-    Type: AWS::S3::Bucket
-    Metadata:
-      cfn-lint:
-        config:
-          ignore_checks:
-            - E3002
 ```
 
 ## Adding Custom Rules

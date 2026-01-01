@@ -4,17 +4,26 @@ CloudFormation Linter for Go - a native Go port of [aws-cloudformation/cfn-lint]
 
 ## Status
 
-**Implementation: In Progress**
+**v0.1.0 - Initial Release**
 
-This is a Go port of the Python cfn-lint tool. See [docs/RESEARCH.md](docs/RESEARCH.md) for the porting strategy and progress.
+This is a Go port of the Python cfn-lint tool. Currently implements core framework with 2 rules. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
 
-## Features
+### What's Implemented
 
-- Validate CloudFormation templates (YAML/JSON)
-- 265 linting rules (porting in progress)
-- DOT graph generation for resource dependencies
-- Multiple output formats: text, JSON, SARIF, JUnit
-- Embeddable as a Go library
+- YAML/JSON template parsing with line number tracking
+- CloudFormation intrinsic function support (!Ref, !GetAtt, !Sub, etc.)
+- Rule interface and registry system
+- DOT graph generation for resource dependencies (library only)
+- CLI with text output format
+- 2 rules: E0000 (parse errors), E1001 (undefined refs)
+
+### What's Planned
+
+- 260+ additional rules (see [docs/RULES.md](docs/RULES.md))
+- JSON, SARIF, JUnit output formats
+- CLI graph command
+- CLI list-rules command
+- Rule ignoring via CLI and template metadata
 
 ## Installation
 
@@ -36,15 +45,11 @@ go get github.com/lex00/cfn-lint-go
 # Lint a template
 cfn-lint template.yaml
 
-# Lint with JSON output
-cfn-lint template.yaml --format json
+# Lint multiple templates
+cfn-lint *.yaml
 
-# Generate dependency graph
-cfn-lint graph template.yaml > deps.dot
-dot -Tpng deps.dot -o deps.png
-
-# List available rules
-cfn-lint list-rules
+# Show help
+cfn-lint --help
 ```
 
 ### Library
@@ -73,7 +78,7 @@ func main() {
 }
 ```
 
-### Graph Generation
+### Graph Generation (Library)
 
 ```go
 package main
@@ -97,14 +102,14 @@ func main() {
 
 | Range | Category | Status |
 |-------|----------|--------|
-| E0xxx | Template errors | 🟡 In Progress |
-| E1xxx | Functions (Ref, GetAtt) | 🟡 In Progress |
-| E2xxx | Parameters | ⚪ Planned |
-| E3xxx | Resources | ⚪ Planned |
-| E4xxx | Metadata | ⚪ Planned |
-| E6xxx | Outputs | ⚪ Planned |
-| E7xxx | Mappings | ⚪ Planned |
-| E8xxx | Conditions | ⚪ Planned |
+| E0xxx | Template errors | 1 rule implemented |
+| E1xxx | Functions (Ref, GetAtt) | 1 rule implemented |
+| E2xxx | Parameters | Planned |
+| E3xxx | Resources | Planned |
+| E4xxx | Metadata | Planned |
+| E6xxx | Outputs | Planned |
+| E7xxx | Mappings | Planned |
+| E8xxx | Conditions | Planned |
 
 ## NOT in Scope
 
@@ -138,20 +143,16 @@ cfn-lint-go/
 │   ├── graph/          # DOT graph generation
 │   └── rules/          # Rule interface and registry
 ├── internal/           # Private implementation
-│   ├── rules/          # Rule implementations
-│   │   ├── errors/     # E0xxx
-│   │   ├── functions/  # E1xxx
-│   │   └── ...
-│   ├── decode/         # YAML/JSON parsing
-│   ├── schema/         # CF resource schemas
-│   └── formatters/     # Output formatters
-├── schemas/            # Embedded CF schemas
+│   └── rules/          # Rule implementations
+│       ├── errors/     # E0xxx
+│       └── functions/  # E1xxx
+├── testdata/           # Test fixtures
 └── docs/               # Documentation
 ```
 
 ## Contributing
 
-See [docs/RESEARCH.md](docs/RESEARCH.md) for the porting strategy and how to help.
+See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for how to contribute.
 
 ## License
 
@@ -160,4 +161,3 @@ MIT License - see [LICENSE](LICENSE)
 ## Related Projects
 
 - [aws-cloudformation/cfn-lint](https://github.com/aws-cloudformation/cfn-lint) - Original Python implementation
-- [wetwire](https://github.com/lex00/wetwire) - Infrastructure as code framework
