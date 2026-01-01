@@ -4,20 +4,20 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 ## Current Status
 
-**v0.2.0**: 8 rules implemented (one critical rule per category prefix).
+**v0.3.0**: 30 rules implemented (Phase 1: Foundation & Structure complete).
 
 ## Rule Categories
 
 | Prefix | Category | Implemented | Planned |
 |--------|----------|-------------|---------|
-| E0xxx | Template Errors | 1 | ~6 |
-| E1xxx | Functions | 1 | ~30 |
-| E2xxx | Parameters | 1 | ~7 |
-| E3xxx | Resources | 1 | ~40+ |
+| E0xxx | Template Errors | 3 | ~6 |
+| E1xxx | Functions | 3 | ~30 |
+| E2xxx | Parameters | 4 | ~7 |
+| E3xxx | Resources | 6 | ~40+ |
 | E4xxx | Metadata | 1 | ~2 |
-| E6xxx | Outputs | 1 | ~9 |
-| E7xxx | Mappings | 1 | ~3 |
-| E8xxx | Conditions | 1 | ~7 |
+| E6xxx | Outputs | 4 | ~9 |
+| E7xxx | Mappings | 2 | ~3 |
+| E8xxx | Conditions | 7 | ~7 |
 | W* | Warnings | 0 | ~40 |
 | I* | Informational | 0 | ~20 |
 
@@ -28,24 +28,36 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 | Rule | Description | Status |
 |------|-------------|--------|
 | E0000 | Template parse error | ✅ Implemented |
+| E0001 | Template transformation error | ✅ Implemented |
+| E0002 | Rule processing error | ✅ Implemented |
 
 ### E1xxx - Functions
 
 | Rule | Description | Status |
 |------|-------------|--------|
 | E1001 | Ref to undefined resource or parameter | ✅ Implemented |
+| E1002 | Template size limit exceeded | ✅ Implemented |
+| E1005 | Transform configuration error | ✅ Implemented |
 
 ### E2xxx - Parameters
 
 | Rule | Description | Status |
 |------|-------------|--------|
+| E2001 | Parameter configuration error | ✅ Implemented |
+| E2002 | Invalid parameter type | ✅ Implemented |
+| E2010 | Parameter limit exceeded (200) | ✅ Implemented |
 | E2015 | Default value within constraints | ✅ Implemented |
 
 ### E3xxx - Resources
 
 | Rule | Description | Status |
 |------|-------------|--------|
+| E3001 | Resource configuration error | ✅ Implemented |
+| E3002 | Resource Properties structure error | ✅ Implemented |
 | E3003 | Required properties present | 🚧 Partial (common resources) |
+| E3006 | Invalid resource type format | ✅ Implemented |
+| E3007 | Duplicate resource logical ID | ✅ Implemented |
+| E3010 | Resource limit exceeded (500) | ✅ Implemented |
 
 ### E4xxx - Metadata
 
@@ -57,19 +69,29 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 | Rule | Description | Status |
 |------|-------------|--------|
+| E6001 | Output property structure error | ✅ Implemented |
 | E6002 | Output has required Value property | ✅ Implemented |
+| E6003 | Output property type error | ✅ Implemented |
+| E6010 | Output limit exceeded (200) | ✅ Implemented |
 
 ### E7xxx - Mappings
 
 | Rule | Description | Status |
 |------|-------------|--------|
 | E7001 | Mapping configuration valid | ✅ Implemented |
+| E7010 | Mapping limit exceeded (200) | ✅ Implemented |
 
 ### E8xxx - Conditions
 
 | Rule | Description | Status |
 |------|-------------|--------|
+| E8001 | Condition configuration error | ✅ Implemented |
 | E8002 | Referenced conditions are defined | ✅ Implemented |
+| E8003 | Fn::Equals structure error | ✅ Implemented |
+| E8004 | Fn::And structure error | ✅ Implemented |
+| E8005 | Fn::Not structure error | ✅ Implemented |
+| E8006 | Fn::Or structure error | ✅ Implemented |
+| E8007 | Condition intrinsic function error | ✅ Implemented |
 
 ## Rule Severity Levels
 

@@ -794,8 +794,8 @@ This matrix shows all cfn-lint rules with implementation status, criticality lev
 | Rule | Description | Criticality | Order | Status |
 |------|-------------|-------------|-------|--------|
 | E0000 | Template parse error | CRITICAL | 0 | ✅ |
-| E0001 | Template transformation error | CRITICAL | 0 | ⬜ |
-| E0002 | Rule processing error | CRITICAL | 0 | ⬜ |
+| E0001 | Template transformation error | CRITICAL | 0 | ✅ |
+| E0002 | Rule processing error | CRITICAL | 0 | ✅ |
 | E0003 | Configuration error | IMPORTANT | 0 | ⬜ |
 | E0100 | Deployment file syntax | CRITICAL | 0 | ⬜ |
 | E0200 | Parameter file syntax | CRITICAL | 0 | ⬜ |
@@ -805,10 +805,10 @@ This matrix shows all cfn-lint rules with implementation status, criticality lev
 | Rule | Description | Criticality | Order | Status |
 |------|-------------|-------------|-------|--------|
 | E1001 | Ref to undefined resource/parameter | CRITICAL | 2 | ✅ |
-| E1002 | Template size limit | IMPORTANT | 1 | ⬜ |
+| E1002 | Template size limit | IMPORTANT | 1 | ✅ |
 | E1003 | Description length | SITUATIONAL | 1 | ⬜ |
 | E1004 | Description is string | IMPORTANT | 1 | ⬜ |
-| E1005 | Transform configuration | CRITICAL | 1 | ⬜ |
+| E1005 | Transform configuration | CRITICAL | 1 | ✅ |
 | E1010 | GetAtt parameter references | CRITICAL | 2 | ⬜ |
 | E1011 | FindInMap configuration | CRITICAL | 2 | ⬜ |
 | E1015 | GetAz function | IMPORTANT | 2 | ⬜ |
@@ -837,10 +837,10 @@ This matrix shows all cfn-lint rules with implementation status, criticality lev
 
 | Rule | Description | Criticality | Order | Status |
 |------|-------------|-------------|-------|--------|
-| E2001 | Parameter configuration | CRITICAL | 1 | ⬜ |
-| E2002 | Parameter type | CRITICAL | 1 | ⬜ |
+| E2001 | Parameter configuration | CRITICAL | 1 | ✅ |
+| E2002 | Parameter type | CRITICAL | 1 | ✅ |
 | E2003 | Parameter naming | IMPORTANT | 1 | ⬜ |
-| E2010 | Parameter limit (200) | CRITICAL | 1 | ⬜ |
+| E2010 | Parameter limit (200) | CRITICAL | 1 | ✅ |
 | E2011 | Parameter name length | IMPORTANT | 1 | ⬜ |
 | E2015 | Default within constraints | CRITICAL | 3 | ✅ |
 | E2900 | Deployment file parameters | CRITICAL | 1 | ⬜ |
@@ -849,14 +849,14 @@ This matrix shows all cfn-lint rules with implementation status, criticality lev
 
 | Rule | Description | Criticality | Order | Status |
 |------|-------------|-------------|-------|--------|
-| E3001 | Resource configuration | CRITICAL | 1 | ⬜ |
-| E3002 | Resource property structure | CRITICAL | 1 | ⬜ |
+| E3001 | Resource configuration | CRITICAL | 1 | ✅ |
+| E3002 | Resource property structure | CRITICAL | 1 | ✅ |
 | E3003 | Required properties | CRITICAL | 2 | 🚧 |
 | E3004 | Circular dependencies | CRITICAL | 2 | ⬜ |
 | E3005 | DependsOn references | CRITICAL | 2 | ⬜ |
-| E3006 | Resource type by region | CRITICAL | 1 | ⬜ |
-| E3007 | Unique names | CRITICAL | 1 | ⬜ |
-| E3010 | Resource limit (500) | CRITICAL | 1 | ⬜ |
+| E3006 | Resource type format | CRITICAL | 1 | ✅ |
+| E3007 | Unique names | CRITICAL | 1 | ✅ |
+| E3010 | Resource limit (500) | CRITICAL | 1 | ✅ |
 | E3011 | Property names | IMPORTANT | 1 | ⬜ |
 | E3012 | Property value types | CRITICAL | 3 | ⬜ |
 | E3014 | Mutually exclusive properties | CRITICAL | 3 | ⬜ |
@@ -886,12 +886,12 @@ This matrix shows all cfn-lint rules with implementation status, criticality lev
 
 | Rule | Description | Criticality | Order | Status |
 |------|-------------|-------------|-------|--------|
-| E6001 | Output property structure | CRITICAL | 1 | ⬜ |
+| E6001 | Output property structure | CRITICAL | 1 | ✅ |
 | E6002 | Required properties (Value) | CRITICAL | 1 | ✅ |
-| E6003 | Output property types | CRITICAL | 1 | ⬜ |
+| E6003 | Output property types | CRITICAL | 1 | ✅ |
 | E6004 | Output naming | IMPORTANT | 1 | ⬜ |
 | E6005 | Output condition references | CRITICAL | 2 | ⬜ |
-| E6010 | Output limit (200) | CRITICAL | 1 | ⬜ |
+| E6010 | Output limit (200) | CRITICAL | 1 | ✅ |
 | E6011 | Output name length | IMPORTANT | 1 | ⬜ |
 | E6101 | Output values are strings | CRITICAL | 3 | ⬜ |
 | E6102 | Export values are strings | CRITICAL | 3 | ⬜ |
@@ -902,19 +902,19 @@ This matrix shows all cfn-lint rules with implementation status, criticality lev
 |------|-------------|-------------|-------|--------|
 | E7001 | Mapping configuration | CRITICAL | 1 | ✅ |
 | E7002 | Mapping name length | IMPORTANT | 1 | ⬜ |
-| E7010 | Mapping limit (200) | CRITICAL | 1 | ⬜ |
+| E7010 | Mapping limit (200) | CRITICAL | 1 | ✅ |
 
 ### E8xxx - Conditions
 
 | Rule | Description | Criticality | Order | Status |
 |------|-------------|-------------|-------|--------|
-| E8001 | Condition configuration | CRITICAL | 1 | ⬜ |
+| E8001 | Condition configuration | CRITICAL | 1 | ✅ |
 | E8002 | Condition references | CRITICAL | 2 | ✅ |
-| E8003 | Fn::Equals structure | CRITICAL | 1 | ⬜ |
-| E8004 | Fn::And structure | CRITICAL | 1 | ⬜ |
-| E8005 | Fn::Not structure | CRITICAL | 1 | ⬜ |
-| E8006 | Fn::Or structure | CRITICAL | 1 | ⬜ |
-| E8007 | Condition intrinsic | CRITICAL | 1 | ⬜ |
+| E8003 | Fn::Equals structure | CRITICAL | 1 | ✅ |
+| E8004 | Fn::And structure | CRITICAL | 1 | ✅ |
+| E8005 | Fn::Not structure | CRITICAL | 1 | ✅ |
+| E8006 | Fn::Or structure | CRITICAL | 1 | ✅ |
+| E8007 | Condition intrinsic | CRITICAL | 1 | ✅ |
 
 ### Warnings (W) - Selected
 
@@ -937,15 +937,15 @@ This matrix shows all cfn-lint rules with implementation status, criticality lev
 
 | Category | Total | Implemented | Critical Covered |
 |----------|-------|-------------|------------------|
-| E0xxx | 6 | 1 | ✅ E0000 |
-| E1xxx | 30+ | 1 | ✅ E1001 |
-| E2xxx | 7 | 1 | ✅ E2015 |
-| E3xxx | 40+ | 1 | 🚧 E3003 |
+| E0xxx | 6 | 3 | ✅ E0000, E0001, E0002 |
+| E1xxx | 30+ | 3 | ✅ E1001, E1002, E1005 |
+| E2xxx | 7 | 4 | ✅ E2001, E2002, E2010, E2015 |
+| E3xxx | 40+ | 6 | ✅ E3001, E3002, E3006, E3007, E3010, 🚧 E3003 |
 | E4xxx | 2 | 1 | ✅ E4002 |
-| E6xxx | 9 | 1 | ✅ E6002 |
-| E7xxx | 3 | 1 | ✅ E7001 |
-| E8xxx | 7 | 1 | ✅ E8002 |
-| **Total** | **100+** | **8** | **8/8 prefixes** |
+| E6xxx | 9 | 4 | ✅ E6001, E6002, E6003, E6010 |
+| E7xxx | 3 | 2 | ✅ E7001, E7010 |
+| E8xxx | 7 | 7 | ✅ E8001-E8007 (all) |
+| **Total** | **100+** | **30** | **8/8 prefixes** |
 
 ## Sources
 

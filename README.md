@@ -4,9 +4,9 @@ CloudFormation Linter for Go - a native Go port of [aws-cloudformation/cfn-lint]
 
 ## Status
 
-**v0.2.0 - Critical Rules**
+**v0.3.0 - Phase 1: Foundation & Structure**
 
-This is a Go port of the Python cfn-lint tool. Implements core framework with one critical rule per category. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
+This is a Go port of the Python cfn-lint tool. Implements core framework with 30 rules covering template validation. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
 
 ### What's Implemented
 
@@ -18,19 +18,19 @@ This is a Go port of the Python cfn-lint tool. Implements core framework with on
 - CLI `graph` command for dependency visualization
 - CLI `list-rules` command
 - `--ignore-rules` flag
-- 8 rules covering all category prefixes:
-  - E0000: Parse errors
-  - E1001: Undefined Ref
-  - E2015: Parameter default constraints
-  - E3003: Required resource properties
-  - E4002: Metadata validation
-  - E6002: Output Value required
-  - E7001: Mapping configuration
-  - E8002: Undefined conditions
+- 30 rules covering foundation and structure validation:
+  - **E0xxx**: E0000 (parse), E0001 (transform), E0002 (rule processing)
+  - **E1xxx**: E1001 (Ref), E1002 (size limit), E1005 (transform config)
+  - **E2xxx**: E2001 (param config), E2002 (param type), E2010 (param limit), E2015 (defaults)
+  - **E3xxx**: E3001 (resource config), E3002 (Properties), E3003 (required props), E3006 (type format), E3007 (unique IDs), E3010 (limit)
+  - **E4xxx**: E4002 (metadata)
+  - **E6xxx**: E6001 (output structure), E6002 (Value required), E6003 (output types), E6010 (limit)
+  - **E7xxx**: E7001 (mapping config), E7010 (limit)
+  - **E8xxx**: E8001 (condition config), E8002 (undefined conditions), E8003-E8007 (Equals/And/Not/Or/Condition)
 
 ### What's Planned
 
-- 100+ additional rules (see [docs/RULES.md](docs/RULES.md))
+- 60+ additional rules (see [docs/RULES.md](docs/RULES.md))
 - SARIF, JUnit output formats
 - Rule ignoring via template metadata
 
@@ -127,14 +127,14 @@ func main() {
 
 | Range | Category | Status |
 |-------|----------|--------|
-| E0xxx | Template errors | 1 rule (E0000) |
-| E1xxx | Functions (Ref, GetAtt) | 1 rule (E1001) |
-| E2xxx | Parameters | 1 rule (E2015) |
-| E3xxx | Resources | 1 rule (E3003) |
-| E4xxx | Metadata | 1 rule (E4002) |
-| E6xxx | Outputs | 1 rule (E6002) |
-| E7xxx | Mappings | 1 rule (E7001) |
-| E8xxx | Conditions | 1 rule (E8002) |
+| E0xxx | Template errors | 3 rules |
+| E1xxx | Functions (Ref, GetAtt) | 3 rules |
+| E2xxx | Parameters | 4 rules |
+| E3xxx | Resources | 6 rules |
+| E4xxx | Metadata | 1 rule |
+| E6xxx | Outputs | 4 rules |
+| E7xxx | Mappings | 2 rules |
+| E8xxx | Conditions | 7 rules |
 
 ## NOT in Scope
 
@@ -170,7 +170,13 @@ cfn-lint-go/
 ├── internal/           # Private implementation
 │   └── rules/          # Rule implementations
 │       ├── errors/     # E0xxx
-│       └── functions/  # E1xxx
+│       ├── functions/  # E1xxx
+│       ├── parameters/ # E2xxx
+│       ├── resources/  # E3xxx
+│       ├── metadata/   # E4xxx
+│       ├── outputs/    # E6xxx
+│       ├── mappings/   # E7xxx
+│       └── conditions/ # E8xxx
 ├── testdata/           # Test fixtures
 └── docs/               # Documentation
 ```

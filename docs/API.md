@@ -81,14 +81,18 @@ tmpl, err := template.Parse([]byte(yamlContent))
 
 ```go
 type Template struct {
-    Root                     *yaml.Node          // Raw YAML node tree
+    Root                     *yaml.Node              // Raw YAML node tree
     AWSTemplateFormatVersion string
     Description              string
     Parameters               map[string]*Parameter
-    Mappings                 map[string]any
-    Conditions               map[string]any
+    Mappings                 map[string]*Mapping
+    Conditions               map[string]*Condition
     Resources                map[string]*Resource
     Outputs                  map[string]*Output
+    Metadata                 map[string]any
+    MetadataNode             *yaml.Node              // For line number tracking
+    MappingsNode             *yaml.Node
+    ConditionsNode           *yaml.Node
     Filename                 string
 }
 
@@ -122,11 +126,47 @@ type Resource struct {
 
 ```go
 type Parameter struct {
-    Node          *yaml.Node
-    Type          string
-    Default       any
-    AllowedValues []any
-    Description   string
+    Node           *yaml.Node
+    Type           string
+    Default        any
+    AllowedValues  []any
+    AllowedPattern string
+    MinValue       *float64
+    MaxValue       *float64
+    MinLength      *int
+    MaxLength      *int
+    Description    string
+    NoEcho         bool
+}
+```
+
+#### Mapping
+
+```go
+type Mapping struct {
+    Node   *yaml.Node
+    Values map[string]map[string]any // TopLevelKey -> SecondLevelKey -> Value
+}
+```
+
+#### Condition
+
+```go
+type Condition struct {
+    Node       *yaml.Node
+    Expression any // The condition expression (Fn::Equals, Fn::And, etc.)
+}
+```
+
+#### Output
+
+```go
+type Output struct {
+    Node        *yaml.Node
+    Value       any
+    Description string
+    Export      map[string]any
+    Condition   string
 }
 ```
 
