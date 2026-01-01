@@ -11,11 +11,11 @@ type mockRule struct {
 	id string
 }
 
-func (r *mockRule) ID() string                              { return r.id }
-func (r *mockRule) ShortDesc() string                       { return "Mock rule" }
-func (r *mockRule) Description() string                     { return "A mock rule for testing" }
-func (r *mockRule) Source() string                          { return "" }
-func (r *mockRule) Tags() []string                          { return []string{"test"} }
+func (r *mockRule) ID() string                            { return r.id }
+func (r *mockRule) ShortDesc() string                     { return "Mock rule" }
+func (r *mockRule) Description() string                   { return "A mock rule for testing" }
+func (r *mockRule) Source() string                        { return "" }
+func (r *mockRule) Tags() []string                        { return []string{"test"} }
 func (r *mockRule) Match(tmpl *template.Template) []Match { return nil }
 
 func TestRegister(t *testing.T) {

@@ -3,7 +3,6 @@ package functions
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/lex00/cfn-lint-go/pkg/rules"
 	"github.com/lex00/cfn-lint-go/pkg/template"
@@ -93,11 +92,6 @@ func findRefsRecursive(v any, refs *[]refInfo) {
 	switch val := v.(type) {
 	case map[string]any:
 		if ref, ok := val["Ref"].(string); ok {
-			// Skip if it looks like a pseudo-parameter
-			if !strings.HasPrefix(ref, "AWS::") || strings.Contains(ref, "::") {
-				*refs = append(*refs, refInfo{target: ref})
-			}
-			// Include pseudo-parameters too - they need validation
 			*refs = append(*refs, refInfo{target: ref})
 		}
 		for _, child := range val {

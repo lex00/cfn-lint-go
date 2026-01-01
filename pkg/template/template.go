@@ -4,6 +4,7 @@ package template
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 )
@@ -180,10 +181,11 @@ func (t *Template) parseResources(node *yaml.Node) error {
 				case "Type":
 					res.Type = val.Value
 				case "Properties":
-					// Store raw properties for now
-					var props map[string]any
-					if err := val.Decode(&props); err == nil {
-						res.Properties = props
+					// Decode properties with CloudFormation tag handling
+					if decoded := parseYAMLNode(val); decoded != nil {
+						if props, ok := decoded.(map[string]any); ok {
+							res.Properties = props
+						}
 					}
 				case "Condition":
 					res.Condition = val.Value
@@ -230,6 +232,234 @@ func (t *Template) parseOutputs(node *yaml.Node) error {
 		t.Outputs[name] = out
 	}
 	return nil
+}
+
+// parseYAMLNode recursively converts a yaml.Node to Go values, handling CF intrinsic tags.
+func parseYAMLNode(node *yaml.Node) any {
+	if node == nil {
+		return nil
+	}
+
+	// Handle document node
+	if node.Kind == yaml.DocumentNode {
+		if len(node.Content) > 0 {
+			return parseYAMLNode(node.Content[0])
+		}
+		return nil
+	}
+
+	// Check for CloudFormation intrinsic function tags (single !, not !! standard tags)
+	if node.Tag != "" && strings.HasPrefix(node.Tag, "!") && !strings.HasPrefix(node.Tag, "!!") {
+		return parseIntrinsicTag(node)
+	}
+
+	switch node.Kind {
+	case yaml.ScalarNode:
+		var val any
+		_ = node.Decode(&val)
+		return val
+
+	case yaml.SequenceNode:
+		result := make([]any, len(node.Content))
+		for i, child := range node.Content {
+			result[i] = parseYAMLNode(child)
+		}
+		return result
+
+	case yaml.MappingNode:
+		result := make(map[string]any)
+		for i := 0; i < len(node.Content); i += 2 {
+			key := node.Content[i].Value
+			result[key] = parseYAMLNode(node.Content[i+1])
+		}
+		return result
+
+	case yaml.AliasNode:
+		return parseYAMLNode(node.Alias)
+	}
+
+	return nil
+}
+
+// parseNodeContents parses the contents of a tagged node without re-checking the tag.
+// This prevents infinite recursion when an intrinsic wraps another structure.
+func parseNodeContents(node *yaml.Node) any {
+	switch node.Kind {
+	case yaml.ScalarNode:
+		var val any
+		_ = node.Decode(&val)
+		return val
+	case yaml.SequenceNode:
+		result := make([]any, len(node.Content))
+		for i, child := range node.Content {
+			result[i] = parseYAMLNode(child)
+		}
+		return result
+	case yaml.MappingNode:
+		result := make(map[string]any)
+		for i := 0; i < len(node.Content); i += 2 {
+			key := node.Content[i].Value
+			result[key] = parseYAMLNode(node.Content[i+1])
+		}
+		return result
+	}
+	return nil
+}
+
+// parseIntrinsicTag handles CloudFormation intrinsic function YAML tags.
+// Returns map[string]any in the long-form CloudFormation format.
+func parseIntrinsicTag(node *yaml.Node) map[string]any {
+	tag := strings.TrimPrefix(node.Tag, "!")
+
+	switch tag {
+	case "Ref":
+		return map[string]any{"Ref": node.Value}
+
+	case "GetAtt":
+		if node.Kind == yaml.ScalarNode {
+			// !GetAtt Resource.Attribute format
+			return map[string]any{"Fn::GetAtt": node.Value}
+		}
+		// !GetAtt [Resource, Attribute] format
+		if node.Kind == yaml.SequenceNode {
+			parts := make([]any, len(node.Content))
+			for i, child := range node.Content {
+				parts[i] = child.Value
+			}
+			return map[string]any{"Fn::GetAtt": parts}
+		}
+
+	case "Sub":
+		if node.Kind == yaml.ScalarNode {
+			return map[string]any{"Fn::Sub": node.Value}
+		}
+		if node.Kind == yaml.SequenceNode {
+			args := make([]any, len(node.Content))
+			for i, child := range node.Content {
+				args[i] = parseYAMLNode(child)
+			}
+			return map[string]any{"Fn::Sub": args}
+		}
+
+	case "Join":
+		if node.Kind == yaml.SequenceNode && len(node.Content) >= 2 {
+			args := make([]any, len(node.Content))
+			for i, child := range node.Content {
+				args[i] = parseYAMLNode(child)
+			}
+			return map[string]any{"Fn::Join": args}
+		}
+
+	case "Select":
+		if node.Kind == yaml.SequenceNode && len(node.Content) >= 2 {
+			args := make([]any, len(node.Content))
+			for i, child := range node.Content {
+				args[i] = parseYAMLNode(child)
+			}
+			return map[string]any{"Fn::Select": args}
+		}
+
+	case "If":
+		if node.Kind == yaml.SequenceNode && len(node.Content) >= 3 {
+			args := make([]any, len(node.Content))
+			for i, child := range node.Content {
+				args[i] = parseYAMLNode(child)
+			}
+			return map[string]any{"Fn::If": args}
+		}
+
+	case "Condition":
+		return map[string]any{"Condition": node.Value}
+
+	case "GetAZs":
+		if node.Kind == yaml.ScalarNode {
+			return map[string]any{"Fn::GetAZs": node.Value}
+		}
+		// Handle nested intrinsic
+		return map[string]any{"Fn::GetAZs": parseNodeContents(node)}
+
+	case "Base64":
+		if node.Kind == yaml.ScalarNode {
+			return map[string]any{"Fn::Base64": node.Value}
+		}
+		// For non-scalar (nested intrinsics), parse contents directly
+		return map[string]any{"Fn::Base64": parseNodeContents(node)}
+
+	case "Cidr":
+		if node.Kind == yaml.SequenceNode && len(node.Content) >= 3 {
+			args := make([]any, len(node.Content))
+			for i, child := range node.Content {
+				args[i] = parseYAMLNode(child)
+			}
+			return map[string]any{"Fn::Cidr": args}
+		}
+
+	case "ImportValue":
+		if node.Kind == yaml.ScalarNode {
+			return map[string]any{"Fn::ImportValue": node.Value}
+		}
+		return map[string]any{"Fn::ImportValue": parseNodeContents(node)}
+
+	case "Split":
+		if node.Kind == yaml.SequenceNode && len(node.Content) >= 2 {
+			args := make([]any, len(node.Content))
+			for i, child := range node.Content {
+				args[i] = parseYAMLNode(child)
+			}
+			return map[string]any{"Fn::Split": args}
+		}
+
+	case "FindInMap":
+		if node.Kind == yaml.SequenceNode && len(node.Content) >= 3 {
+			args := make([]any, len(node.Content))
+			for i, child := range node.Content {
+				args[i] = parseYAMLNode(child)
+			}
+			return map[string]any{"Fn::FindInMap": args}
+		}
+
+	case "Equals":
+		if node.Kind == yaml.SequenceNode && len(node.Content) >= 2 {
+			args := make([]any, len(node.Content))
+			for i, child := range node.Content {
+				args[i] = parseYAMLNode(child)
+			}
+			return map[string]any{"Fn::Equals": args}
+		}
+
+	case "And":
+		if node.Kind == yaml.SequenceNode {
+			args := make([]any, len(node.Content))
+			for i, child := range node.Content {
+				args[i] = parseYAMLNode(child)
+			}
+			return map[string]any{"Fn::And": args}
+		}
+
+	case "Or":
+		if node.Kind == yaml.SequenceNode {
+			args := make([]any, len(node.Content))
+			for i, child := range node.Content {
+				args[i] = parseYAMLNode(child)
+			}
+			return map[string]any{"Fn::Or": args}
+		}
+
+	case "Not":
+		if node.Kind == yaml.SequenceNode && len(node.Content) > 0 {
+			return map[string]any{"Fn::Not": []any{parseYAMLNode(node.Content[0])}}
+		}
+
+	case "Transform":
+		return map[string]any{"Fn::Transform": parseNodeContents(node)}
+	}
+
+	// Unknown tag - generic Fn:: handler
+	fnName := "Fn::" + tag
+	if node.Kind == yaml.ScalarNode {
+		return map[string]any{fnName: node.Value}
+	}
+	return map[string]any{fnName: parseNodeContents(node)}
 }
 
 // GetResourceNames returns all resource logical IDs.
