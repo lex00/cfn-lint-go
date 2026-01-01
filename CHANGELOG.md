@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.3.0] - 2026-01-01
 
 ### Added
 
@@ -87,6 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SAM transform support is not included (users should run `sam build` first)
 - See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy
 
-[Unreleased]: https://github.com/lex00/cfn-lint-go/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/lex00/cfn-lint-go/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.3.0
 [0.2.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.2.0
 [0.1.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.1.0
