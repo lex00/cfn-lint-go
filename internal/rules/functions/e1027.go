@@ -3,7 +3,6 @@ package functions
 
 import (
 	"regexp"
-	"strings"
 
 	"github.com/lex00/cfn-lint-go/pkg/rules"
 	"github.com/lex00/cfn-lint-go/pkg/template"
@@ -128,9 +127,4 @@ func hasDynamicRef(v any) bool {
 		}
 	}
 	return false
-}
-
-// containsDynamicRef checks if a string contains a dynamic reference pattern
-func containsDynamicRef(s string) bool {
-	return strings.Contains(s, "{{resolve:")
 }

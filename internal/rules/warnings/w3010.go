@@ -37,12 +37,6 @@ func (r *W3010) Tags() []string {
 // Pattern to match AWS availability zone format (e.g., us-east-1a, eu-west-2b)
 var azPattern = regexp.MustCompile(`^[a-z]{2}-[a-z]+-\d[a-z]$`)
 
-// Properties that typically contain availability zones
-var azPropertyNames = map[string]bool{
-	"availabilityzone":  true,
-	"availabilityzones": true,
-}
-
 func (r *W3010) Match(tmpl *template.Template) []rules.Match {
 	var matches []rules.Match
 

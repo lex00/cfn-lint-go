@@ -3,7 +3,6 @@ package metadata
 
 import (
 	"fmt"
-	"regexp"
 
 	"github.com/lex00/cfn-lint-go/pkg/rules"
 	"github.com/lex00/cfn-lint-go/pkg/template"
@@ -33,8 +32,6 @@ func (r *E4001) Source() string {
 func (r *E4001) Tags() []string {
 	return []string{"metadata", "interface"}
 }
-
-var validLabelPattern = regexp.MustCompile(`^[A-Za-z][A-Za-z0-9]*$`)
 
 func (r *E4001) Match(tmpl *template.Template) []rules.Match {
 	var matches []rules.Match
