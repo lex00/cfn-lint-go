@@ -18,22 +18,46 @@ type Template struct {
 	AWSTemplateFormatVersion string
 	Description              string
 	Parameters               map[string]*Parameter
-	Mappings                 map[string]any
-	Conditions               map[string]any
+	Mappings                 map[string]*Mapping
+	Conditions               map[string]*Condition
 	Resources                map[string]*Resource
 	Outputs                  map[string]*Output
+	Metadata                 map[string]any
+
+	// Raw nodes for validation rules that need position info
+	MetadataNode   *yaml.Node
+	MappingsNode   *yaml.Node
+	ConditionsNode *yaml.Node
 
 	// Filename for error reporting.
 	Filename string
 }
 
+// Mapping represents a CloudFormation mapping.
+type Mapping struct {
+	Node   *yaml.Node
+	Values map[string]map[string]any // TopLevelKey -> SecondLevelKey -> Value
+}
+
+// Condition represents a CloudFormation condition.
+type Condition struct {
+	Node       *yaml.Node
+	Expression any // The condition expression (Fn::Equals, Fn::And, etc.)
+}
+
 // Parameter represents a CloudFormation parameter.
 type Parameter struct {
-	Node          *yaml.Node
-	Type          string
-	Default       any
-	AllowedValues []any
-	Description   string
+	Node           *yaml.Node
+	Type           string
+	Default        any
+	AllowedValues  []any
+	AllowedPattern string
+	MinValue       *float64
+	MaxValue       *float64
+	MinLength      *int
+	MaxLength      *int
+	Description    string
+	NoEcho         bool
 }
 
 // Resource represents a CloudFormation resource.
@@ -80,8 +104,11 @@ func Parse(data []byte) (*Template, error) {
 	tmpl := &Template{
 		Root:       &root,
 		Parameters: make(map[string]*Parameter),
+		Mappings:   make(map[string]*Mapping),
+		Conditions: make(map[string]*Condition),
 		Resources:  make(map[string]*Resource),
 		Outputs:    make(map[string]*Output),
+		Metadata:   make(map[string]any),
 	}
 
 	if err := tmpl.parseRoot(); err != nil {
@@ -123,12 +150,77 @@ func (t *Template) parseRoot() error {
 				return err
 			}
 		case "Mappings":
-			// TODO: Parse mappings
+			t.MappingsNode = value
+			if err := t.parseMappings(value); err != nil {
+				return err
+			}
 		case "Conditions":
-			// TODO: Parse conditions
+			t.ConditionsNode = value
+			if err := t.parseConditions(value); err != nil {
+				return err
+			}
+		case "Metadata":
+			t.MetadataNode = value
+			if decoded := parseYAMLNode(value); decoded != nil {
+				if meta, ok := decoded.(map[string]any); ok {
+					t.Metadata = meta
+				}
+			}
 		}
 	}
 
+	return nil
+}
+
+func (t *Template) parseMappings(node *yaml.Node) error {
+	if node.Kind != yaml.MappingNode {
+		return nil
+	}
+
+	for i := 0; i < len(node.Content); i += 2 {
+		name := node.Content[i].Value
+		mapNode := node.Content[i+1]
+
+		mapping := &Mapping{
+			Node:   mapNode,
+			Values: make(map[string]map[string]any),
+		}
+
+		if mapNode.Kind == yaml.MappingNode {
+			for j := 0; j < len(mapNode.Content); j += 2 {
+				topKey := mapNode.Content[j].Value
+				topVal := mapNode.Content[j+1]
+
+				mapping.Values[topKey] = make(map[string]any)
+				if topVal.Kind == yaml.MappingNode {
+					for k := 0; k < len(topVal.Content); k += 2 {
+						secondKey := topVal.Content[k].Value
+						secondVal := parseYAMLNode(topVal.Content[k+1])
+						mapping.Values[topKey][secondKey] = secondVal
+					}
+				}
+			}
+		}
+		t.Mappings[name] = mapping
+	}
+	return nil
+}
+
+func (t *Template) parseConditions(node *yaml.Node) error {
+	if node.Kind != yaml.MappingNode {
+		return nil
+	}
+
+	for i := 0; i < len(node.Content); i += 2 {
+		name := node.Content[i].Value
+		condNode := node.Content[i+1]
+
+		condition := &Condition{
+			Node:       condNode,
+			Expression: parseYAMLNode(condNode),
+		}
+		t.Conditions[name] = condition
+	}
 	return nil
 }
 
@@ -151,6 +243,41 @@ func (t *Template) parseParameters(node *yaml.Node) error {
 					param.Type = val.Value
 				case "Description":
 					param.Description = val.Value
+				case "Default":
+					param.Default = parseYAMLNode(val)
+				case "AllowedValues":
+					if val.Kind == yaml.SequenceNode {
+						for _, item := range val.Content {
+							param.AllowedValues = append(param.AllowedValues, parseYAMLNode(item))
+						}
+					}
+				case "AllowedPattern":
+					param.AllowedPattern = val.Value
+				case "MinValue":
+					var v float64
+					if val.Decode(&v) == nil {
+						param.MinValue = &v
+					}
+				case "MaxValue":
+					var v float64
+					if val.Decode(&v) == nil {
+						param.MaxValue = &v
+					}
+				case "MinLength":
+					var v int
+					if val.Decode(&v) == nil {
+						param.MinLength = &v
+					}
+				case "MaxLength":
+					var v int
+					if val.Decode(&v) == nil {
+						param.MaxLength = &v
+					}
+				case "NoEcho":
+					var v bool
+					if val.Decode(&v) == nil {
+						param.NoEcho = v
+					}
 				}
 			}
 		}
@@ -226,6 +353,14 @@ func (t *Template) parseOutputs(node *yaml.Node) error {
 					out.Description = val.Value
 				case "Condition":
 					out.Condition = val.Value
+				case "Value":
+					out.Value = parseYAMLNode(val)
+				case "Export":
+					if decoded := parseYAMLNode(val); decoded != nil {
+						if exp, ok := decoded.(map[string]any); ok {
+							out.Export = exp
+						}
+					}
 				}
 			}
 		}

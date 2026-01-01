@@ -15,8 +15,14 @@ import (
 	"github.com/lex00/cfn-lint-go/pkg/template"
 
 	// Import rule packages to register them
+	_ "github.com/lex00/cfn-lint-go/internal/rules/conditions"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/errors"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/functions"
+	_ "github.com/lex00/cfn-lint-go/internal/rules/mappings"
+	_ "github.com/lex00/cfn-lint-go/internal/rules/metadata"
+	_ "github.com/lex00/cfn-lint-go/internal/rules/outputs"
+	_ "github.com/lex00/cfn-lint-go/internal/rules/parameters"
+	_ "github.com/lex00/cfn-lint-go/internal/rules/resources"
 )
 
 var version = "dev"

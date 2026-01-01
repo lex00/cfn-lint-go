@@ -675,6 +675,278 @@ Each agent should maintain a status file:
 - E1010: Matched Python error message format exactly
 ```
 
+## Critical Rules Analysis
+
+This section analyzes cfn-lint rules by category to identify which are critical (break deployments), important (prevent common issues), or situational (edge cases).
+
+### Summary: Critical Rule Per Category
+
+| Prefix | Category | Critical Rule | Description | Rationale |
+|--------|----------|---------------|-------------|-----------|
+| E0xxx | Template Errors | **E0000** | Template parse error | Blocks all other linting |
+| E1xxx | Functions | **E1001** | Ref to undefined resource/parameter | Most common error |
+| E2xxx | Parameters | **E2015** | Default value outside constraints | Silent failure at deploy time |
+| E3xxx | Resources | **E3003** | Required property missing | Most common deployment failure |
+| E4xxx | Metadata | **E4002** | Metadata section malformed | Structural validation |
+| E6xxx | Outputs | **E6002** | Output missing required Value | Template rejection |
+| E7xxx | Mappings | **E7001** | Mappings section malformed | Structural validation |
+| E8xxx | Conditions | **E8002** | Reference to undefined condition | Deployment failure |
+
+### E2xxx - Parameters
+
+| Rule | Description | Category |
+|------|-------------|----------|
+| **E2015** | Default value outside AllowedValues/Pattern/Range | **CRITICAL** |
+| E2001 | Invalid parameter properties | CRITICAL |
+| E2002 | Invalid parameter type | CRITICAL |
+| E2003 | Invalid parameter name pattern | IMPORTANT |
+| E2010 | Parameter limit exceeded (200) | IMPORTANT |
+| W2001 | Unused parameter defined | SITUATIONAL |
+| W2010 | NoEcho parameter exposed in outputs | IMPORTANT (security) |
+
+**Why E2015 is most critical:** A parameter with a default outside its constraints passes template validation but fails at deploy time when the default is used. It validates against AllowedValues, AllowedPattern, MinValue/MaxValue, and MinLength/MaxLength.
+
+### E3xxx - Resources
+
+| Rule | Description | Category |
+|------|-------------|----------|
+| **E3003** | Required property missing | **CRITICAL** |
+| E3002 | Invalid resource properties | CRITICAL |
+| E3004 | Circular resource dependencies | CRITICAL |
+| E3006 | Invalid resource type | CRITICAL |
+| E3012 | Property type mismatch | CRITICAL |
+| E3001 | Malformed resource structure | IMPORTANT |
+| E3005 | DependsOn references non-existent resource | IMPORTANT |
+| E3030 | Invalid enum value | IMPORTANT |
+
+**Why E3003 is most critical:** Missing required properties is the most common CloudFormation error. A Lambda function without Runtime/Handler/Role/Code fails immediately. The error from CloudFormation can be cryptic.
+
+### E4xxx - Metadata
+
+| Rule | Description | Category |
+|------|-------------|----------|
+| **E4002** | Metadata section malformed | **CRITICAL** |
+| E4001 | Interface metadata invalid | IMPORTANT |
+| W4001 | Interface references non-existent parameter | SITUATIONAL |
+| W4005 | Invalid cfn-lint config in metadata | SITUATIONAL |
+
+**Why E4002 is most critical:** Validates fundamental Metadata structure (must be object, no null values). Malformed metadata causes template rejection.
+
+### E6xxx - Outputs
+
+| Rule | Description | Category |
+|------|-------------|----------|
+| **E6002** | Output missing required properties | **CRITICAL** |
+| E6101 | Output Value must be string | CRITICAL |
+| E6005 | Output references undefined condition | CRITICAL |
+| E6102 | Export must be string | CRITICAL |
+| E6004 | Invalid output name pattern | IMPORTANT |
+| E6010 | Output limit exceeded (200) | IMPORTANT |
+| W6001 | ImportValue in output (anti-pattern) | SITUATIONAL |
+
+**Why E6002 is most critical:** An Output without the required `Value` property causes immediate template rejection. Easy to introduce via copy-paste errors.
+
+### E7xxx - Mappings
+
+| Rule | Description | Category |
+|------|-------------|----------|
+| **E7001** | Mappings section malformed | **CRITICAL** |
+| E7010 | Mapping limit exceeded (200) | CRITICAL |
+| E7003 | Mapping keys not alphanumeric | CRITICAL |
+| E7011 | Mapping name too long (255 chars) | IMPORTANT |
+| W7001 | Unused mapping defined | SITUATIONAL |
+
+**Why E7001 is most critical:** Parent rule that validates entire Mappings structure using JSON schema. Malformed mappings cause template rejection.
+
+### E8xxx - Conditions
+
+| Rule | Description | Category |
+|------|-------------|----------|
+| **E8002** | Reference to undefined condition | **CRITICAL** |
+| E8001 | Conditions section malformed | CRITICAL |
+| E8003 | Fn::Equals wrong structure (need 2 elements) | CRITICAL |
+| E8004 | Fn::And wrong structure (need 2+ elements) | CRITICAL |
+| E8005 | Fn::Not wrong structure (need 1 element) | CRITICAL |
+| E8006 | Fn::Or wrong structure (need 2+ elements) | CRITICAL |
+| W8001 | Unused condition defined | SITUATIONAL |
+| W8003 | Fn::Equals always true/false | IMPORTANT |
+
+**Why E8002 is most critical:** Referencing a non-existent condition in resources, outputs, or other conditions causes deployment failure. Common refactoring error when renaming/removing conditions.
+
+## Complete Rules Matrix
+
+This matrix shows all cfn-lint rules with implementation status, criticality level, and ordering (dependency priority).
+
+**Ordering Key:**
+- **0**: Foundation - Must run first (parse errors)
+- **1**: Structure - Template section validation
+- **2**: References - Cross-reference validation (depends on structure)
+- **3**: Values - Property value validation (depends on references)
+- **4**: Best Practices - Warnings (can run anytime)
+
+**Status Key:**
+- ✅ Implemented
+- 🚧 Partial (simplified implementation)
+- ⬜ Not implemented
+
+### E0xxx - Template Errors
+
+| Rule | Description | Criticality | Order | Status |
+|------|-------------|-------------|-------|--------|
+| E0000 | Template parse error | CRITICAL | 0 | ✅ |
+| E0001 | Template transformation error | CRITICAL | 0 | ⬜ |
+| E0002 | Rule processing error | CRITICAL | 0 | ⬜ |
+| E0003 | Configuration error | IMPORTANT | 0 | ⬜ |
+| E0100 | Deployment file syntax | CRITICAL | 0 | ⬜ |
+| E0200 | Parameter file syntax | CRITICAL | 0 | ⬜ |
+
+### E1xxx - Functions
+
+| Rule | Description | Criticality | Order | Status |
+|------|-------------|-------------|-------|--------|
+| E1001 | Ref to undefined resource/parameter | CRITICAL | 2 | ✅ |
+| E1002 | Template size limit | IMPORTANT | 1 | ⬜ |
+| E1003 | Description length | SITUATIONAL | 1 | ⬜ |
+| E1004 | Description is string | IMPORTANT | 1 | ⬜ |
+| E1005 | Transform configuration | CRITICAL | 1 | ⬜ |
+| E1010 | GetAtt parameter references | CRITICAL | 2 | ⬜ |
+| E1011 | FindInMap configuration | CRITICAL | 2 | ⬜ |
+| E1015 | GetAz function | IMPORTANT | 2 | ⬜ |
+| E1016 | ImportValue function | IMPORTANT | 2 | ⬜ |
+| E1017 | Select function | IMPORTANT | 2 | ⬜ |
+| E1018 | Split function | IMPORTANT | 2 | ⬜ |
+| E1019 | Sub function | CRITICAL | 2 | ⬜ |
+| E1020 | Ref has string values | CRITICAL | 2 | ⬜ |
+| E1021 | Base64 function | IMPORTANT | 2 | ⬜ |
+| E1022 | Join function | IMPORTANT | 2 | ⬜ |
+| E1024 | CIDR function | IMPORTANT | 2 | ⬜ |
+| E1027 | Dynamic reference placement | IMPORTANT | 2 | ⬜ |
+| E1028 | Fn::If structure | CRITICAL | 2 | ⬜ |
+| E1029 | Sub required for variables | IMPORTANT | 2 | ⬜ |
+| E1030 | Fn::Length function | IMPORTANT | 2 | ⬜ |
+| E1031 | Fn::ToJsonString | IMPORTANT | 2 | ⬜ |
+| E1032 | ForEach function | IMPORTANT | 2 | ⬜ |
+| E1040 | GetAtt format | CRITICAL | 2 | ⬜ |
+| E1041 | Ref format | CRITICAL | 2 | ⬜ |
+| E1050 | Dynamic reference syntax | CRITICAL | 2 | ⬜ |
+| E1051 | Secrets manager references | IMPORTANT | 2 | ⬜ |
+| E1052 | SSM parameter references | IMPORTANT | 2 | ⬜ |
+| E1101 | Schema validation | CRITICAL | 3 | ⬜ |
+
+### E2xxx - Parameters
+
+| Rule | Description | Criticality | Order | Status |
+|------|-------------|-------------|-------|--------|
+| E2001 | Parameter configuration | CRITICAL | 1 | ⬜ |
+| E2002 | Parameter type | CRITICAL | 1 | ⬜ |
+| E2003 | Parameter naming | IMPORTANT | 1 | ⬜ |
+| E2010 | Parameter limit (200) | CRITICAL | 1 | ⬜ |
+| E2011 | Parameter name length | IMPORTANT | 1 | ⬜ |
+| E2015 | Default within constraints | CRITICAL | 3 | ✅ |
+| E2900 | Deployment file parameters | CRITICAL | 1 | ⬜ |
+
+### E3xxx - Resources
+
+| Rule | Description | Criticality | Order | Status |
+|------|-------------|-------------|-------|--------|
+| E3001 | Resource configuration | CRITICAL | 1 | ⬜ |
+| E3002 | Resource property structure | CRITICAL | 1 | ⬜ |
+| E3003 | Required properties | CRITICAL | 2 | 🚧 |
+| E3004 | Circular dependencies | CRITICAL | 2 | ⬜ |
+| E3005 | DependsOn references | CRITICAL | 2 | ⬜ |
+| E3006 | Resource type by region | CRITICAL | 1 | ⬜ |
+| E3007 | Unique names | CRITICAL | 1 | ⬜ |
+| E3010 | Resource limit (500) | CRITICAL | 1 | ⬜ |
+| E3011 | Property names | IMPORTANT | 1 | ⬜ |
+| E3012 | Property value types | CRITICAL | 3 | ⬜ |
+| E3014 | Mutually exclusive properties | CRITICAL | 3 | ⬜ |
+| E3015 | Resource condition references | CRITICAL | 2 | ⬜ |
+| E3017 | anyOf properties | CRITICAL | 3 | ⬜ |
+| E3018 | oneOf properties | CRITICAL | 3 | ⬜ |
+| E3020 | Dependent exclusions | CRITICAL | 3 | ⬜ |
+| E3021 | Dependent requirements | CRITICAL | 3 | ⬜ |
+| E3030 | Enum values | CRITICAL | 3 | ⬜ |
+| E3031 | Pattern compliance | CRITICAL | 3 | ⬜ |
+| E3032 | Array length | IMPORTANT | 3 | ⬜ |
+| E3033 | String length | IMPORTANT | 3 | ⬜ |
+| E3034 | Number range | IMPORTANT | 3 | ⬜ |
+| E3035 | DeletionPolicy | IMPORTANT | 1 | ⬜ |
+| E3036 | UpdateReplacePolicy | IMPORTANT | 1 | ⬜ |
+| E3037 | Unique list items | IMPORTANT | 3 | ⬜ |
+| E3040 | Read-only properties | IMPORTANT | 3 | ⬜ |
+
+### E4xxx - Metadata
+
+| Rule | Description | Criticality | Order | Status |
+|------|-------------|-------------|-------|--------|
+| E4001 | Interface properties | IMPORTANT | 1 | ⬜ |
+| E4002 | Metadata structure | CRITICAL | 1 | ✅ |
+
+### E6xxx - Outputs
+
+| Rule | Description | Criticality | Order | Status |
+|------|-------------|-------------|-------|--------|
+| E6001 | Output property structure | CRITICAL | 1 | ⬜ |
+| E6002 | Required properties (Value) | CRITICAL | 1 | ✅ |
+| E6003 | Output property types | CRITICAL | 1 | ⬜ |
+| E6004 | Output naming | IMPORTANT | 1 | ⬜ |
+| E6005 | Output condition references | CRITICAL | 2 | ⬜ |
+| E6010 | Output limit (200) | CRITICAL | 1 | ⬜ |
+| E6011 | Output name length | IMPORTANT | 1 | ⬜ |
+| E6101 | Output values are strings | CRITICAL | 3 | ⬜ |
+| E6102 | Export values are strings | CRITICAL | 3 | ⬜ |
+
+### E7xxx - Mappings
+
+| Rule | Description | Criticality | Order | Status |
+|------|-------------|-------------|-------|--------|
+| E7001 | Mapping configuration | CRITICAL | 1 | ✅ |
+| E7002 | Mapping name length | IMPORTANT | 1 | ⬜ |
+| E7010 | Mapping limit (200) | CRITICAL | 1 | ⬜ |
+
+### E8xxx - Conditions
+
+| Rule | Description | Criticality | Order | Status |
+|------|-------------|-------------|-------|--------|
+| E8001 | Condition configuration | CRITICAL | 1 | ⬜ |
+| E8002 | Condition references | CRITICAL | 2 | ✅ |
+| E8003 | Fn::Equals structure | CRITICAL | 1 | ⬜ |
+| E8004 | Fn::And structure | CRITICAL | 1 | ⬜ |
+| E8005 | Fn::Not structure | CRITICAL | 1 | ⬜ |
+| E8006 | Fn::Or structure | CRITICAL | 1 | ⬜ |
+| E8007 | Condition intrinsic | CRITICAL | 1 | ⬜ |
+
+### Warnings (W) - Selected
+
+| Rule | Description | Criticality | Order | Status |
+|------|-------------|-------------|-------|--------|
+| W1001 | Ref/GetAtt with conditions | IMPORTANT | 4 | ⬜ |
+| W1011 | Dynamic references for secrets | IMPORTANT | 4 | ⬜ |
+| W2001 | Unused parameters | SITUATIONAL | 4 | ⬜ |
+| W2010 | NoEcho exposure | IMPORTANT | 4 | ⬜ |
+| W3002 | Package-only properties | SITUATIONAL | 4 | ⬜ |
+| W3005 | Redundant DependsOn | SITUATIONAL | 4 | ⬜ |
+| W3010 | Hardcoded AZs | IMPORTANT | 4 | ⬜ |
+| W4001 | Interface parameter exists | SITUATIONAL | 4 | ⬜ |
+| W6001 | ImportValue in outputs | SITUATIONAL | 4 | ⬜ |
+| W7001 | Unused mappings | SITUATIONAL | 4 | ⬜ |
+| W8001 | Unused conditions | SITUATIONAL | 4 | ⬜ |
+| W8003 | Fn::Equals always true/false | IMPORTANT | 4 | ⬜ |
+
+### Implementation Summary
+
+| Category | Total | Implemented | Critical Covered |
+|----------|-------|-------------|------------------|
+| E0xxx | 6 | 1 | ✅ E0000 |
+| E1xxx | 30+ | 1 | ✅ E1001 |
+| E2xxx | 7 | 1 | ✅ E2015 |
+| E3xxx | 40+ | 1 | 🚧 E3003 |
+| E4xxx | 2 | 1 | ✅ E4002 |
+| E6xxx | 9 | 1 | ✅ E6002 |
+| E7xxx | 3 | 1 | ✅ E7001 |
+| E8xxx | 7 | 1 | ✅ E8002 |
+| **Total** | **100+** | **8** | **8/8 prefixes** |
+
 ## Sources
 
 - [cfn-lint GitHub](https://github.com/aws-cloudformation/cfn-lint)
