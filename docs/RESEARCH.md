@@ -809,26 +809,26 @@ This matrix shows all cfn-lint rules with implementation status, criticality lev
 | E1003 | Description length | SITUATIONAL | 1 | ⬜ |
 | E1004 | Description is string | IMPORTANT | 1 | ⬜ |
 | E1005 | Transform configuration | CRITICAL | 1 | ✅ |
-| E1010 | GetAtt parameter references | CRITICAL | 2 | ⬜ |
-| E1011 | FindInMap configuration | CRITICAL | 2 | ⬜ |
+| E1010 | GetAtt parameter references | CRITICAL | 2 | ✅ |
+| E1011 | FindInMap configuration | CRITICAL | 2 | ✅ |
 | E1015 | GetAz function | IMPORTANT | 2 | ⬜ |
 | E1016 | ImportValue function | IMPORTANT | 2 | ⬜ |
 | E1017 | Select function | IMPORTANT | 2 | ⬜ |
 | E1018 | Split function | IMPORTANT | 2 | ⬜ |
-| E1019 | Sub function | CRITICAL | 2 | ⬜ |
-| E1020 | Ref has string values | CRITICAL | 2 | ⬜ |
+| E1019 | Sub function | CRITICAL | 2 | ✅ |
+| E1020 | Ref has string values | CRITICAL | 2 | ✅ |
 | E1021 | Base64 function | IMPORTANT | 2 | ⬜ |
 | E1022 | Join function | IMPORTANT | 2 | ⬜ |
 | E1024 | CIDR function | IMPORTANT | 2 | ⬜ |
 | E1027 | Dynamic reference placement | IMPORTANT | 2 | ⬜ |
-| E1028 | Fn::If structure | CRITICAL | 2 | ⬜ |
+| E1028 | Fn::If structure | CRITICAL | 2 | ✅ |
 | E1029 | Sub required for variables | IMPORTANT | 2 | ⬜ |
 | E1030 | Fn::Length function | IMPORTANT | 2 | ⬜ |
 | E1031 | Fn::ToJsonString | IMPORTANT | 2 | ⬜ |
 | E1032 | ForEach function | IMPORTANT | 2 | ⬜ |
-| E1040 | GetAtt format | CRITICAL | 2 | ⬜ |
-| E1041 | Ref format | CRITICAL | 2 | ⬜ |
-| E1050 | Dynamic reference syntax | CRITICAL | 2 | ⬜ |
+| E1040 | GetAtt format | CRITICAL | 2 | ✅ |
+| E1041 | Ref format | CRITICAL | 2 | ✅ |
+| E1050 | Dynamic reference syntax | CRITICAL | 2 | ✅ |
 | E1051 | Secrets manager references | IMPORTANT | 2 | ⬜ |
 | E1052 | SSM parameter references | IMPORTANT | 2 | ⬜ |
 | E1101 | Schema validation | CRITICAL | 3 | ⬜ |
@@ -852,15 +852,15 @@ This matrix shows all cfn-lint rules with implementation status, criticality lev
 | E3001 | Resource configuration | CRITICAL | 1 | ✅ |
 | E3002 | Resource property structure | CRITICAL | 1 | ✅ |
 | E3003 | Required properties | CRITICAL | 2 | 🚧 |
-| E3004 | Circular dependencies | CRITICAL | 2 | ⬜ |
-| E3005 | DependsOn references | CRITICAL | 2 | ⬜ |
+| E3004 | Circular dependencies | CRITICAL | 2 | ✅ |
+| E3005 | DependsOn references | CRITICAL | 2 | ✅ |
 | E3006 | Resource type format | CRITICAL | 1 | ✅ |
 | E3007 | Unique names | CRITICAL | 1 | ✅ |
 | E3010 | Resource limit (500) | CRITICAL | 1 | ✅ |
 | E3011 | Property names | IMPORTANT | 1 | ⬜ |
 | E3012 | Property value types | CRITICAL | 3 | ⬜ |
 | E3014 | Mutually exclusive properties | CRITICAL | 3 | ⬜ |
-| E3015 | Resource condition references | CRITICAL | 2 | ⬜ |
+| E3015 | Resource condition references | CRITICAL | 2 | ✅ |
 | E3017 | anyOf properties | CRITICAL | 3 | ⬜ |
 | E3018 | oneOf properties | CRITICAL | 3 | ⬜ |
 | E3020 | Dependent exclusions | CRITICAL | 3 | ⬜ |
@@ -890,7 +890,7 @@ This matrix shows all cfn-lint rules with implementation status, criticality lev
 | E6002 | Required properties (Value) | CRITICAL | 1 | ✅ |
 | E6003 | Output property types | CRITICAL | 1 | ✅ |
 | E6004 | Output naming | IMPORTANT | 1 | ⬜ |
-| E6005 | Output condition references | CRITICAL | 2 | ⬜ |
+| E6005 | Output condition references | CRITICAL | 2 | ✅ |
 | E6010 | Output limit (200) | CRITICAL | 1 | ✅ |
 | E6011 | Output name length | IMPORTANT | 1 | ⬜ |
 | E6101 | Output values are strings | CRITICAL | 3 | ⬜ |
@@ -938,14 +938,14 @@ This matrix shows all cfn-lint rules with implementation status, criticality lev
 | Category | Total | Implemented | Critical Covered |
 |----------|-------|-------------|------------------|
 | E0xxx | 6 | 3 | ✅ E0000, E0001, E0002 |
-| E1xxx | 30+ | 3 | ✅ E1001, E1002, E1005 |
+| E1xxx | 30+ | 11 | ✅ E1001, E1002, E1005, E1010, E1011, E1019, E1020, E1028, E1040, E1041, E1050 |
 | E2xxx | 7 | 4 | ✅ E2001, E2002, E2010, E2015 |
-| E3xxx | 40+ | 6 | ✅ E3001, E3002, E3006, E3007, E3010, 🚧 E3003 |
+| E3xxx | 40+ | 9 | ✅ E3001, E3002, E3004, E3005, E3006, E3007, E3010, E3015, 🚧 E3003 |
 | E4xxx | 2 | 1 | ✅ E4002 |
-| E6xxx | 9 | 4 | ✅ E6001, E6002, E6003, E6010 |
+| E6xxx | 9 | 5 | ✅ E6001, E6002, E6003, E6005, E6010 |
 | E7xxx | 3 | 2 | ✅ E7001, E7010 |
 | E8xxx | 7 | 7 | ✅ E8001-E8007 (all) |
-| **Total** | **100+** | **30** | **8/8 prefixes** |
+| **Total** | **100+** | **42** | **8/8 prefixes** |
 
 ## Sources
 

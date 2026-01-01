@@ -4,18 +4,18 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 ## Current Status
 
-**v0.3.0**: 30 rules implemented (Phase 1: Foundation & Structure complete).
+**v0.4.0**: 42 rules implemented (Phase 1 + Phase 2: Reference Validation complete).
 
 ## Rule Categories
 
 | Prefix | Category | Implemented | Planned |
 |--------|----------|-------------|---------|
 | E0xxx | Template Errors | 3 | ~6 |
-| E1xxx | Functions | 3 | ~30 |
+| E1xxx | Functions | 11 | ~30 |
 | E2xxx | Parameters | 4 | ~7 |
-| E3xxx | Resources | 6 | ~40+ |
+| E3xxx | Resources | 9 | ~40+ |
 | E4xxx | Metadata | 1 | ~2 |
-| E6xxx | Outputs | 4 | ~9 |
+| E6xxx | Outputs | 5 | ~9 |
 | E7xxx | Mappings | 2 | ~3 |
 | E8xxx | Conditions | 7 | ~7 |
 | W* | Warnings | 0 | ~40 |
@@ -38,6 +38,14 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 | E1001 | Ref to undefined resource or parameter | ✅ Implemented |
 | E1002 | Template size limit exceeded | ✅ Implemented |
 | E1005 | Transform configuration error | ✅ Implemented |
+| E1010 | GetAtt to undefined resource | ✅ Implemented |
+| E1011 | FindInMap references undefined mapping | ✅ Implemented |
+| E1019 | Sub function validation | ✅ Implemented |
+| E1020 | Ref value must be a string | ✅ Implemented |
+| E1028 | Fn::If structure error | ✅ Implemented |
+| E1040 | GetAtt format error | ✅ Implemented |
+| E1041 | Ref format error | ✅ Implemented |
+| E1050 | Dynamic reference syntax error | ✅ Implemented |
 
 ### E2xxx - Parameters
 
@@ -55,9 +63,12 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 | E3001 | Resource configuration error | ✅ Implemented |
 | E3002 | Resource Properties structure error | ✅ Implemented |
 | E3003 | Required properties present | 🚧 Partial (common resources) |
+| E3004 | Circular resource dependency detected | ✅ Implemented |
+| E3005 | DependsOn references undefined resource | ✅ Implemented |
 | E3006 | Invalid resource type format | ✅ Implemented |
 | E3007 | Duplicate resource logical ID | ✅ Implemented |
 | E3010 | Resource limit exceeded (500) | ✅ Implemented |
+| E3015 | Resource condition references undefined condition | ✅ Implemented |
 
 ### E4xxx - Metadata
 
@@ -72,6 +83,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 | E6001 | Output property structure error | ✅ Implemented |
 | E6002 | Output has required Value property | ✅ Implemented |
 | E6003 | Output property type error | ✅ Implemented |
+| E6005 | Output condition references undefined condition | ✅ Implemented |
 | E6010 | Output limit exceeded (200) | ✅ Implemented |
 
 ### E7xxx - Mappings
