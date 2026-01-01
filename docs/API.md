@@ -211,6 +211,64 @@ digraph G {
 }
 ```
 
+### pkg/schema
+
+CloudFormation resource specification access via `cloudformation-schema-go`.
+
+```go
+import "github.com/lex00/cfn-lint-go/pkg/schema"
+```
+
+#### Loading the Spec
+
+```go
+// Load spec (cached after first call)
+spec, err := schema.Load()
+
+// Force refresh
+spec, err := schema.LoadWithOptions(&schema.Options{Force: true})
+```
+
+#### Resource Type Lookups
+
+```go
+// Check if resource type exists
+exists, err := schema.HasResourceType("AWS::S3::Bucket")
+
+// Get resource type definition
+rt, err := schema.GetResourceType("AWS::Lambda::Function")
+if rt != nil {
+    // Access properties, attributes, etc.
+}
+
+// Get required properties
+required, err := schema.GetRequiredProperties("AWS::Lambda::Function")
+// returns: []string{"Code", "Role"}
+```
+
+#### Property Lookups
+
+```go
+// Check if property exists
+exists, err := schema.HasProperty("AWS::S3::Bucket", "BucketName")
+
+// Get property definition
+prop, err := schema.GetProperty("AWS::Lambda::Function", "Runtime")
+if prop != nil {
+    // prop.Required, prop.PrimitiveType, etc.
+}
+```
+
+#### Attribute Lookups (for GetAtt validation)
+
+```go
+// Check if attribute exists
+exists, err := schema.HasAttribute("AWS::S3::Bucket", "Arn")
+
+// Get attribute definition
+attr, err := schema.GetAttribute("AWS::Lambda::Function", "Arn")
+```
+
 ### pkg/rules
 
 Rule interface and registry.

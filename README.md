@@ -4,9 +4,9 @@ CloudFormation Linter for Go - a native Go port of [aws-cloudformation/cfn-lint]
 
 ## Status
 
-**v0.6.0 - Phase 5: Warning Rules**
+**v0.6.1 - Phase 5 Complete + Schema Integration**
 
-This is a Go port of the Python cfn-lint tool. Implements core framework with 76 rules covering template structure, intrinsic functions, best practices, and warnings. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
+This is a Go port of the Python cfn-lint tool. Implements core framework with 76 rules covering template structure, intrinsic functions, best practices, and warnings. Uses `cloudformation-schema-go` for CloudFormation resource specification access. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
 
 ### What's Implemented
 
@@ -174,7 +174,8 @@ cfn-lint-go/
 │   ├── lint/           # Main linting interface
 │   ├── template/       # Template parsing
 │   ├── graph/          # DOT graph generation
-│   └── rules/          # Rule interface and registry
+│   ├── rules/          # Rule interface and registry
+│   └── schema/         # CloudFormation spec access (via cloudformation-schema-go)
 ├── internal/           # Private implementation
 │   └── rules/          # Rule implementations
 │       ├── errors/     # E0xxx

@@ -110,6 +110,7 @@ go build -o cfn-lint ./cmd/cfn-lint
 | `outputs/` | E6xxx | Output validation |
 | `mappings/` | E7xxx | Mapping validation |
 | `conditions/` | E8xxx | Condition validation |
+| `warnings/` | Wxxx | Best practice warnings |
 
 ## Code Style
 
