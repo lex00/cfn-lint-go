@@ -36,7 +36,7 @@ func (r *E1050) Tags() []string {
 }
 
 // Pattern to find dynamic references
-var dynamicRefPattern = regexp.MustCompile(`\{\{resolve:([^}]+)\}\}`)
+var dynamicRefSyntaxPattern = regexp.MustCompile(`\{\{resolve:([^}]+)\}\}`)
 
 // Valid dynamic reference services
 var validDynamicRefServices = map[string]bool{
@@ -131,7 +131,7 @@ func findDynamicRefsRecursive(v any, results *[]dynamicRefInfo) {
 	switch val := v.(type) {
 	case string:
 		// Find all dynamic references in this string
-		matches := dynamicRefPattern.FindAllStringSubmatch(val, -1)
+		matches := dynamicRefSyntaxPattern.FindAllStringSubmatch(val, -1)
 		for _, m := range matches {
 			if len(m) >= 2 {
 				*results = append(*results, dynamicRefInfo{

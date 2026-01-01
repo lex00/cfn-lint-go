@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-01-01
+
+### Added
+
+- Phase 4: Important Best Practice rules (20 new rules):
+  - E0003: Configuration error (AWSTemplateFormatVersion, Resources required)
+  - E1004: Description must be a string (max 1024 chars)
+  - E1015: Fn::GetAZs function validation
+  - E1016: Fn::ImportValue function validation
+  - E1017: Fn::Select function validation
+  - E1018: Fn::Split function validation
+  - E1021: Fn::Base64 function validation
+  - E1022: Fn::Join function validation
+  - E1024: Fn::Cidr function validation
+  - E1027: Dynamic reference in invalid location
+  - E1029: Sub required for variable substitution
+  - E2003: Parameter naming convention (alphanumeric only)
+  - E2011: Parameter name length (max 255)
+  - E3011: Invalid property name validation
+  - E3035: Invalid DeletionPolicy validation
+  - E3036: Invalid UpdateReplacePolicy validation
+  - E4001: AWS::CloudFormation::Interface metadata validation
+  - E6004: Output naming convention (alphanumeric only)
+  - E6011: Output name length (max 255)
+  - E7002: Mapping name length (max 255)
+- Comprehensive tests for all Phase 4 rules
+
+### Changed
+
+- Total rule count: 44 -> 64
+
 ## [0.4.1] - 2026-01-01
 
 ### Added
@@ -129,7 +160,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SAM transform support is not included (users should run `sam build` first)
 - See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy
 
-[Unreleased]: https://github.com/lex00/cfn-lint-go/compare/v0.4.1...HEAD
+[Unreleased]: https://github.com/lex00/cfn-lint-go/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.5.0
 [0.4.1]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.4.1
 [0.4.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.4.0
 [0.3.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.3.0
