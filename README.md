@@ -13,17 +13,18 @@ This is a Go port of the Python cfn-lint tool. Currently implements core framewo
 - YAML/JSON template parsing with line number tracking
 - CloudFormation intrinsic function support (!Ref, !GetAtt, !Sub, etc.)
 - Rule interface and registry system
-- DOT graph generation for resource dependencies (library only)
-- CLI with text output format
+- DOT graph generation for resource dependencies
+- CLI with text and JSON output formats
+- CLI `graph` command for dependency visualization
+- CLI `list-rules` command
+- `--ignore-rules` flag
 - 2 rules: E0000 (parse errors), E1001 (undefined refs)
 
 ### What's Planned
 
 - 260+ additional rules (see [docs/RULES.md](docs/RULES.md))
-- JSON, SARIF, JUnit output formats
-- CLI graph command
-- CLI list-rules command
-- Rule ignoring via CLI and template metadata
+- SARIF, JUnit output formats
+- Rule ignoring via template metadata
 
 ## Installation
 
@@ -45,8 +46,24 @@ go get github.com/lex00/cfn-lint-go
 # Lint a template
 cfn-lint template.yaml
 
-# Lint multiple templates
-cfn-lint *.yaml
+# Lint with JSON output
+cfn-lint template.yaml --format json
+
+# Ignore specific rules
+cfn-lint template.yaml --ignore-rules E1001,W3002
+
+# Generate dependency graph
+cfn-lint graph template.yaml > deps.dot
+dot -Tpng deps.dot -o deps.png
+
+# Include parameters in graph
+cfn-lint graph template.yaml --include-parameters
+
+# List available rules
+cfn-lint list-rules
+
+# List rules as JSON
+cfn-lint list-rules --format json
 
 # Show help
 cfn-lint --help
