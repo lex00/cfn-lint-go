@@ -37,19 +37,19 @@ func (r *W1011) Tags() []string {
 
 // Properties that typically contain secrets
 var secretPropertyNames = map[string]bool{
-	"password":         true,
-	"secret":           true,
-	"secretkey":        true,
-	"apikey":           true,
-	"accesskey":        true,
-	"privatekey":       true,
-	"masterpassword":   true,
+	"password":           true,
+	"secret":             true,
+	"secretkey":          true,
+	"apikey":             true,
+	"accesskey":          true,
+	"privatekey":         true,
+	"masterpassword":     true,
 	"masteruserpassword": true,
-	"adminpassword":    true,
-	"dbpassword":       true,
-	"token":            true,
-	"authtoken":        true,
-	"credentials":      true,
+	"adminpassword":      true,
+	"dbpassword":         true,
+	"token":              true,
+	"authtoken":          true,
+	"credentials":        true,
 }
 
 // Pattern to detect dynamic references

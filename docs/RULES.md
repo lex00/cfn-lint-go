@@ -4,7 +4,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 ## Current Status
 
-**v0.6.0**: 76 rules implemented (Phase 1-5 complete).
+**v0.6.1**: 76 rules implemented (Phase 1-5 complete, schema integration).
 
 ## Rule Categories
 
@@ -81,7 +81,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 |------|-------------|--------|
 | E3001 | Resource configuration error | ✅ Implemented |
 | E3002 | Resource Properties structure error | ✅ Implemented |
-| E3003 | Required properties present | 🚧 Partial (common resources) |
+| E3003 | Required properties present | ✅ Implemented (full schema) |
 | E3004 | Circular resource dependency detected | ✅ Implemented |
 | E3005 | DependsOn references undefined resource | ✅ Implemented |
 | E3006 | Invalid resource type format | ✅ Implemented |

@@ -28,7 +28,7 @@ type Options struct {
 type Match struct {
 	Rule     MatchRule     `json:"Rule"`
 	Location MatchLocation `json:"Location"`
-	Level    string        `json:"Level"`   // "Error", "Warning", "Informational"
+	Level    string        `json:"Level"` // "Error", "Warning", "Informational"
 	Message  string        `json:"Message"`
 }
 

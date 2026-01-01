@@ -36,15 +36,15 @@ func (r *W3002) Tags() []string {
 
 // packageRequiredProps maps resource types to properties that need packaging
 var packageRequiredProps = map[string][]string{
-	"AWS::Lambda::Function": {"Code"},
-	"AWS::Lambda::LayerVersion": {"Content"},
-	"AWS::Serverless::Function": {"CodeUri"},
-	"AWS::Serverless::LayerVersion": {"ContentUri"},
-	"AWS::ApiGateway::RestApi": {"BodyS3Location"},
-	"AWS::AppSync::GraphQLSchema": {"DefinitionS3Location"},
-	"AWS::AppSync::Resolver": {"RequestMappingTemplateS3Location", "ResponseMappingTemplateS3Location"},
-	"AWS::CloudFormation::Stack": {"TemplateURL"},
-	"AWS::Glue::Job": {"Command"},
+	"AWS::Lambda::Function":            {"Code"},
+	"AWS::Lambda::LayerVersion":        {"Content"},
+	"AWS::Serverless::Function":        {"CodeUri"},
+	"AWS::Serverless::LayerVersion":    {"ContentUri"},
+	"AWS::ApiGateway::RestApi":         {"BodyS3Location"},
+	"AWS::AppSync::GraphQLSchema":      {"DefinitionS3Location"},
+	"AWS::AppSync::Resolver":           {"RequestMappingTemplateS3Location", "ResponseMappingTemplateS3Location"},
+	"AWS::CloudFormation::Stack":       {"TemplateURL"},
+	"AWS::Glue::Job":                   {"Command"},
 	"AWS::StepFunctions::StateMachine": {"DefinitionS3Location"},
 }
 

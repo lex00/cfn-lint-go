@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/lex00/cfn-lint-go/pkg/rules"
+	"github.com/lex00/cfn-lint-go/pkg/schema"
 	"github.com/lex00/cfn-lint-go/pkg/template"
 )
 
@@ -13,8 +14,7 @@ func init() {
 }
 
 // E3003 checks that resources have required properties.
-// Note: Full implementation requires CloudFormation resource schemas.
-// This is a simplified version that checks common required properties.
+// Uses CloudFormation resource schemas from cloudformation-schema-go.
 type E3003 struct{}
 
 func (r *E3003) ID() string { return "E3003" }
@@ -24,7 +24,7 @@ func (r *E3003) ShortDesc() string {
 }
 
 func (r *E3003) Description() string {
-	return "Checks that resources have their required properties. Full validation requires CloudFormation resource schemas."
+	return "Checks that resources have their required properties based on CloudFormation resource schemas."
 }
 
 func (r *E3003) Source() string {
@@ -35,35 +35,16 @@ func (r *E3003) Tags() []string {
 	return []string{"resources", "required", "properties"}
 }
 
-// requiredProperties maps resource types to their required properties.
-// This is a subset of the most common resources. Full implementation
-// would load this from CloudFormation resource schemas.
-var requiredProperties = map[string][]string{
-	"AWS::Lambda::Function":            {"Role", "Code"},
-	"AWS::IAM::Role":                   {"AssumeRolePolicyDocument"},
-	"AWS::S3::Bucket":                  {}, // No required properties
-	"AWS::EC2::Instance":               {"ImageId"},
-	"AWS::EC2::SecurityGroup":          {"GroupDescription"},
-	"AWS::EC2::VPC":                    {"CidrBlock"},
-	"AWS::EC2::Subnet":                 {"VpcId", "CidrBlock"},
-	"AWS::SNS::Topic":                  {}, // No required properties
-	"AWS::SQS::Queue":                  {}, // No required properties
-	"AWS::DynamoDB::Table":             {"KeySchema", "AttributeDefinitions"},
-	"AWS::RDS::DBInstance":             {"DBInstanceClass", "Engine"},
-	"AWS::ECS::TaskDefinition":         {"ContainerDefinitions"},
-	"AWS::ECS::Service":                {"TaskDefinition"},
-	"AWS::CloudWatch::Alarm":           {"ComparisonOperator", "EvaluationPeriods", "MetricName", "Namespace", "Period", "Threshold"},
-	"AWS::ApiGateway::RestApi":         {},
-	"AWS::Logs::LogGroup":              {},
-	"AWS::StepFunctions::StateMachine": {"RoleArn", "DefinitionString"},
-}
-
 func (r *E3003) Match(tmpl *template.Template) []rules.Match {
 	var matches []rules.Match
 
 	for resName, res := range tmpl.Resources {
-		required, known := requiredProperties[res.Type]
-		if !known {
+		required, err := schema.GetRequiredProperties(res.Type)
+		if err != nil {
+			// Schema loading error - skip validation for this resource
+			continue
+		}
+		if required == nil {
 			// Unknown resource type - skip validation
 			continue
 		}
