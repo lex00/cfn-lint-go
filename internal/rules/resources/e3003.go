@@ -39,22 +39,22 @@ func (r *E3003) Tags() []string {
 // This is a subset of the most common resources. Full implementation
 // would load this from CloudFormation resource schemas.
 var requiredProperties = map[string][]string{
-	"AWS::Lambda::Function": {"Role", "Code"},
-	"AWS::IAM::Role":        {"AssumeRolePolicyDocument"},
-	"AWS::S3::Bucket":       {}, // No required properties
-	"AWS::EC2::Instance":    {"ImageId"},
-	"AWS::EC2::SecurityGroup": {"GroupDescription"},
-	"AWS::EC2::VPC":           {"CidrBlock"},
-	"AWS::EC2::Subnet":        {"VpcId", "CidrBlock"},
-	"AWS::SNS::Topic":         {}, // No required properties
-	"AWS::SQS::Queue":         {}, // No required properties
-	"AWS::DynamoDB::Table":    {"KeySchema", "AttributeDefinitions"},
-	"AWS::RDS::DBInstance":    {"DBInstanceClass", "Engine"},
-	"AWS::ECS::TaskDefinition": {"ContainerDefinitions"},
-	"AWS::ECS::Service":        {"TaskDefinition"},
-	"AWS::CloudWatch::Alarm":   {"ComparisonOperator", "EvaluationPeriods", "MetricName", "Namespace", "Period", "Threshold"},
-	"AWS::ApiGateway::RestApi": {},
-	"AWS::Logs::LogGroup":      {},
+	"AWS::Lambda::Function":            {"Role", "Code"},
+	"AWS::IAM::Role":                   {"AssumeRolePolicyDocument"},
+	"AWS::S3::Bucket":                  {}, // No required properties
+	"AWS::EC2::Instance":               {"ImageId"},
+	"AWS::EC2::SecurityGroup":          {"GroupDescription"},
+	"AWS::EC2::VPC":                    {"CidrBlock"},
+	"AWS::EC2::Subnet":                 {"VpcId", "CidrBlock"},
+	"AWS::SNS::Topic":                  {}, // No required properties
+	"AWS::SQS::Queue":                  {}, // No required properties
+	"AWS::DynamoDB::Table":             {"KeySchema", "AttributeDefinitions"},
+	"AWS::RDS::DBInstance":             {"DBInstanceClass", "Engine"},
+	"AWS::ECS::TaskDefinition":         {"ContainerDefinitions"},
+	"AWS::ECS::Service":                {"TaskDefinition"},
+	"AWS::CloudWatch::Alarm":           {"ComparisonOperator", "EvaluationPeriods", "MetricName", "Namespace", "Period", "Threshold"},
+	"AWS::ApiGateway::RestApi":         {},
+	"AWS::Logs::LogGroup":              {},
 	"AWS::StepFunctions::StateMachine": {"RoleArn", "DefinitionString"},
 }
 

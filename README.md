@@ -4,9 +4,9 @@ CloudFormation Linter for Go - a native Go port of [aws-cloudformation/cfn-lint]
 
 ## Status
 
-**v0.1.0 - Initial Release**
+**v0.2.0 - Critical Rules**
 
-This is a Go port of the Python cfn-lint tool. Currently implements core framework with 2 rules. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
+This is a Go port of the Python cfn-lint tool. Implements core framework with one critical rule per category. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
 
 ### What's Implemented
 
@@ -18,11 +18,19 @@ This is a Go port of the Python cfn-lint tool. Currently implements core framewo
 - CLI `graph` command for dependency visualization
 - CLI `list-rules` command
 - `--ignore-rules` flag
-- 2 rules: E0000 (parse errors), E1001 (undefined refs)
+- 8 rules covering all category prefixes:
+  - E0000: Parse errors
+  - E1001: Undefined Ref
+  - E2015: Parameter default constraints
+  - E3003: Required resource properties
+  - E4002: Metadata validation
+  - E6002: Output Value required
+  - E7001: Mapping configuration
+  - E8002: Undefined conditions
 
 ### What's Planned
 
-- 260+ additional rules (see [docs/RULES.md](docs/RULES.md))
+- 100+ additional rules (see [docs/RULES.md](docs/RULES.md))
 - SARIF, JUnit output formats
 - Rule ignoring via template metadata
 
@@ -119,14 +127,14 @@ func main() {
 
 | Range | Category | Status |
 |-------|----------|--------|
-| E0xxx | Template errors | 1 rule implemented |
-| E1xxx | Functions (Ref, GetAtt) | 1 rule implemented |
-| E2xxx | Parameters | Planned |
-| E3xxx | Resources | Planned |
-| E4xxx | Metadata | Planned |
-| E6xxx | Outputs | Planned |
-| E7xxx | Mappings | Planned |
-| E8xxx | Conditions | Planned |
+| E0xxx | Template errors | 1 rule (E0000) |
+| E1xxx | Functions (Ref, GetAtt) | 1 rule (E1001) |
+| E2xxx | Parameters | 1 rule (E2015) |
+| E3xxx | Resources | 1 rule (E3003) |
+| E4xxx | Metadata | 1 rule (E4002) |
+| E6xxx | Outputs | 1 rule (E6002) |
+| E7xxx | Mappings | 1 rule (E7001) |
+| E8xxx | Conditions | 1 rule (E8002) |
 
 ## NOT in Scope
 
