@@ -1,5 +1,5 @@
-# Binaries
-cfn-lint
+# Binaries (built binary in root)
+/cfn-lint
 *.exe
 *.exe~
 *.dll
