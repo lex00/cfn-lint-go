@@ -43,18 +43,18 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 ## Ignoring Rules
 
-### Library API (Implemented)
+### CLI
+
+```bash
+cfn-lint template.yaml --ignore-rules E1001,W3002
+```
+
+### Library API
 
 ```go
 linter := lint.New(lint.Options{
     IgnoreRules: []string{"E1001", "W3002"},
 })
-```
-
-### CLI (Planned)
-
-```bash
-cfn-lint template.yaml --ignore-rules E1001,W3002
 ```
 
 ### Template Metadata (Planned)
