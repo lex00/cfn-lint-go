@@ -4,28 +4,32 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 ## Current Status
 
-**v0.10.0**: 90 rules implemented (Phase 1-6, schema-based validation complete).
+**v0.10.0**: 90 rules implemented (34% of Python cfn-lint's 265 rules).
+
+See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 
 ## Rule Categories
 
-| Prefix | Category | Implemented | Planned |
-|--------|----------|-------------|---------|
-| E0xxx | Template Errors | 4 | ~6 |
-| E1xxx | Functions | 21 | ~30 |
-| E2xxx | Parameters | 6 | ~7 |
-| E3xxx | Resources | 25 | ~40+ |
-| E4xxx | Metadata | 2 | ~2 |
-| E6xxx | Outputs | 9 | ~9 |
-| E7xxx | Mappings | 3 | ~3 |
-| E8xxx | Conditions | 7 | ~7 |
-| W1xxx | Template Warnings | 2 | ~5 |
-| W2xxx | Parameter Warnings | 2 | ~5 |
-| W3xxx | Resource Warnings | 3 | ~10 |
-| W4xxx | Metadata Warnings | 1 | ~2 |
-| W6xxx | Output Warnings | 1 | ~3 |
-| W7xxx | Mapping Warnings | 1 | ~2 |
-| W8xxx | Condition Warnings | 2 | ~3 |
-| I* | Informational | 0 | ~20 |
+| Prefix | Category | Implemented | Python Total | Coverage |
+|--------|----------|-------------|--------------|----------|
+| E0xxx | Template Errors | 4 | 6 | 67% |
+| E1xxx | Functions | 22 | 34 | 65% |
+| E2xxx | Parameters | 6 | 9 | 67% |
+| E3xxx | Resources | 25 | 108 | 23% |
+| E4xxx | Metadata | 2 | 2 | 100% |
+| E5xxx | Modules | 0 | 1 | 0% |
+| E6xxx | Outputs | 9 | 9 | 100% |
+| E7xxx | Mappings | 3 | 3 | 100% |
+| E8xxx | Conditions | 7 | 7 | 100% |
+| W1xxx | Template Warnings | 2 | 12 | 17% |
+| W2xxx | Parameter Warnings | 2 | 11 | 18% |
+| W3xxx | Resource Warnings | 3 | 18 | 17% |
+| W4xxx | Metadata Warnings | 1 | 2 | 50% |
+| W6xxx | Output Warnings | 1 | 1 | 100% |
+| W7xxx | Mapping Warnings | 1 | 1 | 100% |
+| W8xxx | Condition Warnings | 2 | 2 | 100% |
+| Ixxx | Informational | 0 | 31 | 0% |
+| **Total** | | **90** | **265** | **34%** |
 
 ## Implemented Rules
 
