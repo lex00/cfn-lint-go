@@ -4,9 +4,9 @@ CloudFormation Linter for Go - a native Go port of [aws-cloudformation/cfn-lint]
 
 ## Status
 
-**v0.8.0 - Phase 6: Schema-Based Validation**
+**v0.9.0 - Phase 6: Schema-Based Validation**
 
-This is a Go port of the Python cfn-lint tool. Implements core framework with 78 rules covering template structure, intrinsic functions, schema-based validation, best practices, and warnings. Uses `cloudformation-schema-go` for CloudFormation resource specification and enum validation. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
+This is a Go port of the Python cfn-lint tool. Implements core framework with 82 rules covering template structure, intrinsic functions, schema-based validation, best practices, and warnings. Uses `cloudformation-schema-go` for CloudFormation resource specification and enum validation. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
 
 ### What's Implemented
 
@@ -18,7 +18,7 @@ This is a Go port of the Python cfn-lint tool. Implements core framework with 78
 - CLI `graph` command for dependency visualization
 - CLI `list-rules` command
 - `--ignore-rules` flag
-- 78 rules covering foundation, structure, intrinsics, schema validation, best practices, and warnings:
+- 82 rules covering foundation, structure, intrinsics, schema validation, best practices, and warnings:
   - **E0xxx**: E0000-E0003 (parse, transform, processing, config)
   - **E1xxx**: 20 rules for intrinsic functions (Ref, GetAtt, Sub, Join, Select, Split, Base64, Cidr, GetAZs, ImportValue, dynamic refs)
   - **E2xxx**: E2001-E2015 (param config, type, naming, length, limits, defaults)
@@ -31,7 +31,6 @@ This is a Go port of the Python cfn-lint tool. Implements core framework with 78
 
 ### What's Planned
 
-- Additional schema-based rules (patterns, length constraints, number ranges)
 - SARIF, JUnit output formats
 - Rule ignoring via template metadata
 
@@ -131,7 +130,7 @@ func main() {
 | E0xxx | Template errors | 4 rules |
 | E1xxx | Functions (Ref, GetAtt, Sub, etc.) | 20 rules |
 | E2xxx | Parameters | 6 rules |
-| E3xxx | Resources | 14 rules |
+| E3xxx | Resources | 18 rules |
 | E4xxx | Metadata | 2 rules |
 | E6xxx | Outputs | 9 rules |
 | E7xxx | Mappings | 3 rules |

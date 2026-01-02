@@ -4,7 +4,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 ## Current Status
 
-**v0.8.0**: 78 rules implemented (Phase 1-6, schema-based validation).
+**v0.9.0**: 82 rules implemented (Phase 1-6, schema-based validation).
 
 ## Rule Categories
 
@@ -13,7 +13,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 | E0xxx | Template Errors | 4 | ~6 |
 | E1xxx | Functions | 20 | ~30 |
 | E2xxx | Parameters | 6 | ~7 |
-| E3xxx | Resources | 14 | ~40+ |
+| E3xxx | Resources | 18 | ~40+ |
 | E4xxx | Metadata | 2 | ~2 |
 | E6xxx | Outputs | 9 | ~9 |
 | E7xxx | Mappings | 3 | ~3 |
@@ -91,6 +91,10 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 | E3012 | Property value type mismatch | ✅ Implemented |
 | E3015 | Resource condition references undefined condition | ✅ Implemented |
 | E3030 | Invalid enum value | ✅ Implemented |
+| E3031 | Property value pattern mismatch | ✅ Implemented |
+| E3032 | Array length out of range | ✅ Implemented |
+| E3033 | String length out of range | ✅ Implemented |
+| E3034 | Number out of range | ✅ Implemented |
 | E3035 | Invalid DeletionPolicy | ✅ Implemented |
 | E3036 | Invalid UpdateReplacePolicy | ✅ Implemented |
 
