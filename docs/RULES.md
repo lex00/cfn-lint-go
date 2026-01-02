@@ -4,16 +4,16 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 ## Current Status
 
-**v0.9.0**: 82 rules implemented (Phase 1-6, schema-based validation).
+**v0.10.0**: 90 rules implemented (Phase 1-6, schema-based validation complete).
 
 ## Rule Categories
 
 | Prefix | Category | Implemented | Planned |
 |--------|----------|-------------|---------|
 | E0xxx | Template Errors | 4 | ~6 |
-| E1xxx | Functions | 20 | ~30 |
+| E1xxx | Functions | 21 | ~30 |
 | E2xxx | Parameters | 6 | ~7 |
-| E3xxx | Resources | 18 | ~40+ |
+| E3xxx | Resources | 25 | ~40+ |
 | E4xxx | Metadata | 2 | ~2 |
 | E6xxx | Outputs | 9 | ~9 |
 | E7xxx | Mappings | 3 | ~3 |
@@ -63,6 +63,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 | E1040 | GetAtt format error | ✅ Implemented |
 | E1041 | Ref format error | ✅ Implemented |
 | E1050 | Dynamic reference syntax error | ✅ Implemented |
+| E1101 | Schema validation - unknown properties | ✅ Implemented |
 
 ### E2xxx - Parameters
 
@@ -89,7 +90,12 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 | E3010 | Resource limit exceeded (500) | ✅ Implemented |
 | E3011 | Invalid property name | ✅ Implemented |
 | E3012 | Property value type mismatch | ✅ Implemented |
+| E3014 | Mutually exclusive properties | ✅ Implemented |
 | E3015 | Resource condition references undefined condition | ✅ Implemented |
+| E3017 | Required anyOf properties | ✅ Implemented |
+| E3018 | Required oneOf properties | ✅ Implemented |
+| E3020 | Dependent property exclusions | ✅ Implemented |
+| E3021 | Dependent property requirements | ✅ Implemented |
 | E3030 | Invalid enum value | ✅ Implemented |
 | E3031 | Property value pattern mismatch | ✅ Implemented |
 | E3032 | Array length out of range | ✅ Implemented |
@@ -97,6 +103,8 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 | E3034 | Number out of range | ✅ Implemented |
 | E3035 | Invalid DeletionPolicy | ✅ Implemented |
 | E3036 | Invalid UpdateReplacePolicy | ✅ Implemented |
+| E3037 | List has duplicate items | ✅ Implemented |
+| E3040 | Read-only property specified | ✅ Implemented |
 
 ### E4xxx - Metadata
 
