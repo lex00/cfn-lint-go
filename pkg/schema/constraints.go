@@ -17,6 +17,24 @@ type PropertyConstraints struct {
 	MinItems *int
 	// MaxItems is the maximum array length.
 	MaxItems *int
+	// UniqueItems indicates that list items must be unique.
+	UniqueItems bool
+}
+
+// ResourceConstraints defines resource-level constraints.
+type ResourceConstraints struct {
+	// ReadOnlyProperties are properties that cannot be set by users (create-only or read-only).
+	ReadOnlyProperties []string
+	// MutuallyExclusive defines sets of properties where only one can be specified.
+	MutuallyExclusive [][]string
+	// DependentRequired maps a property to other properties that must be present if it is.
+	DependentRequired map[string][]string
+	// DependentExcluded maps a property to other properties that must NOT be present if it is.
+	DependentExcluded map[string][]string
+	// OneOf defines sets where exactly one property must be present.
+	OneOf [][]string
+	// AnyOf defines sets where at least one property must be present.
+	AnyOf [][]string
 }
 
 // intPtr returns a pointer to an int.
@@ -270,4 +288,222 @@ func GetPropertyConstraints(resourceType, propertyName string) *PropertyConstrai
 func HasConstraints(resourceType string) bool {
 	_, ok := resourceConstraints[resourceType]
 	return ok
+}
+
+// resourceLevelConstraints maps resource type -> resource-level constraints.
+var resourceLevelConstraints = map[string]ResourceConstraints{
+	"AWS::Lambda::Function": {
+		ReadOnlyProperties: []string{"Arn", "SnapStartResponse"},
+		MutuallyExclusive: [][]string{
+			{"Code.S3Bucket", "Code.ImageUri"},
+			{"Code.ZipFile", "Code.S3Bucket"},
+		},
+		DependentRequired: map[string][]string{
+			"Code.S3Bucket": {"Code.S3Key"},
+		},
+	},
+	"AWS::S3::Bucket": {
+		ReadOnlyProperties: []string{"Arn", "DomainName", "DualStackDomainName", "RegionalDomainName", "WebsiteURL"},
+	},
+	"AWS::EC2::Instance": {
+		ReadOnlyProperties: []string{"AvailabilityZone", "PrivateDnsName", "PrivateIp", "PublicDnsName", "PublicIp"},
+		MutuallyExclusive: [][]string{
+			{"SecurityGroups", "SecurityGroupIds"},
+			{"SubnetId", "NetworkInterfaces"},
+		},
+	},
+	"AWS::EC2::SecurityGroup": {
+		ReadOnlyProperties: []string{"GroupId", "VpcId"},
+		DependentRequired: map[string][]string{
+			"SecurityGroupIngress": {"GroupDescription"},
+			"SecurityGroupEgress":  {"GroupDescription"},
+		},
+	},
+	"AWS::IAM::Role": {
+		ReadOnlyProperties: []string{"Arn", "RoleId"},
+	},
+	"AWS::IAM::User": {
+		ReadOnlyProperties: []string{"Arn"},
+	},
+	"AWS::DynamoDB::Table": {
+		ReadOnlyProperties: []string{"Arn", "StreamArn"},
+		DependentRequired: map[string][]string{
+			"GlobalSecondaryIndexes": {"AttributeDefinitions"},
+			"LocalSecondaryIndexes":  {"AttributeDefinitions"},
+		},
+	},
+	"AWS::SQS::Queue": {
+		ReadOnlyProperties: []string{"Arn", "QueueUrl"},
+		MutuallyExclusive: [][]string{
+			{"FifoQueue", "ContentBasedDeduplication"},
+		},
+		DependentRequired: map[string][]string{
+			"ContentBasedDeduplication": {"FifoQueue"},
+		},
+	},
+	"AWS::SNS::Topic": {
+		ReadOnlyProperties: []string{"TopicArn"},
+	},
+	"AWS::RDS::DBInstance": {
+		ReadOnlyProperties: []string{"Endpoint.Address", "Endpoint.Port", "Endpoint.HostedZoneId"},
+		MutuallyExclusive: [][]string{
+			{"DBSnapshotIdentifier", "SourceDBInstanceIdentifier"},
+			{"DBSnapshotIdentifier", "MasterUsername"},
+		},
+		DependentRequired: map[string][]string{
+			"MasterUsername": {"MasterUserPassword"},
+		},
+		DependentExcluded: map[string][]string{
+			"DBSnapshotIdentifier": {"MasterUsername", "MasterUserPassword"},
+		},
+	},
+	"AWS::ECS::Service": {
+		ReadOnlyProperties: []string{"Name", "ServiceArn"},
+		MutuallyExclusive: [][]string{
+			{"LaunchType", "CapacityProviderStrategy"},
+		},
+		DependentRequired: map[string][]string{
+			"LoadBalancers": {"Role"},
+		},
+	},
+	"AWS::ECS::TaskDefinition": {
+		ReadOnlyProperties: []string{"TaskDefinitionArn"},
+		DependentRequired: map[string][]string{
+			"Cpu":    {"NetworkMode"},
+			"Memory": {"NetworkMode"},
+		},
+	},
+	"AWS::Logs::LogGroup": {
+		ReadOnlyProperties: []string{"Arn"},
+	},
+	"AWS::CloudWatch::Alarm": {
+		MutuallyExclusive: [][]string{
+			{"Metrics", "MetricName"},
+			{"Metrics", "Statistic"},
+		},
+		OneOf: [][]string{
+			{"MetricName", "Metrics"},
+		},
+	},
+	"AWS::KMS::Key": {
+		ReadOnlyProperties: []string{"Arn", "KeyId"},
+	},
+	"AWS::SecretsManager::Secret": {
+		ReadOnlyProperties: []string{"Id"},
+		MutuallyExclusive: [][]string{
+			{"SecretString", "GenerateSecretString"},
+		},
+	},
+	"AWS::SSM::Parameter": {
+		MutuallyExclusive: [][]string{
+			{"Value", "DataType"},
+		},
+	},
+	"AWS::StepFunctions::StateMachine": {
+		ReadOnlyProperties: []string{"Arn", "StateMachineRevisionId"},
+		MutuallyExclusive: [][]string{
+			{"Definition", "DefinitionS3Location"},
+			{"Definition", "DefinitionString"},
+		},
+		OneOf: [][]string{
+			{"Definition", "DefinitionS3Location", "DefinitionString"},
+		},
+	},
+	"AWS::ApiGateway::RestApi": {
+		ReadOnlyProperties: []string{"RootResourceId", "RestApiId"},
+		MutuallyExclusive: [][]string{
+			{"Body", "BodyS3Location"},
+		},
+	},
+	"AWS::CloudFormation::Stack": {
+		MutuallyExclusive: [][]string{
+			{"TemplateBody", "TemplateURL"},
+		},
+		OneOf: [][]string{
+			{"TemplateBody", "TemplateURL"},
+		},
+	},
+	"AWS::ElasticLoadBalancingV2::TargetGroup": {
+		DependentRequired: map[string][]string{
+			"HealthCheckPort":     {"Protocol"},
+			"HealthCheckProtocol": {"Protocol"},
+		},
+	},
+	"AWS::Events::Rule": {
+		MutuallyExclusive: [][]string{
+			{"EventPattern", "ScheduleExpression"},
+		},
+		AnyOf: [][]string{
+			{"EventPattern", "ScheduleExpression"},
+		},
+	},
+}
+
+// uniqueItemsProperties lists properties that require unique items.
+var uniqueItemsProperties = map[string]map[string]bool{
+	"AWS::EC2::SecurityGroup": {
+		"SecurityGroupIngress": true,
+		"SecurityGroupEgress":  true,
+	},
+	"AWS::IAM::Role": {
+		"ManagedPolicyArns": true,
+		"Policies":          true,
+	},
+	"AWS::IAM::User": {
+		"Groups":            true,
+		"ManagedPolicyArns": true,
+		"Policies":          true,
+	},
+	"AWS::IAM::Group": {
+		"ManagedPolicyArns": true,
+		"Policies":          true,
+	},
+	"AWS::ECS::TaskDefinition": {
+		"ContainerDefinitions": true,
+		"Volumes":              true,
+	},
+	"AWS::ECS::Service": {
+		"LoadBalancers":            true,
+		"ServiceRegistries":        true,
+		"PlacementConstraints":     true,
+		"PlacementStrategies":      true,
+		"CapacityProviderStrategy": true,
+	},
+	"AWS::Lambda::Function": {
+		"VpcConfig.SecurityGroupIds": true,
+		"VpcConfig.SubnetIds":        true,
+		"Layers":                     true,
+	},
+	"AWS::DynamoDB::Table": {
+		"AttributeDefinitions":   true,
+		"KeySchema":              true,
+		"GlobalSecondaryIndexes": true,
+		"LocalSecondaryIndexes":  true,
+	},
+	"AWS::SNS::Topic": {
+		"Subscription": true,
+	},
+	"AWS::CloudWatch::Alarm": {
+		"AlarmActions":            true,
+		"OKActions":               true,
+		"InsufficientDataActions": true,
+		"Dimensions":              true,
+	},
+}
+
+// GetResourceConstraints returns resource-level constraints.
+// Returns nil if no constraints are defined.
+func GetResourceConstraints(resourceType string) *ResourceConstraints {
+	if c, ok := resourceLevelConstraints[resourceType]; ok {
+		return &c
+	}
+	return nil
+}
+
+// RequiresUniqueItems returns true if the property requires unique items.
+func RequiresUniqueItems(resourceType, propertyName string) bool {
+	if props, ok := uniqueItemsProperties[resourceType]; ok {
+		return props[propertyName]
+	}
+	return false
 }
