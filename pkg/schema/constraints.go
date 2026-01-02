@@ -463,10 +463,10 @@ var uniqueItemsProperties = map[string]map[string]bool{
 		"Volumes":              true,
 	},
 	"AWS::ECS::Service": {
-		"LoadBalancers":           true,
-		"ServiceRegistries":       true,
-		"PlacementConstraints":    true,
-		"PlacementStrategies":     true,
+		"LoadBalancers":            true,
+		"ServiceRegistries":        true,
+		"PlacementConstraints":     true,
+		"PlacementStrategies":      true,
 		"CapacityProviderStrategy": true,
 	},
 	"AWS::Lambda::Function": {
@@ -475,10 +475,10 @@ var uniqueItemsProperties = map[string]map[string]bool{
 		"Layers":                     true,
 	},
 	"AWS::DynamoDB::Table": {
-		"AttributeDefinitions":    true,
-		"KeySchema":               true,
-		"GlobalSecondaryIndexes":  true,
-		"LocalSecondaryIndexes":   true,
+		"AttributeDefinitions":   true,
+		"KeySchema":              true,
+		"GlobalSecondaryIndexes": true,
+		"LocalSecondaryIndexes":  true,
 	},
 	"AWS::SNS::Topic": {
 		"Subscription": true,
