@@ -1031,7 +1031,7 @@ Service-specific instance type and configuration validation (E3601-E3703)
 ### Phase 13: Informational Rules (31 rules)
 All I-prefixed rules (I1xxx, I2xxx, I3xxx, I6xxx, I7xxx)
 
-### Phase 14: Warning Rules Extensions (45 rules)
+### Phase 14: Warning Rules Extensions (36 rules)
 Remaining W-prefixed rules (W1xxx, W2xxx, W3xxx function/resource warnings)
 
 ### Phase 15: Deployment Files & Modules (3 rules)
