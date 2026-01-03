@@ -336,6 +336,13 @@ func (t *Template) parseResources(node *yaml.Node) error {
 							res.Properties = props
 						}
 					}
+				case "Metadata":
+					// Decode metadata
+					if decoded := parseYAMLNode(val); decoded != nil {
+						if meta, ok := decoded.(map[string]any); ok {
+							res.Metadata = meta
+						}
+					}
 				case "Condition":
 					res.Condition = val.Value
 				case "DependsOn":
