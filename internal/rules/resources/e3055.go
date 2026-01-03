@@ -2,8 +2,6 @@
 package resources
 
 import (
-	"fmt"
-
 	"github.com/lex00/cfn-lint-go/pkg/rules"
 	"github.com/lex00/cfn-lint-go/pkg/template"
 )
