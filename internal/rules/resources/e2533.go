@@ -34,25 +34,6 @@ func (r *E2533) Tags() []string {
 	return []string{"lambda", "runtime", "updates"}
 }
 
-// runtimeFamilies maps runtimes to their family (language)
-var runtimeFamilies = map[string]string{
-	"python":      "python",
-	"nodejs":      "nodejs",
-	"java":        "java",
-	"dotnet":      "dotnet",
-	"dotnetcore":  "dotnet",
-	"go":          "go",
-	"ruby":        "ruby",
-	"provided":    "custom",
-	"provided.al": "custom",
-}
-
-// nonUpdatableRuntimeProperties lists properties that, when combined with Runtime changes,
-// may cause issues or require replacement
-var nonUpdatableRuntimeProperties = []string{
-	"PackageType", // Cannot change between Zip and Image
-}
-
 func (r *E2533) Match(tmpl *template.Template) []rules.Match {
 	var matches []rules.Match
 
@@ -88,15 +69,6 @@ func (r *E2533) Match(tmpl *template.Template) []rules.Match {
 			}
 		}
 
-		// Check for managed runtime vs custom runtime compatibility
-		if isCustomRuntime(runtimeStr) {
-			// Check if Handler is specified (custom runtimes may not need it)
-			if _, hasHandler := res.Properties["Handler"]; !hasHandler {
-				// This is fine for custom runtimes, but flag it as info
-				// For now, we'll skip this validation as it's not always an error
-			}
-		}
-
 		// Validate runtime is recognized
 		if !isValidRuntime(runtimeStr) {
 			matches = append(matches, rules.Match{
@@ -109,18 +81,6 @@ func (r *E2533) Match(tmpl *template.Template) []rules.Match {
 	}
 
 	return matches
-}
-
-func getRuntimeFamily(runtime string) string {
-	runtime = strings.ToLower(runtime)
-
-	for prefix, family := range runtimeFamilies {
-		if strings.HasPrefix(runtime, prefix) {
-			return family
-		}
-	}
-
-	return "unknown"
 }
 
 func isCustomRuntime(runtime string) bool {

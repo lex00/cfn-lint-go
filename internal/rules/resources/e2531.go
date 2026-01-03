@@ -40,14 +40,14 @@ var deprecatedLambdaRuntimes = map[string]string{
 	"python3.6": "deprecated since July 2022",
 
 	// Node.js
-	"nodejs":       "deprecated since October 2016",
-	"nodejs4.3":    "deprecated since April 2018",
-	"nodejs6.10":   "deprecated since August 2019",
-	"nodejs8.10":   "deprecated since December 2019",
-	"nodejs10.x":   "deprecated since July 2021",
-	"nodejs12.x":   "deprecated since March 2023",
-	"nodejs14.x":   "deprecated since November 2023",
-	"nodejs16.x":   "deprecated since March 2024",
+	"nodejs":     "deprecated since October 2016",
+	"nodejs4.3":  "deprecated since April 2018",
+	"nodejs6.10": "deprecated since August 2019",
+	"nodejs8.10": "deprecated since December 2019",
+	"nodejs10.x": "deprecated since July 2021",
+	"nodejs12.x": "deprecated since March 2023",
+	"nodejs14.x": "deprecated since November 2023",
+	"nodejs16.x": "deprecated since March 2024",
 
 	// Ruby
 	"ruby2.5": "deprecated since July 2021",
