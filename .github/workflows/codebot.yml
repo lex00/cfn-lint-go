@@ -65,15 +65,6 @@ jobs:
             -H "Content-Type: application/json" \
             -d '{"type": "run_started", "runId": "${{ inputs.run_id }}"}'
 
-      # ========================================
-      # ADD YOUR IMPLEMENTATION HERE
-      # ========================================
-      # This is where you implement your workflow logic.
-      # The payload contains:
-      # - workflow: { id, name }
-      # - event: { type, source, payload }
-      # - steps: [{ id, stepId, name, action, botId, config }]
-
       - name: Run Claude Code
         env:
           ANTHROPIC_API_KEY: ${{ inputs.anthropic_api_key }}
