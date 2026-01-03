@@ -37,16 +37,16 @@ func (r *E3617) Match(tmpl *template.Template) []rules.Match {
 	var matches []rules.Match
 
 	validInstanceTypes := map[string]bool{
-		"bc.t3.small":  true,
-		"bc.t3.medium": true,
-		"bc.t3.large":  true,
-		"bc.t3.xlarge": true,
-		"bc.m5.large":  true,
-		"bc.m5.xlarge": true,
+		"bc.t3.small":   true,
+		"bc.t3.medium":  true,
+		"bc.t3.large":   true,
+		"bc.t3.xlarge":  true,
+		"bc.m5.large":   true,
+		"bc.m5.xlarge":  true,
 		"bc.m5.2xlarge": true,
 		"bc.m5.4xlarge": true,
-		"bc.c5.large":  true,
-		"bc.c5.xlarge": true,
+		"bc.c5.large":   true,
+		"bc.c5.xlarge":  true,
 		"bc.c5.2xlarge": true,
 		"bc.c5.4xlarge": true,
 	}

@@ -74,13 +74,13 @@ func (r *E3684) Match(tmpl *template.Template) []rules.Match {
 
 		// Validate protocol values
 		validProtocols := map[string]bool{
-			"HTTP":  true,
-			"HTTPS": true,
-			"TCP":   true,
-			"TLS":   true,
-			"UDP":   true,
+			"HTTP":    true,
+			"HTTPS":   true,
+			"TCP":     true,
+			"TLS":     true,
+			"UDP":     true,
 			"TCP_UDP": true,
-			"GENEVE": true,
+			"GENEVE":  true,
 		}
 
 		if !validProtocols[healthCheckProtocolStr] {
