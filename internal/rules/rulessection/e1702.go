@@ -34,17 +34,17 @@ func (r *E1702) Tags() []string {
 
 // Valid rule-specific intrinsic functions per CloudFormation spec
 var validRuleFunctions = map[string]bool{
-	"Fn::And":            true,
-	"Fn::Contains":       true,
+	"Fn::And":              true,
+	"Fn::Contains":         true,
 	"Fn::EachMemberEquals": true,
-	"Fn::EachMemberIn":   true,
-	"Fn::Equals":         true,
-	"Fn::If":             true,
-	"Fn::Not":            true,
-	"Fn::Or":             true,
-	"Fn::RefAll":         true,
-	"Fn::ValueOf":        true,
-	"Fn::ValueOfAll":     true,
+	"Fn::EachMemberIn":     true,
+	"Fn::Equals":           true,
+	"Fn::If":               true,
+	"Fn::Not":              true,
+	"Fn::Or":               true,
+	"Fn::RefAll":           true,
+	"Fn::ValueOf":          true,
+	"Fn::ValueOfAll":       true,
 }
 
 func (r *E1702) Match(tmpl *template.Template) []rules.Match {

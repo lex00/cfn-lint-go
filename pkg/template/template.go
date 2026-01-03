@@ -84,8 +84,8 @@ type Output struct {
 // Rule represents a CloudFormation rule for parameter validation.
 type Rule struct {
 	Node          *yaml.Node
-	RuleCondition any              // Optional: determines when the rule takes effect
-	Assertions    []RuleAssertion  // Required: at least one assertion
+	RuleCondition any             // Optional: determines when the rule takes effect
+	Assertions    []RuleAssertion // Required: at least one assertion
 }
 
 // RuleAssertion represents an assertion within a CloudFormation rule.
