@@ -4,7 +4,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 ## Current Status
 
-**v0.12.0**: 90 rules implemented (34% of Python cfn-lint's 265 rules).
+**v0.13.0**: 102 rules implemented (38% of Python cfn-lint's 265 rules).
 
 See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 
@@ -13,7 +13,7 @@ See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 | Prefix | Category | Implemented | Python Total | Coverage |
 |--------|----------|-------------|--------------|----------|
 | E0xxx | Template Errors | 4 | 6 | 67% |
-| E1xxx | Functions | 22 | 34 | 65% |
+| E1xxx | Functions | 34 | 34 | 100% |
 | E2xxx | Parameters | 6 | 9 | 67% |
 | E3xxx | Resources | 25 | 108 | 23% |
 | E4xxx | Metadata | 2 | 2 | 100% |
@@ -29,7 +29,7 @@ See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 | W7xxx | Mapping Warnings | 1 | 1 | 100% |
 | W8xxx | Condition Warnings | 2 | 2 | 100% |
 | Ixxx | Informational | 0 | 31 | 0% |
-| **Total** | | **90** | **265** | **34%** |
+| **Total** | | **102** | **265** | **38%** |
 
 ## Implemented Rules
 
@@ -48,6 +48,7 @@ See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 |------|-------------|--------|
 | E1001 | Ref to undefined resource or parameter | ✅ Implemented |
 | E1002 | Template size limit exceeded | ✅ Implemented |
+| E1003 | Validate the max size of a description | ✅ Implemented |
 | E1004 | Description must be a string | ✅ Implemented |
 | E1005 | Transform configuration error | ✅ Implemented |
 | E1010 | GetAtt to undefined resource | ✅ Implemented |
@@ -64,10 +65,23 @@ See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 | E1027 | Dynamic reference in invalid location | ✅ Implemented |
 | E1028 | Fn::If structure error | ✅ Implemented |
 | E1029 | Sub required for variable substitution | ✅ Implemented |
+| E1030 | Fn::Length function validation | ✅ Implemented |
+| E1031 | Fn::ToJsonString function validation | ✅ Implemented |
+| E1032 | Fn::ForEach function validation | ✅ Implemented |
 | E1040 | GetAtt format error | ✅ Implemented |
 | E1041 | Ref format error | ✅ Implemented |
 | E1050 | Dynamic reference syntax error | ✅ Implemented |
+| E1051 | Secrets Manager dynamic reference validation | ✅ Implemented |
+| E1052 | SSM Parameter dynamic reference validation | ✅ Implemented |
 | E1101 | Schema validation - unknown properties | ✅ Implemented |
+| E1103 | Value format validation | ✅ Implemented |
+| E1150 | Security group format validation | ✅ Implemented |
+| E1151 | VPC id format validation | ✅ Implemented |
+| E1152 | AMI id format validation | ✅ Implemented |
+| E1153 | Security group name format validation | ✅ Implemented |
+| E1154 | VPC subnet id format validation | ✅ Implemented |
+| E1155 | CloudWatch logs group name format validation | ✅ Implemented |
+| E1156 | IAM role ARN format validation | ✅ Implemented |
 
 ### E2xxx - Parameters
 

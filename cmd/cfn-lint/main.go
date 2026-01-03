@@ -17,6 +17,7 @@ import (
 	// Import rule packages to register them
 	_ "github.com/lex00/cfn-lint-go/internal/rules/conditions"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/errors"
+	_ "github.com/lex00/cfn-lint-go/internal/rules/formats"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/functions"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/mappings"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/metadata"
