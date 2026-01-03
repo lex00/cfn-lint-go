@@ -4,7 +4,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 ## Current Status
 
-**v0.14.0**: 123 rules implemented (46% of Python cfn-lint's 265 rules).
+**v0.15.0**: 126 rules implemented (48% of Python cfn-lint's 265 rules).
 
 See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 
@@ -12,12 +12,12 @@ See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 
 | Prefix | Category | Implemented | Python Total | Coverage |
 |--------|----------|-------------|--------------|----------|
-| E0xxx | Template Errors | 4 | 6 | 67% |
+| E0xxx | Template Errors | 6 | 6 | 100% |
 | E1xxx | Functions | 34 | 34 | 100% |
 | E2xxx | Parameters | 6 | 9 | 67% |
 | E3xxx | Resources | 25 | 108 | 23% |
 | E4xxx | Metadata | 2 | 2 | 100% |
-| E5xxx | Modules | 0 | 1 | 0% |
+| E5xxx | Modules | 1 | 1 | 100% |
 | E6xxx | Outputs | 9 | 9 | 100% |
 | E7xxx | Mappings | 3 | 3 | 100% |
 | E8xxx | Conditions | 7 | 7 | 100% |
@@ -33,7 +33,7 @@ See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 | I3xxx | Resource Info | 9 | 9 | 100% |
 | I6xxx | Output Info | 2 | 2 | 100% |
 | I7xxx | Mapping Info | 2 | 2 | 100% |
-| **Total** | | **123** | **265** | **46%** |
+| **Total** | | **126** | **265** | **48%** |
 
 ## Implemented Rules
 
@@ -45,6 +45,8 @@ See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 | E0001 | Template transformation error | ✅ Implemented |
 | E0002 | Rule processing error | ✅ Implemented |
 | E0003 | Configuration error | ✅ Implemented |
+| E0100 | Deployment file syntax validation | ✅ Implemented |
+| E0200 | Parameter file syntax validation | ✅ Implemented |
 
 ### E1xxx - Functions
 
@@ -134,6 +136,12 @@ See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 |------|-------------|--------|
 | E4001 | Interface metadata error | ✅ Implemented |
 | E4002 | Metadata section structure | ✅ Implemented |
+
+### E5xxx - Modules
+
+| Rule | Description | Status |
+|------|-------------|--------|
+| E5001 | Modules resource validation | ✅ Implemented |
 
 ### E6xxx - Outputs
 

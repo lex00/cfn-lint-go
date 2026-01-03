@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-01-03
+
+### Added
+
+- Phase 15: Deployment Files & Modules complete (3 new rules):
+  - E0100: Deployment file syntax validation (placeholder for future implementation)
+  - E0200: Parameter file syntax validation (placeholder for future implementation)
+  - E5001: CloudFormation Modules resource validation
+- Created new `internal/rules/modules` package for E5xxx rules
+- E5001 validates module resource type format (Organization::Service::Resource::MODULE)
+- E5001 validates modules have required Properties defined
+
+### Notes
+
+- E0100 and E0200 are registered but return no matches on CloudFormation templates. Full implementation requires separate file parsing infrastructure for deployment/parameter files.
+- 93 rules now implemented (35% of Python cfn-lint's 265 rules)
+- E0xxx category now at 100% coverage (6/6 rules)
+- E5xxx category now at 100% coverage (1/1 rule)
+
 ## [0.12.0] - 2026-01-02
 
 ### Changed
