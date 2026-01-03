@@ -80,11 +80,11 @@ func (r *E3060) Match(tmpl *template.Template) []rules.Match {
 		}
 
 		subnetsByVPC[vpcRef] = append(subnetsByVPC[vpcRef], subnetInfo{
-			name:   resName,
-			cidr:   subnetCIDRStr,
+			name:    resName,
+			cidr:    subnetCIDRStr,
 			cidrNet: cidrNet,
-			line:   res.Node.Line,
-			column: res.Node.Column,
+			line:    res.Node.Line,
+			column:  res.Node.Column,
 		})
 	}
 

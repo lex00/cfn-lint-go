@@ -61,8 +61,8 @@ func (r *E3042) Match(tmpl *template.Template) []rules.Match {
 			}
 
 			// Default is true if not specified
-			essential, hasEssential := containerMap["Essential"]
-			if !hasEssential {
+			essential, hasEssentialProp := containerMap["Essential"]
+			if !hasEssentialProp {
 				hasEssential = true
 				break
 			}

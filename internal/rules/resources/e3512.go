@@ -39,11 +39,11 @@ func (r *E3512) Match(tmpl *template.Template) []rules.Match {
 
 	// Resources with resource-based policies
 	resourceBasedPolicies := map[string]string{
-		"AWS::S3::BucketPolicy":           "PolicyDocument",
-		"AWS::SQS::QueuePolicy":           "PolicyDocument",
-		"AWS::SNS::TopicPolicy":           "PolicyDocument",
-		"AWS::KMS::Key":                   "KeyPolicy",
-		"AWS::Lambda::Permission":         "", // Special case - uses different properties
+		"AWS::S3::BucketPolicy":                     "PolicyDocument",
+		"AWS::SQS::QueuePolicy":                     "PolicyDocument",
+		"AWS::SNS::TopicPolicy":                     "PolicyDocument",
+		"AWS::KMS::Key":                             "KeyPolicy",
+		"AWS::Lambda::Permission":                   "", // Special case - uses different properties
 		"AWS::SecretsManager::SecretResourcePolicy": "ResourcePolicy",
 	}
 

@@ -134,11 +134,7 @@ func (r *E3059) isSubnet(subnet, vpc *net.IPNet) bool {
 
 	// Check if subnet's broadcast address is within VPC
 	subnetBroadcast := r.getBroadcastAddr(subnet)
-	if !vpc.Contains(subnetBroadcast) {
-		return false
-	}
-
-	return true
+	return vpc.Contains(subnetBroadcast)
 }
 
 // getBroadcastAddr calculates the broadcast address for a network

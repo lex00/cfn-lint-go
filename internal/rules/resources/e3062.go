@@ -36,17 +36,17 @@ func (r *E3062) Tags() []string {
 
 // Simplified engine to instance class family compatibility
 var engineInstanceCompatibility = map[string][]string{
-	"mysql":      {"db.t2", "db.t3", "db.t4g", "db.m5", "db.m6g", "db.r5", "db.r6g"},
-	"postgres":   {"db.t2", "db.t3", "db.t4g", "db.m5", "db.m6g", "db.r5", "db.r6g"},
-	"mariadb":    {"db.t2", "db.t3", "db.m5", "db.r5"},
-	"oracle-ee":  {"db.t3", "db.m5", "db.r5"},
-	"oracle-se2": {"db.t3", "db.m5", "db.r5"},
-	"sqlserver-ee": {"db.t3", "db.m5", "db.r5"},
-	"sqlserver-se": {"db.t3", "db.m5", "db.r5"},
-	"sqlserver-ex": {"db.t2", "db.t3"},
-	"sqlserver-web": {"db.t3", "db.m5"},
-	"aurora":        {"db.t3", "db.t4g", "db.r5", "db.r6g"},
-	"aurora-mysql":  {"db.t3", "db.t4g", "db.r5", "db.r6g"},
+	"mysql":             {"db.t2", "db.t3", "db.t4g", "db.m5", "db.m6g", "db.r5", "db.r6g"},
+	"postgres":          {"db.t2", "db.t3", "db.t4g", "db.m5", "db.m6g", "db.r5", "db.r6g"},
+	"mariadb":           {"db.t2", "db.t3", "db.m5", "db.r5"},
+	"oracle-ee":         {"db.t3", "db.m5", "db.r5"},
+	"oracle-se2":        {"db.t3", "db.m5", "db.r5"},
+	"sqlserver-ee":      {"db.t3", "db.m5", "db.r5"},
+	"sqlserver-se":      {"db.t3", "db.m5", "db.r5"},
+	"sqlserver-ex":      {"db.t2", "db.t3"},
+	"sqlserver-web":     {"db.t3", "db.m5"},
+	"aurora":            {"db.t3", "db.t4g", "db.r5", "db.r6g"},
+	"aurora-mysql":      {"db.t3", "db.t4g", "db.r5", "db.r6g"},
 	"aurora-postgresql": {"db.t3", "db.t4g", "db.r5", "db.r6g"},
 }
 
