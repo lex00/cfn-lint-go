@@ -1,7 +1,6 @@
 package functions
 
 import (
-	"strings"
 	"testing"
 
 	"github.com/lex00/cfn-lint-go/pkg/template"
@@ -28,27 +27,7 @@ Resources:
 	}
 }
 
-func TestE1004_DescriptionTooLong(t *testing.T) {
-	longDesc := strings.Repeat("a", 1025)
-	tmpl := `
-AWSTemplateFormatVersion: "2010-09-09"
-Description: "` + longDesc + `"
-Resources:
-  MyResource:
-    Type: AWS::S3::Bucket
-`
-	parsed, err := template.Parse([]byte(tmpl))
-	if err != nil {
-		t.Fatalf("Failed to parse template: %v", err)
-	}
-
-	rule := &E1004{}
-	matches := rule.Match(parsed)
-
-	if len(matches) != 1 {
-		t.Errorf("Expected 1 match for description too long, got %d", len(matches))
-	}
-}
+// Description length validation is now handled by E1003
 
 func TestE1004_NoDescription(t *testing.T) {
 	tmpl := `

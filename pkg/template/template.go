@@ -17,6 +17,7 @@ type Template struct {
 	// Parsed sections for convenient access.
 	AWSTemplateFormatVersion string
 	Description              string
+	Transform                any // Can be string or []string
 	Parameters               map[string]*Parameter
 	Mappings                 map[string]*Mapping
 	Conditions               map[string]*Condition
@@ -137,6 +138,8 @@ func (t *Template) parseRoot() error {
 			t.AWSTemplateFormatVersion = value.Value
 		case "Description":
 			t.Description = value.Value
+		case "Transform":
+			t.Transform = parseYAMLNode(value)
 		case "Parameters":
 			if err := t.parseParameters(value); err != nil {
 				return err

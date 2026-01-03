@@ -34,14 +34,10 @@ func (r *E1004) Tags() []string {
 func (r *E1004) Match(tmpl *template.Template) []rules.Match {
 	var matches []rules.Match
 
-	// Check template description - this is already parsed as string in template.go
-	// but we should validate it's not too long (max 1024 characters)
-	if len(tmpl.Description) > 1024 {
-		matches = append(matches, rules.Match{
-			Message: "Template Description must not exceed 1024 characters",
-			Path:    []string{"Description"},
-		})
-	}
+	// The template Description is already validated as a string during parsing
+	// in template.go, so if we reach here it's already correct type.
+	// This rule would catch if Description was set to a non-string type,
+	// but the YAML parser handles that for us.
 
 	return matches
 }
