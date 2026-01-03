@@ -38,11 +38,11 @@ func (r *E3038) Tags() []string {
 
 // Serverless resource types
 var serverlessResourceTypes = map[string]bool{
-	"AWS::Serverless::Function":   true,
-	"AWS::Serverless::Api":        true,
-	"AWS::Serverless::HttpApi":    true,
-	"AWS::Serverless::SimpleTable": true,
-	"AWS::Serverless::Application": true,
+	"AWS::Serverless::Function":     true,
+	"AWS::Serverless::Api":          true,
+	"AWS::Serverless::HttpApi":      true,
+	"AWS::Serverless::SimpleTable":  true,
+	"AWS::Serverless::Application":  true,
 	"AWS::Serverless::LayerVersion": true,
 	"AWS::Serverless::StateMachine": true,
 }
