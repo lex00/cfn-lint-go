@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-01-03
+
+### Added
+
+- Tests for all 34 Phase 14 warning rules:
+  - W1xxx: 13 tests (W1019-W1100)
+  - W2xxx: 8 tests (W2030-W2533)
+  - W3xxx: 12 tests (W3011-W3693)
+  - W4xxx: 1 test (W4005)
+
+### Changed
+
+- README.md: Updated to reflect v0.13.0 with 262 rules
+- docs/RULES.md: Updated category table with accurate counts, added Phase 14 warning rules
+- CHANGELOG.md: Fixed v0.13.0 entry and version links
+
 ## [0.13.0] - 2026-01-03
 
 ### Added
@@ -309,7 +325,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SAM transform support is not included (users should run `sam build` first)
 - See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy
 
-[Unreleased]: https://github.com/lex00/cfn-lint-go/compare/v0.13.0...HEAD
+[Unreleased]: https://github.com/lex00/cfn-lint-go/compare/v0.14.0...HEAD
+[0.14.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.14.0
 [0.13.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.13.0
 [0.12.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.12.0
 [0.11.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.11.0
