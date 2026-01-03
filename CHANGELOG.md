@@ -371,7 +371,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SAM transform support is not included (users should run `sam build` first)
 - See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy
 
-[Unreleased]: https://github.com/lex00/cfn-lint-go/compare/v0.14.0...HEAD
+[Unreleased]: https://github.com/lex00/cfn-lint-go/compare/v0.15.0...HEAD
+[0.15.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.15.0
 [0.14.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.14.0
 [0.13.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.13.0
 [0.12.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.12.0

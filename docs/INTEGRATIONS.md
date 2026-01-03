@@ -98,7 +98,7 @@ pip install pre-commit
 ```yaml
 repos:
   - repo: https://github.com/lex00/cfn-lint-go
-    rev: v0.14.0
+    rev: v0.15.0
     hooks:
       - id: cfn-lint-go
 ```
@@ -116,7 +116,7 @@ Customize the hook behavior:
 ```yaml
 repos:
   - repo: https://github.com/lex00/cfn-lint-go
-    rev: v0.14.0
+    rev: v0.15.0
     hooks:
       - id: cfn-lint-go
         args:
