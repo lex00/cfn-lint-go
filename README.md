@@ -4,7 +4,7 @@ CloudFormation Linter for Go - a native Go port of [aws-cloudformation/cfn-lint]
 
 ## Status
 
-**v0.10.0 - Phase 6: Schema-Based Validation Complete**
+**v0.12.0 - Graph Package Enhancements**
 
 This is a Go port of the Python cfn-lint tool. Implements core framework with 90 rules covering template structure, intrinsic functions, schema-based validation, best practices, and warnings. Uses `cloudformation-schema-go` for CloudFormation resource specification and enum validation. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
 
@@ -118,10 +118,24 @@ import (
 func main() {
     tmpl, _ := template.ParseFile("template.yaml")
 
-    gen := &graph.Generator{IncludeParameters: true}
+    gen := &graph.Generator{
+        IncludeParameters: true,
+        Format:            graph.FormatDOT,      // or graph.FormatMermaid
+        ClusterByType:     true,                 // group by AWS service
+    }
     gen.Generate(tmpl, os.Stdout)
 }
 ```
+
+#### Graph Output Formats
+
+- **DOT** (default): Graphviz format, render with `dot -Tpng`
+- **Mermaid**: Renders natively in GitHub markdown
+
+#### Edge Colors (DOT format)
+- Black: Ref references
+- Blue: GetAtt references
+- Gray dashed: DependsOn dependencies
 
 ## Rule Categories
 

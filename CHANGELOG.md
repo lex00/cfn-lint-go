@@ -7,6 +7,66 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-01-02
+
+### Changed
+
+- Switched graph package from hand-rolled DOT generation to [emicklei/dot](https://pkg.go.dev/github.com/emicklei/dot) library
+- Added Mermaid output format via `graph.FormatMermaid` - renders natively in GitHub markdown
+- Added `ClusterByType` option to group resources by AWS service
+- Color-coded edges by dependency type (blue=GetAtt, gray dashed=DependsOn, black=Ref)
+- Uses `NodeInitializer` and `EdgeInitializer` for consistent styling
+
+### Dependencies
+
+- Added `github.com/emicklei/dot` v1.10.0
+
+## [0.11.0] - 2026-01-02
+
+### Added
+
+- Added `doc.go` files to all packages for pkg.go.dev documentation:
+  - `pkg/lint` - Public linting API documentation
+  - `pkg/template` - Template parsing documentation
+  - `pkg/graph` - DOT graph generation documentation
+  - `pkg/schema` - Schema validation documentation
+  - `pkg/rules` - Rule interface and registry documentation
+
+## [0.10.0] - 2026-01-02
+
+### Added
+
+- Phase 6: Schema-based validation complete (8 new rules):
+  - E1101: Schema validation - unknown properties
+  - E3014: Mutually exclusive properties
+  - E3017: Required anyOf properties
+  - E3018: Required oneOf properties
+  - E3020: Dependent property exclusions
+  - E3021: Dependent property requirements
+  - E3037: Unique list items
+  - E3040: Read-only properties
+- Extended `pkg/schema/constraints.go` with:
+  - `ResourceConstraints` struct for resource-level validation
+  - MutuallyExclusive, DependentRequired, DependentExcluded constraint maps
+  - OneOf/AnyOf property sets
+  - ReadOnlyProperties and UniqueItems tracking
+
+### Changed
+
+- Total rule count: 82 -> 90
+
+## [0.7.2] - 2026-01-02
+
+### Dependencies
+
+- Upgrade cloudformation-schema-go to v0.6.0
+
+## [0.7.1] - 2026-01-02
+
+### Dependencies
+
+- Update cloudformation-schema-go to v0.5.0
+
 ## [0.7.0] - 2026-01-01
 
 ### Added
@@ -209,7 +269,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SAM transform support is not included (users should run `sam build` first)
 - See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy
 
-[Unreleased]: https://github.com/lex00/cfn-lint-go/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/lex00/cfn-lint-go/compare/v0.12.0...HEAD
+[0.12.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.12.0
+[0.11.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.11.0
+[0.10.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.10.0
+[0.7.2]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.7.2
+[0.7.1]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.7.1
+[0.7.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.7.0
+[0.6.1]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.6.1
 [0.6.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.6.0
 [0.5.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.5.0
 [0.4.1]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.4.1
