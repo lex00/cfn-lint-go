@@ -81,7 +81,7 @@ func (r *E5001) Match(tmpl *template.Template) []rules.Match {
 		}
 
 		// Modules must have Properties
-		if res.Properties == nil || len(res.Properties) == 0 {
+		if len(res.Properties) == 0 {
 			matches = append(matches, rules.Match{
 				Message: fmt.Sprintf("Module resource '%s' must have Properties defined", name),
 				Line:    res.Node.Line,
