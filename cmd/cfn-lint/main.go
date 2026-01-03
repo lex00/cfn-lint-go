@@ -184,14 +184,14 @@ func listRulesCmd() *cobra.Command {
 			}
 
 			w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
-			fmt.Fprintln(w, "RULE\tDESCRIPTION\tTAGS")
-			fmt.Fprintln(w, "----\t-----------\t----")
+			_, _ = fmt.Fprintln(w, "RULE\tDESCRIPTION\tTAGS")
+			_, _ = fmt.Fprintln(w, "----\t-----------\t----")
 			for _, r := range allRules {
 				tags := ""
 				if len(r.Tags()) > 0 {
 					tags = fmt.Sprintf("%v", r.Tags())
 				}
-				fmt.Fprintf(w, "%s\t%s\t%s\n", r.ID(), r.ShortDesc(), tags)
+				_, _ = fmt.Fprintf(w, "%s\t%s\t%s\n", r.ID(), r.ShortDesc(), tags)
 			}
 			return w.Flush()
 		},

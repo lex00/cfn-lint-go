@@ -87,7 +87,8 @@ func (r *E1005) checkTransform(node *yaml.Node) []rules.Match {
 	case yaml.SequenceNode:
 		// List of transforms
 		for idx, item := range node.Content {
-			if item.Kind == yaml.ScalarNode {
+			switch item.Kind {
+			case yaml.ScalarNode:
 				if !isValidTransform(item.Value) {
 					matches = append(matches, rules.Match{
 						Message: fmt.Sprintf("Unknown transform '%s'", item.Value),
@@ -96,7 +97,7 @@ func (r *E1005) checkTransform(node *yaml.Node) []rules.Match {
 						Path:    []string{"Transform", fmt.Sprintf("[%d]", idx)},
 					})
 				}
-			} else if item.Kind == yaml.MappingNode {
+			case yaml.MappingNode:
 				// Inline transform with Name key
 				matches = append(matches, r.checkInlineTransform(item, idx)...)
 			}
