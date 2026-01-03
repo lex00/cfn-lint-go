@@ -11,20 +11,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Phase 15: Deployment Files & Modules complete (3 new rules):
-  - E0100: Deployment file syntax validation (placeholder for future implementation)
-  - E0200: Parameter file syntax validation (placeholder for future implementation)
+- Phase 14: Warning Rules Extensions (34 new rules):
+  - W1019: Unused Sub parameters
+  - W1020: Sub not needed without variables
+  - W1028: Fn::If unreachable path
+  - W1030-W1036: Function value validations
+  - W1040: ToJsonString function value validation
+  - W1051: Secrets Manager ARN in dynamic ref
+  - W1100: YAML merge usage
+  - W2030: Parameter valid value check
+  - W2031: Parameter AllowedPattern check
+  - W2501: Password properties configuration
+  - W2506: ImageId parameter type
+  - W2511: IAM policy syntax
+  - W2530: SnapStart configuration
+  - W2531: Lambda EOL runtime warning
+  - W2533: Lambda .zip deployment properties
+  - W3011: UpdateReplacePolicy/DeletionPolicy both set
+  - W3034: Parameter value range check
+  - W3037: IAM permission configuration
+  - W3045: S3 bucket policies for access control
+  - W3660: Multiple resources modifying RestApi
+  - W3663: SourceAccount required
+  - W3687: Ports not for certain protocols
+  - W3688-W3693: DB-related warnings
+  - W4005: cfn-lint configuration in Metadata
+- Phase 15: Deployment Files & Modules (3 new rules):
+  - E0100: Deployment file syntax validation (placeholder)
+  - E0200: Parameter file syntax validation (placeholder)
   - E5001: CloudFormation Modules resource validation
-- Created new `internal/rules/modules` package for E5xxx rules
-- E5001 validates module resource type format (Organization::Service::Resource::MODULE)
-- E5001 validates modules have required Properties defined
 
 ### Notes
 
-- E0100 and E0200 are registered but return no matches on CloudFormation templates. Full implementation requires separate file parsing infrastructure for deployment/parameter files.
-- 93 rules now implemented (35% of Python cfn-lint's 265 rules)
-- E0xxx category now at 100% coverage (6/6 rules)
-- E5xxx category now at 100% coverage (1/1 rule)
+- 262 rules now implemented (99% of Python cfn-lint's 265 rules)
+- E0100 and E0200 are stubs pending file parsing infrastructure
+- Warning rules category expanded from 12 to 46 rules
 
 ## [0.12.0] - 2026-01-02
 
@@ -288,7 +309,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - SAM transform support is not included (users should run `sam build` first)
 - See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy
 
-[Unreleased]: https://github.com/lex00/cfn-lint-go/compare/v0.12.0...HEAD
+[Unreleased]: https://github.com/lex00/cfn-lint-go/compare/v0.13.0...HEAD
+[0.13.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.13.0
 [0.12.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.12.0
 [0.11.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.11.0
 [0.10.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.10.0
