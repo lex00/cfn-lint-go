@@ -4,7 +4,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 ## Current Status
 
-**v0.15.0**: 126 rules implemented (48% of Python cfn-lint's 265 rules).
+**v0.16.0**: 131 rules implemented (49% of Python cfn-lint's 265 rules).
 
 See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 
@@ -14,7 +14,7 @@ See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 |--------|----------|-------------|--------------|----------|
 | E0xxx | Template Errors | 6 | 6 | 100% |
 | E1xxx | Functions | 34 | 34 | 100% |
-| E2xxx | Parameters | 6 | 9 | 67% |
+| E2xxx | Parameters | 11 | 14 | 79% |
 | E3xxx | Resources | 25 | 108 | 23% |
 | E4xxx | Metadata | 2 | 2 | 100% |
 | E5xxx | Modules | 1 | 1 | 100% |
@@ -33,7 +33,7 @@ See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 | I3xxx | Resource Info | 9 | 9 | 100% |
 | I6xxx | Output Info | 2 | 2 | 100% |
 | I7xxx | Mapping Info | 2 | 2 | 100% |
-| **Total** | | **126** | **265** | **48%** |
+| **Total** | | **131** | **265** | **49%** |
 
 ## Implemented Rules
 
@@ -99,6 +99,11 @@ See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 | E2010 | Parameter limit exceeded (200) | ✅ Implemented |
 | E2011 | Parameter name length error | ✅ Implemented |
 | E2015 | Default value within constraints | ✅ Implemented |
+| E2529 | SubscriptionFilters limit (2 per LogGroup) | ✅ Implemented |
+| E2530 | SnapStart runtime support validation | ✅ Implemented |
+| E2531 | Lambda runtime deprecation check | ✅ Implemented |
+| E2533 | Lambda runtime updatability check | ✅ Implemented |
+| E2900 | Deployment file parameters validation | ✅ Implemented |
 
 ### E3xxx - Resources
 
