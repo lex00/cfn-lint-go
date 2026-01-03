@@ -19,6 +19,7 @@ import (
 	_ "github.com/lex00/cfn-lint-go/internal/rules/errors"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/formats"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/functions"
+	_ "github.com/lex00/cfn-lint-go/internal/rules/informational"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/mappings"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/metadata"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/outputs"
@@ -184,14 +185,14 @@ func listRulesCmd() *cobra.Command {
 			}
 
 			w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
-			fmt.Fprintln(w, "RULE\tDESCRIPTION\tTAGS")
-			fmt.Fprintln(w, "----\t-----------\t----")
+			_, _ = fmt.Fprintln(w, "RULE\tDESCRIPTION\tTAGS")
+			_, _ = fmt.Fprintln(w, "----\t-----------\t----")
 			for _, r := range allRules {
 				tags := ""
 				if len(r.Tags()) > 0 {
 					tags = fmt.Sprintf("%v", r.Tags())
 				}
-				fmt.Fprintf(w, "%s\t%s\t%s\n", r.ID(), r.ShortDesc(), tags)
+				_, _ = fmt.Fprintf(w, "%s\t%s\t%s\n", r.ID(), r.ShortDesc(), tags)
 			}
 			return w.Flush()
 		},

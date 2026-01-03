@@ -4,7 +4,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 ## Current Status
 
-**v0.13.0**: 102 rules implemented (38% of Python cfn-lint's 265 rules).
+**v0.14.0**: 123 rules implemented (46% of Python cfn-lint's 265 rules).
 
 See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 
@@ -28,8 +28,12 @@ See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 | W6xxx | Output Warnings | 1 | 1 | 100% |
 | W7xxx | Mapping Warnings | 1 | 1 | 100% |
 | W8xxx | Condition Warnings | 2 | 2 | 100% |
-| Ixxx | Informational | 0 | 31 | 0% |
-| **Total** | | **102** | **265** | **38%** |
+| I1xxx | Template Info | 3 | 3 | 100% |
+| I2xxx | Parameter Info | 4 | 4 | 100% |
+| I3xxx | Resource Info | 9 | 9 | 100% |
+| I6xxx | Output Info | 2 | 2 | 100% |
+| I7xxx | Mapping Info | 2 | 2 | 100% |
+| **Total** | | **123** | **265** | **46%** |
 
 ## Implemented Rules
 
@@ -211,6 +215,50 @@ See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 |------|-------------|--------|
 | W8001 | Unused condition | ✅ Implemented |
 | W8003 | Fn::Equals with static result | ✅ Implemented |
+
+### I1xxx - Template Informational
+
+| Rule | Description | Status |
+|------|-------------|--------|
+| I1002 | Template size approaching limit | ✅ Implemented |
+| I1003 | Description approaching size limit | ✅ Implemented |
+| I1022 | Prefer Fn::Sub over Fn::Join | ✅ Implemented |
+
+### I2xxx - Parameter Informational
+
+| Rule | Description | Status |
+|------|-------------|--------|
+| I2003 | Parameter AllowedPattern is valid regex | ✅ Implemented |
+| I2010 | Parameter count approaching limit | ✅ Implemented |
+| I2011 | Parameter name approaching length limit | ✅ Implemented |
+| I2530 | Consider SnapStart for Java11+ Lambda runtimes | ✅ Implemented |
+
+### I3xxx - Resource Informational
+
+| Rule | Description | Status |
+|------|-------------|--------|
+| I3010 | Resource count approaching limit | ✅ Implemented |
+| I3011 | Stateful resources need explicit deletion policies | ✅ Implemented |
+| I3012 | Resource name approaching length limit | ✅ Implemented |
+| I3013 | Auto-expiring content needs retention period | ✅ Implemented |
+| I3037 | Duplicates in list that allows duplicates | ✅ Implemented |
+| I3042 | ARN should use pseudo parameters | ✅ Implemented |
+| I3100 | Legacy instance type generations | ✅ Implemented |
+| I3510 | IAM statement resources match actions | ✅ Implemented |
+
+### I6xxx - Output Informational
+
+| Rule | Description | Status |
+|------|-------------|--------|
+| I6010 | Output count approaching limit | ✅ Implemented |
+| I6011 | Output name approaching length limit | ✅ Implemented |
+
+### I7xxx - Mapping Informational
+
+| Rule | Description | Status |
+|------|-------------|--------|
+| I7002 | Mapping name approaching length limit | ✅ Implemented |
+| I7010 | Mapping count approaching limit | ✅ Implemented |
 
 ## Rule Severity Levels
 
