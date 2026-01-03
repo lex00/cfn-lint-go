@@ -83,11 +83,6 @@ func (r *E2533) Match(tmpl *template.Template) []rules.Match {
 	return matches
 }
 
-func isCustomRuntime(runtime string) bool {
-	runtime = strings.ToLower(runtime)
-	return strings.HasPrefix(runtime, "provided")
-}
-
 func isValidRuntime(runtime string) bool {
 	runtime = strings.ToLower(runtime)
 
