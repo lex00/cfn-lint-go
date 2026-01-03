@@ -11,15 +11,15 @@ import (
 // SARIF represents the SARIF 2.1.0 output format.
 // Reference: https://docs.oasis-open.org/sarif/sarif/v2.1.0/sarif-v2.1.0.html
 type SARIF struct {
-	Schema  string      `json:"$schema"`
-	Version string      `json:"version"`
-	Runs    []SARIFRun  `json:"runs"`
+	Schema  string     `json:"$schema"`
+	Version string     `json:"version"`
+	Runs    []SARIFRun `json:"runs"`
 }
 
 // SARIFRun represents a single run in SARIF format.
 type SARIFRun struct {
-	Tool    SARIFTool      `json:"tool"`
-	Results []SARIFResult  `json:"results"`
+	Tool    SARIFTool     `json:"tool"`
+	Results []SARIFResult `json:"results"`
 }
 
 // SARIFTool represents the tool metadata.
@@ -29,9 +29,9 @@ type SARIFTool struct {
 
 // SARIFDriver represents the tool driver.
 type SARIFDriver struct {
-	Name           string     `json:"name"`
-	InformationURI string     `json:"informationUri"`
-	Version        string     `json:"version"`
+	Name           string      `json:"name"`
+	InformationURI string      `json:"informationUri"`
+	Version        string      `json:"version"`
 	Rules          []SARIFRule `json:"rules,omitempty"`
 }
 
@@ -56,9 +56,9 @@ type SARIFProperties struct {
 
 // SARIFResult represents a single result in SARIF format.
 type SARIFResult struct {
-	RuleID  string          `json:"ruleId"`
-	Level   string          `json:"level"`
-	Message SARIFMessage    `json:"message"`
+	RuleID    string          `json:"ruleId"`
+	Level     string          `json:"level"`
+	Message   SARIFMessage    `json:"message"`
 	Locations []SARIFLocation `json:"locations"`
 }
 

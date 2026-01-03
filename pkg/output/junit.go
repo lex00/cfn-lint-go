@@ -29,10 +29,10 @@ type JUnitTestSuite struct {
 
 // JUnitTestCase represents a single test case (one per rule violation).
 type JUnitTestCase struct {
-	Name      string          `xml:"name,attr"`
-	Classname string          `xml:"classname,attr"`
-	Time      string          `xml:"time,attr"`
-	Failure   *JUnitFailure   `xml:"failure,omitempty"`
+	Name      string        `xml:"name,attr"`
+	Classname string        `xml:"classname,attr"`
+	Time      string        `xml:"time,attr"`
+	Failure   *JUnitFailure `xml:"failure,omitempty"`
 }
 
 // JUnitFailure represents a test failure.
