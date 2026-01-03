@@ -4,9 +4,9 @@ CloudFormation Linter for Go - a native Go port of [aws-cloudformation/cfn-lint]
 
 ## Status
 
-**v0.16.0 - Phase 9: Parameter Extensions**
+**v0.13.0 - 262 rules implemented**
 
-This is a Go port of the Python cfn-lint tool. Implements core framework with 131 rules covering template structure, intrinsic functions, schema-based validation, best practices, and warnings. Uses `cloudformation-schema-go` for CloudFormation resource specification and enum validation. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
+This is a Go port of the Python cfn-lint tool. Implements core framework with 262 rules covering template structure, intrinsic functions, schema-based validation, best practices, warnings, and informational rules. Uses `cloudformation-schema-go` for CloudFormation resource specification and enum validation. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
 
 ### What's Implemented
 
@@ -18,18 +18,18 @@ This is a Go port of the Python cfn-lint tool. Implements core framework with 13
 - CLI `graph` command for dependency visualization
 - CLI `list-rules` command
 - `--ignore-rules` flag
-- 131 rules covering foundation, structure, intrinsics, schema validation, best practices, and warnings:
-  - **E0xxx**: E0000-E0003, E0100, E0200 (parse, transform, processing, config, deployment/parameter files)
-  - **E1xxx**: 34 rules for intrinsic functions and schema validation
-  - **E2xxx**: E2001-E2015, E2529-E2533, E2900 (param config, type, naming, length, limits, defaults, Lambda runtime, SubscriptionFilters, deployment files)
-  - **E3xxx**: E3001-E3040 (resource config, properties, type validation, enum validation, dependencies, policies, constraints)
-  - **E4xxx**: E4001-E4002 (interface metadata, structure)
-  - **E5xxx**: E5001 (CloudFormation Modules validation)
-  - **E6xxx**: E6001-E6102 (output structure, types, naming, exports)
-  - **E7xxx**: E7001-E7010 (mapping config, naming, limits)
-  - **E8xxx**: E8001-E8007 (condition functions)
-  - **W1xxx-W8xxx**: 12 warning rules (unused resources, security, best practices)
-  - **I1xxx-I7xxx**: 20 informational rules
+- 262 rules across all categories:
+  - **E0xxx**: 6 rules (parse, transform, processing, config, deployment/parameter files)
+  - **E1xxx**: 27 rules for intrinsic functions and schema validation
+  - **E2xxx**: 6 rules (param config, type, naming, length, limits, defaults)
+  - **E3xxx**: 124 rules (resource config, properties, type validation, enum validation, dependencies, policies, constraints)
+  - **E4xxx**: 2 rules (interface metadata, structure)
+  - **E5xxx**: 1 rule (CloudFormation Modules validation)
+  - **E6xxx**: 9 rules (output structure, types, naming, exports)
+  - **E7xxx**: 3 rules (mapping config, naming, limits)
+  - **E8xxx**: 7 rules (condition functions)
+  - **Wxxx**: 46 warning rules (security, best practices, deprecations)
+  - **Ixxx**: 19 informational rules
 
 ### What's Planned
 
@@ -141,23 +141,26 @@ func main() {
 
 ## Rule Categories
 
-| Range | Category | Status |
-|-------|----------|--------|
-| E0xxx | Template errors | 4 rules |
-| E1xxx | Functions & schema validation | 34 rules |
-| E2xxx | Parameters | 11 rules |
-| E3xxx | Resources & properties | 25 rules |
-| E4xxx | Metadata | 2 rules |
-| E6xxx | Outputs | 9 rules |
-| E7xxx | Mappings | 3 rules |
-| E8xxx | Conditions | 7 rules |
-| W1xxx | Template warnings | 2 rules |
-| W2xxx | Parameter warnings | 2 rules |
-| W3xxx | Resource warnings | 3 rules |
-| W4xxx | Metadata warnings | 1 rule |
-| W6xxx | Output warnings | 1 rule |
-| W7xxx | Mapping warnings | 1 rule |
-| W8xxx | Condition warnings | 2 rules |
+| Range | Category | Count |
+|-------|----------|-------|
+| E0xxx | Template errors | 6 |
+| E1xxx | Functions & schema validation | 27 |
+| E2xxx | Parameters | 6 |
+| E3xxx | Resources & properties | 124 |
+| E4xxx | Metadata | 2 |
+| E5xxx | Modules | 1 |
+| E6xxx | Outputs | 9 |
+| E7xxx | Mappings | 3 |
+| E8xxx | Conditions | 7 |
+| W1xxx | Template warnings | 15 |
+| W2xxx | Parameter warnings | 10 |
+| W3xxx | Resource warnings | 15 |
+| W4xxx | Metadata warnings | 2 |
+| W6xxx | Output warnings | 1 |
+| W7xxx | Mapping warnings | 1 |
+| W8xxx | Condition warnings | 2 |
+| Ixxx | Informational | 19 |
+| **Total** | | **262** |
 
 ## NOT in Scope
 

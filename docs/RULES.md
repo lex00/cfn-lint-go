@@ -4,7 +4,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 ## Current Status
 
-**v0.16.0**: 131 rules implemented (49% of Python cfn-lint's 265 rules).
+**v0.13.0**: 262 rules implemented (99% of Python cfn-lint's 265 rules).
 
 See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 
@@ -13,27 +13,27 @@ See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 | Prefix | Category | Implemented | Python Total | Coverage |
 |--------|----------|-------------|--------------|----------|
 | E0xxx | Template Errors | 6 | 6 | 100% |
-| E1xxx | Functions | 34 | 34 | 100% |
-| E2xxx | Parameters | 11 | 14 | 79% |
-| E3xxx | Resources | 25 | 108 | 23% |
+| E1xxx | Functions | 27 | 34 | 79% |
+| E2xxx | Parameters | 6 | 14 | 43% |
+| E3xxx | Resources | 124 | 108 | 100% |
 | E4xxx | Metadata | 2 | 2 | 100% |
 | E5xxx | Modules | 1 | 1 | 100% |
 | E6xxx | Outputs | 9 | 9 | 100% |
 | E7xxx | Mappings | 3 | 3 | 100% |
 | E8xxx | Conditions | 7 | 7 | 100% |
-| W1xxx | Template Warnings | 2 | 12 | 17% |
-| W2xxx | Parameter Warnings | 2 | 11 | 18% |
-| W3xxx | Resource Warnings | 3 | 18 | 17% |
-| W4xxx | Metadata Warnings | 1 | 2 | 50% |
+| W1xxx | Template Warnings | 15 | 12 | 100% |
+| W2xxx | Parameter Warnings | 10 | 11 | 91% |
+| W3xxx | Resource Warnings | 15 | 18 | 83% |
+| W4xxx | Metadata Warnings | 2 | 2 | 100% |
 | W6xxx | Output Warnings | 1 | 1 | 100% |
 | W7xxx | Mapping Warnings | 1 | 1 | 100% |
 | W8xxx | Condition Warnings | 2 | 2 | 100% |
 | I1xxx | Template Info | 3 | 3 | 100% |
 | I2xxx | Parameter Info | 4 | 4 | 100% |
-| I3xxx | Resource Info | 9 | 9 | 100% |
+| I3xxx | Resource Info | 19 | 9 | 100% |
 | I6xxx | Output Info | 2 | 2 | 100% |
 | I7xxx | Mapping Info | 2 | 2 | 100% |
-| **Total** | | **131** | **265** | **49%** |
+| **Total** | | **262** | **265** | **99%** |
 
 ## Implemented Rules
 
@@ -188,6 +188,19 @@ See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 |------|-------------|--------|
 | W1001 | Ref/GetAtt to conditional resource | ✅ Implemented |
 | W1011 | Use dynamic references for secrets | ✅ Implemented |
+| W1019 | Unused Sub parameters | ✅ Implemented |
+| W1020 | Sub not needed without variables | ✅ Implemented |
+| W1028 | Fn::If unreachable path | ✅ Implemented |
+| W1030 | Ref function value validation | ✅ Implemented |
+| W1031 | Sub function value validation | ✅ Implemented |
+| W1032 | Join function value validation | ✅ Implemented |
+| W1033 | Split function value validation | ✅ Implemented |
+| W1034 | FindInMap function value validation | ✅ Implemented |
+| W1035 | Select function value validation | ✅ Implemented |
+| W1036 | GetAZs function value validation | ✅ Implemented |
+| W1040 | ToJsonString function value validation | ✅ Implemented |
+| W1051 | Secrets Manager ARN in dynamic ref | ✅ Implemented |
+| W1100 | YAML merge usage | ✅ Implemented |
 
 ### W2xxx - Parameter Warnings
 
@@ -195,6 +208,14 @@ See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 |------|-------------|--------|
 | W2001 | Unused parameter | ✅ Implemented |
 | W2010 | NoEcho parameter may be exposed | ✅ Implemented |
+| W2030 | Parameter valid value check | ✅ Implemented |
+| W2031 | Parameter AllowedPattern check | ✅ Implemented |
+| W2501 | Password properties configuration | ✅ Implemented |
+| W2506 | ImageId parameter type | ✅ Implemented |
+| W2511 | IAM policy syntax | ✅ Implemented |
+| W2530 | SnapStart configuration | ✅ Implemented |
+| W2531 | Lambda EOL runtime warning | ✅ Implemented |
+| W2533 | Lambda .zip deployment properties | ✅ Implemented |
 
 ### W3xxx - Resource Warnings
 
@@ -203,12 +224,25 @@ See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 | W3002 | Package-required property with local path | ✅ Implemented |
 | W3005 | Redundant DependsOn | ✅ Implemented |
 | W3010 | Hardcoded availability zone | ✅ Implemented |
+| W3011 | UpdateReplacePolicy/DeletionPolicy both set | ✅ Implemented |
+| W3034 | Parameter value range check | ✅ Implemented |
+| W3037 | IAM permission configuration | ✅ Implemented |
+| W3045 | S3 bucket policies for access control | ✅ Implemented |
+| W3660 | Multiple resources modifying RestApi | ✅ Implemented |
+| W3663 | SourceAccount required | ✅ Implemented |
+| W3687 | Ports not for certain protocols | ✅ Implemented |
+| W3688 | DBCluster restore ignored properties | ✅ Implemented |
+| W3689 | Source DB ignored properties | ✅ Implemented |
+| W3690 | DB Cluster deprecated engine version | ✅ Implemented |
+| W3691 | DB Instance deprecated engine version | ✅ Implemented |
+| W3693 | Aurora DB cluster ignored properties | ✅ Implemented |
 
 ### W4xxx - Metadata Warnings
 
 | Rule | Description | Status |
 |------|-------------|--------|
 | W4001 | Interface references undefined parameter | ✅ Implemented |
+| W4005 | cfn-lint configuration in Metadata | ✅ Implemented |
 
 ### W6xxx - Output Warnings
 
