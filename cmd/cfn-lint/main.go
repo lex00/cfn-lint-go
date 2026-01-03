@@ -19,6 +19,7 @@ import (
 	_ "github.com/lex00/cfn-lint-go/internal/rules/errors"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/formats"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/functions"
+	_ "github.com/lex00/cfn-lint-go/internal/rules/informational"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/mappings"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/metadata"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/outputs"
