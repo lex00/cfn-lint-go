@@ -35,21 +35,21 @@ func (r *I2530) Tags() []string {
 
 // snapStartEligibleRuntimes lists Lambda runtimes that support SnapStart
 var snapStartEligibleRuntimes = map[string]bool{
-	"java11":             true,
-	"java17":             true,
-	"java21":             true,
-	"java11.al2":         true,
-	"java17.al2":         true,
-	"java21.al2":         true,
-	"java8.al2":          false, // Java 8 doesn't support SnapStart
-	"provided.al2":       false,
-	"provided.al2023":    false,
-	"python3.9":          false,
-	"python3.10":         false,
-	"python3.11":         false,
-	"python3.12":         false,
-	"nodejs18.x":         false,
-	"nodejs20.x":         false,
+	"java11":          true,
+	"java17":          true,
+	"java21":          true,
+	"java11.al2":      true,
+	"java17.al2":      true,
+	"java21.al2":      true,
+	"java8.al2":       false, // Java 8 doesn't support SnapStart
+	"provided.al2":    false,
+	"provided.al2023": false,
+	"python3.9":       false,
+	"python3.10":      false,
+	"python3.11":      false,
+	"python3.12":      false,
+	"nodejs18.x":      false,
+	"nodejs20.x":      false,
 }
 
 func (r *I2530) Match(tmpl *template.Template) []rules.Match {

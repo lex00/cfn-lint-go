@@ -34,13 +34,13 @@ func (r *I3013) Tags() []string {
 
 // retentionPropertyMap maps resource types to their retention property names
 var retentionPropertyMap = map[string]string{
-	"AWS::Logs::LogGroup":            "RetentionInDays",
-	"AWS::CloudWatch::LogGroup":      "RetentionInDays",
-	"AWS::EC2::FlowLog":              "RetentionInDays",
-	"AWS::Backup::BackupVault":       "BackupVaultTags", // Lifecycle policies
-	"AWS::S3::Bucket":                "LifecycleConfiguration",
-	"AWS::ECR::Repository":           "LifecyclePolicy",
-	"AWS::Kinesis::Stream":           "RetentionPeriodHours",
+	"AWS::Logs::LogGroup":       "RetentionInDays",
+	"AWS::CloudWatch::LogGroup": "RetentionInDays",
+	"AWS::EC2::FlowLog":         "RetentionInDays",
+	"AWS::Backup::BackupVault":  "BackupVaultTags", // Lifecycle policies
+	"AWS::S3::Bucket":           "LifecycleConfiguration",
+	"AWS::ECR::Repository":      "LifecyclePolicy",
+	"AWS::Kinesis::Stream":      "RetentionPeriodHours",
 }
 
 func (r *I3013) Match(tmpl *template.Template) []rules.Match {

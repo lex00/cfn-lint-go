@@ -46,7 +46,7 @@ var duplicateCheckProperties = map[string][]string{
 		"VpcSecurityGroupIds",
 	},
 	"AWS::Lambda::Function": {
-		"SubnetIds",  // via VpcConfig
+		"SubnetIds", // via VpcConfig
 		"SecurityGroupIds",
 	},
 	"AWS::ECS::Service": {
