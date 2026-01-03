@@ -4,7 +4,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 ## Current Status
 
-**v0.13.0**: 262 rules implemented (99% of Python cfn-lint's 265 rules).
+**v0.15.0**: 265 rules implemented (100% feature parity with Python cfn-lint).
 
 See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 
@@ -14,7 +14,7 @@ See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 |--------|----------|-------------|--------------|----------|
 | E0xxx | Template Errors | 6 | 6 | 100% |
 | E1xxx | Functions | 27 | 34 | 79% |
-| E2xxx | Parameters | 6 | 14 | 43% |
+| E2xxx | Parameters | 9 | 14 | 64% |
 | E3xxx | Resources | 124 | 108 | 100% |
 | E4xxx | Metadata | 2 | 2 | 100% |
 | E5xxx | Modules | 1 | 1 | 100% |
@@ -33,7 +33,7 @@ See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 | I3xxx | Resource Info | 19 | 9 | 100% |
 | I6xxx | Output Info | 2 | 2 | 100% |
 | I7xxx | Mapping Info | 2 | 2 | 100% |
-| **Total** | | **262** | **265** | **99%** |
+| **Total** | | **265** | **265** | **100%** |
 
 ## Implemented Rules
 
@@ -96,8 +96,11 @@ See [RESEARCH.md](RESEARCH.md) for the phased implementation plan.
 | E2001 | Parameter configuration error | ✅ Implemented |
 | E2002 | Invalid parameter type | ✅ Implemented |
 | E2003 | Parameter naming convention error | ✅ Implemented |
+| E2004 | Parameter NoEcho configuration | ✅ Implemented |
 | E2010 | Parameter limit exceeded (200) | ✅ Implemented |
 | E2011 | Parameter name length error | ✅ Implemented |
+| E2012 | Parameter SSM type validation | ✅ Implemented |
+| E2014 | Parameter ConstraintDescription usage | ✅ Implemented |
 | E2015 | Default value within constraints | ✅ Implemented |
 | E2529 | SubscriptionFilters limit (2 per LogGroup) | ✅ Implemented |
 | E2530 | SnapStart runtime support validation | ✅ Implemented |

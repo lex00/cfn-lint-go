@@ -1,0 +1,85 @@
+name: 'CloudFormation Lint (Go)'
+description: 'Validate CloudFormation templates using cfn-lint-go'
+author: 'lex00'
+
+branding:
+  icon: 'check-circle'
+  color: 'orange'
+
+inputs:
+  templates:
+    description: 'Template files or glob patterns to lint (space-separated)'
+    required: true
+  format:
+    description: 'Output format (text, json, sarif, junit, pretty)'
+    required: false
+    default: 'text'
+  config:
+    description: 'Path to config file (.cfnlintrc)'
+    required: false
+  ignore-rules:
+    description: 'Comma-separated list of rule IDs to ignore'
+    required: false
+  regions:
+    description: 'Comma-separated list of AWS regions to validate against'
+    required: false
+  fail-on-warnings:
+    description: 'Fail the build if warnings are found'
+    required: false
+    default: 'false'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install cfn-lint-go
+      shell: bash
+      run: |
+        echo "Installing cfn-lint-go..."
+        go install github.com/lex00/cfn-lint-go/cmd/cfn-lint@latest
+
+    - name: Run cfn-lint-go
+      shell: bash
+      run: |
+        # Build command
+        CMD="cfn-lint"
+
+        # Add templates
+        CMD="$CMD ${{ inputs.templates }}"
+
+        # Add format
+        if [ -n "${{ inputs.format }}" ]; then
+          CMD="$CMD --format ${{ inputs.format }}"
+        fi
+
+        # Add config file
+        if [ -n "${{ inputs.config }}" ]; then
+          CMD="$CMD --config ${{ inputs.config }}"
+        fi
+
+        # Add ignore-rules
+        if [ -n "${{ inputs.ignore-rules }}" ]; then
+          CMD="$CMD --ignore-rules ${{ inputs.ignore-rules }}"
+        fi
+
+        # Add regions
+        if [ -n "${{ inputs.regions }}" ]; then
+          CMD="$CMD --regions ${{ inputs.regions }}"
+        fi
+
+        echo "Running: $CMD"
+
+        # Run the command
+        if [ "${{ inputs.format }}" = "sarif" ]; then
+          # Output SARIF to file
+          $CMD > cfn-lint.sarif
+          echo "SARIF output written to cfn-lint.sarif"
+        else
+          $CMD
+        fi
+
+    - name: Upload SARIF results
+      if: inputs.format == 'sarif'
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: cfn-lint.sarif
+        category: cfn-lint

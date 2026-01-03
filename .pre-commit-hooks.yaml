@@ -1,0 +1,9 @@
+- id: cfn-lint-go
+  name: CloudFormation Lint (Go)
+  description: Validate CloudFormation templates using cfn-lint-go
+  entry: cfn-lint
+  language: golang
+  files: \.(yaml|yml|json)$
+  additional_dependencies: []
+  pass_filenames: true
+  require_serial: false
