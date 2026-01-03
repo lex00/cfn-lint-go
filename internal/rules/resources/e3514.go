@@ -94,15 +94,15 @@ func (r *E3514) validatePolicyARNs(policyDoc interface{}, resName string, matche
 	policyMap, ok := policyDoc.(map[string]interface{})
 	if !ok {
 		// Try to parse as JSON string
-		if policyStr, ok := policyDoc.(string); ok {
-			var parsedPolicy map[string]interface{}
-			if err := json.Unmarshal([]byte(policyStr), &parsedPolicy); err != nil {
-				return
-			}
-			policyMap = parsedPolicy
-		} else {
+		policyStr, isStr := policyDoc.(string)
+		if !isStr {
 			return
 		}
+		var parsedPolicy map[string]interface{}
+		if err := json.Unmarshal([]byte(policyStr), &parsedPolicy); err != nil {
+			return
+		}
+		policyMap = parsedPolicy
 	}
 
 	// Get statements
