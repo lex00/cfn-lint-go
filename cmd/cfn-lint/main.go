@@ -23,6 +23,7 @@ import (
 	_ "github.com/lex00/cfn-lint-go/internal/rules/outputs"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/parameters"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/resources"
+	_ "github.com/lex00/cfn-lint-go/internal/rules/rulessection"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/warnings"
 )
 
