@@ -4,9 +4,9 @@ CloudFormation Linter for Go - a native Go port of [aws-cloudformation/cfn-lint]
 
 ## Status
 
-**v0.12.0 - Graph Package Enhancements**
+**v0.16.0 - Phase 9: Parameter Extensions**
 
-This is a Go port of the Python cfn-lint tool. Implements core framework with 93 rules covering template structure, intrinsic functions, schema-based validation, best practices, and warnings. Uses `cloudformation-schema-go` for CloudFormation resource specification and enum validation. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
+This is a Go port of the Python cfn-lint tool. Implements core framework with 131 rules covering template structure, intrinsic functions, schema-based validation, best practices, and warnings. Uses `cloudformation-schema-go` for CloudFormation resource specification and enum validation. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
 
 ### What's Implemented
 
@@ -18,10 +18,10 @@ This is a Go port of the Python cfn-lint tool. Implements core framework with 93
 - CLI `graph` command for dependency visualization
 - CLI `list-rules` command
 - `--ignore-rules` flag
-- 93 rules covering foundation, structure, intrinsics, schema validation, best practices, and warnings:
+- 131 rules covering foundation, structure, intrinsics, schema validation, best practices, and warnings:
   - **E0xxx**: E0000-E0003, E0100, E0200 (parse, transform, processing, config, deployment/parameter files)
-  - **E1xxx**: 21 rules for intrinsic functions and schema validation
-  - **E2xxx**: E2001-E2015 (param config, type, naming, length, limits, defaults)
+  - **E1xxx**: 34 rules for intrinsic functions and schema validation
+  - **E2xxx**: E2001-E2015, E2529-E2533, E2900 (param config, type, naming, length, limits, defaults, Lambda runtime, SubscriptionFilters, deployment files)
   - **E3xxx**: E3001-E3040 (resource config, properties, type validation, enum validation, dependencies, policies, constraints)
   - **E4xxx**: E4001-E4002 (interface metadata, structure)
   - **E5xxx**: E5001 (CloudFormation Modules validation)
@@ -29,6 +29,7 @@ This is a Go port of the Python cfn-lint tool. Implements core framework with 93
   - **E7xxx**: E7001-E7010 (mapping config, naming, limits)
   - **E8xxx**: E8001-E8007 (condition functions)
   - **W1xxx-W8xxx**: 12 warning rules (unused resources, security, best practices)
+  - **I1xxx-I7xxx**: 20 informational rules
 
 ### What's Planned
 
@@ -143,8 +144,8 @@ func main() {
 | Range | Category | Status |
 |-------|----------|--------|
 | E0xxx | Template errors | 4 rules |
-| E1xxx | Functions & schema validation | 21 rules |
-| E2xxx | Parameters | 6 rules |
+| E1xxx | Functions & schema validation | 34 rules |
+| E2xxx | Parameters | 11 rules |
 | E3xxx | Resources & properties | 25 rules |
 | E4xxx | Metadata | 2 rules |
 | E6xxx | Outputs | 9 rules |
