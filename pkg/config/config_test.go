@@ -34,8 +34,8 @@ configure_rules:
 	}
 	defer os.Remove(tmpFile.Name())
 
-	if _, err := tmpFile.WriteString(content); err != nil {
-		t.Fatalf("Failed to write temp file: %v", err)
+	if _, writeErr := tmpFile.WriteString(content); writeErr != nil {
+		t.Fatalf("Failed to write temp file: %v", writeErr)
 	}
 	tmpFile.Close()
 
@@ -94,8 +94,8 @@ func TestLoad_JSON(t *testing.T) {
 	}
 	defer os.Remove(tmpFile.Name())
 
-	if _, err := tmpFile.WriteString(content); err != nil {
-		t.Fatalf("Failed to write temp file: %v", err)
+	if _, writeErr := tmpFile.WriteString(content); writeErr != nil {
+		t.Fatalf("Failed to write temp file: %v", writeErr)
 	}
 	tmpFile.Close()
 
@@ -131,8 +131,8 @@ templates: [
 	}
 	defer os.Remove(tmpFile.Name())
 
-	if _, err := tmpFile.WriteString(content); err != nil {
-		t.Fatalf("Failed to write temp file: %v", err)
+	if _, writeErr := tmpFile.WriteString(content); writeErr != nil {
+		t.Fatalf("Failed to write temp file: %v", writeErr)
 	}
 	tmpFile.Close()
 
@@ -150,8 +150,8 @@ func TestLoad_InvalidJSON(t *testing.T) {
 	}
 	defer os.Remove(tmpFile.Name())
 
-	if _, err := tmpFile.WriteString(content); err != nil {
-		t.Fatalf("Failed to write temp file: %v", err)
+	if _, writeErr := tmpFile.WriteString(content); writeErr != nil {
+		t.Fatalf("Failed to write temp file: %v", writeErr)
 	}
 	tmpFile.Close()
 
@@ -171,8 +171,8 @@ func TestLoad_NoExtension(t *testing.T) {
 	}
 	defer os.Remove(tmpFile.Name())
 
-	if _, err := tmpFile.WriteString(content); err != nil {
-		t.Fatalf("Failed to write temp file: %v", err)
+	if _, writeErr := tmpFile.WriteString(content); writeErr != nil {
+		t.Fatalf("Failed to write temp file: %v", writeErr)
 	}
 	tmpFile.Close()
 
@@ -292,14 +292,14 @@ func TestFind_NotFound(t *testing.T) {
 	}
 	defer os.RemoveAll(tmpDir)
 
-	oldWd, err := os.Getwd()
-	if err != nil {
-		t.Fatalf("Failed to get working directory: %v", err)
+	oldWd, wdErr := os.Getwd()
+	if wdErr != nil {
+		t.Fatalf("Failed to get working directory: %v", wdErr)
 	}
 	defer os.Chdir(oldWd)
 
-	if err := os.Chdir(tmpDir); err != nil {
-		t.Fatalf("Failed to change directory: %v", err)
+	if chdirErr := os.Chdir(tmpDir); chdirErr != nil {
+		t.Fatalf("Failed to change directory: %v", chdirErr)
 	}
 
 	_, err = Find()
@@ -323,23 +323,23 @@ func TestFind_Found(t *testing.T) {
 	}
 
 	configPath := filepath.Join(tmpDir, ".cfnlintrc")
-	if err := os.WriteFile(configPath, []byte("templates:\n  - \"*.yaml\"\n"), 0644); err != nil {
-		t.Fatalf("Failed to write config file: %v", err)
+	if writeErr := os.WriteFile(configPath, []byte("templates:\n  - \"*.yaml\"\n"), 0644); writeErr != nil {
+		t.Fatalf("Failed to write config file: %v", writeErr)
 	}
 
-	oldWd, err := os.Getwd()
-	if err != nil {
-		t.Fatalf("Failed to get working directory: %v", err)
+	oldWd, wdErr := os.Getwd()
+	if wdErr != nil {
+		t.Fatalf("Failed to get working directory: %v", wdErr)
 	}
 	defer os.Chdir(oldWd)
 
-	if err := os.Chdir(tmpDir); err != nil {
-		t.Fatalf("Failed to change directory: %v", err)
+	if chdirErr := os.Chdir(tmpDir); chdirErr != nil {
+		t.Fatalf("Failed to change directory: %v", chdirErr)
 	}
 
-	foundPath, err := Find()
-	if err != nil {
-		t.Fatalf("Find failed: %v", err)
+	foundPath, findErr := Find()
+	if findErr != nil {
+		t.Fatalf("Find failed: %v", findErr)
 	}
 
 	if foundPath != configPath {
