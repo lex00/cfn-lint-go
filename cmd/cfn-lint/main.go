@@ -9,8 +9,10 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/lex00/cfn-lint-go/pkg/config"
 	"github.com/lex00/cfn-lint-go/pkg/graph"
 	"github.com/lex00/cfn-lint-go/pkg/lint"
+	"github.com/lex00/cfn-lint-go/pkg/output"
 	"github.com/lex00/cfn-lint-go/pkg/rules"
 	"github.com/lex00/cfn-lint-go/pkg/template"
 
@@ -40,9 +42,14 @@ func main() {
 
 func rootCmd() *cobra.Command {
 	var (
-		format      string
-		regions     []string
-		ignoreRules []string
+		format              string
+		outputFile          string
+		noColor             bool
+		configFile          string
+		regions             []string
+		ignoreRules         []string
+		includeRules        []string
+		includeExperimental bool
 	)
 
 	cmd := &cobra.Command{
@@ -53,17 +60,26 @@ func rootCmd() *cobra.Command {
 Examples:
     cfn-lint template.yaml
     cfn-lint template.yaml --format json
-    cfn-lint *.yaml --ignore-rules E1001,W3002`,
+    cfn-lint template.yaml --format sarif
+    cfn-lint template.yaml --format junit --output results.xml
+    cfn-lint template.yaml --format pretty
+    cfn-lint *.yaml --ignore-rules E1001,W3002
+    cfn-lint template.yaml --config .cfnlintrc.yaml`,
 		Version: version,
-		Args:    cobra.MinimumNArgs(1),
+		Args:    cobra.ArbitraryArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return runLint(args, format, regions, ignoreRules)
+			return runLint(args, format, outputFile, configFile, noColor, regions, ignoreRules, includeRules, includeExperimental)
 		},
 	}
 
-	cmd.Flags().StringVarP(&format, "format", "f", "text", "Output format: text, json")
+	cmd.Flags().StringVarP(&format, "format", "f", "", "Output format: text, json, sarif, junit, pretty")
+	cmd.Flags().StringVarP(&outputFile, "output", "o", "", "Write output to file instead of stdout")
+	cmd.Flags().BoolVar(&noColor, "no-color", false, "Disable colored output (for pretty format)")
+	cmd.Flags().StringVarP(&configFile, "config", "c", "", "Path to config file (.cfnlintrc)")
 	cmd.Flags().StringSliceVarP(&regions, "regions", "r", nil, "AWS regions to validate against")
 	cmd.Flags().StringSliceVarP(&ignoreRules, "ignore-rules", "i", nil, "Rule IDs to ignore (comma-separated)")
+	cmd.Flags().StringSliceVar(&includeRules, "include-checks", nil, "Rule IDs to include (even if ignored)")
+	cmd.Flags().BoolVar(&includeExperimental, "include-experimental", false, "Include experimental rules")
 
 	cmd.AddCommand(graphCmd())
 	cmd.AddCommand(listRulesCmd())
@@ -71,14 +87,69 @@ Examples:
 	return cmd
 }
 
-func runLint(templates []string, format string, regions []string, ignoreRules []string) error {
+func runLint(templates []string, format, outputFile, configFile string, noColor bool, regions []string, ignoreRules, includeRules []string, includeExperimental bool) error {
+	// Load config file if specified or found
+	var cfg *config.Config
+	if configFile != "" {
+		// Explicit config file
+		loadedCfg, err := config.Load(configFile)
+		if err != nil {
+			return fmt.Errorf("loading config file: %w", err)
+		}
+		cfg = loadedCfg
+	} else {
+		// Try to find config file
+		foundPath, err := config.Find()
+		if err == nil {
+			loadedCfg, err := config.Load(foundPath)
+			if err != nil {
+				return fmt.Errorf("loading config file %s: %w", foundPath, err)
+			}
+			cfg = loadedCfg
+		} else {
+			// No config file found, use defaults
+			cfg = &config.Config{}
+		}
+	}
+
+	// Merge CLI flags with config (CLI takes precedence)
+	cliCfg := &config.Config{
+		Templates:           templates,
+		Regions:             regions,
+		IgnoreChecks:        ignoreRules,
+		IncludeChecks:       includeRules,
+		IncludeExperimental: includeExperimental,
+		Format:              format,
+		OutputFile:          outputFile,
+	}
+	finalCfg := config.Merge(cfg, cliCfg)
+
+	// Determine templates to lint
+	templatesToLint := finalCfg.Templates
+	if len(templatesToLint) == 0 {
+		return fmt.Errorf("no templates specified")
+	}
+
+	// Determine effective ignore rules (ignoreChecks - includeChecks)
+	effectiveIgnoreRules := make([]string, 0)
+	includeSet := make(map[string]bool)
+	for _, rule := range finalCfg.IncludeChecks {
+		includeSet[rule] = true
+	}
+	for _, rule := range finalCfg.IgnoreChecks {
+		if !includeSet[rule] {
+			effectiveIgnoreRules = append(effectiveIgnoreRules, rule)
+		}
+	}
+
 	linter := lint.New(lint.Options{
-		Regions:     regions,
-		IgnoreRules: ignoreRules,
+		Regions:             finalCfg.Regions,
+		IgnoreRules:         effectiveIgnoreRules,
+		IncludeExperimental: finalCfg.IncludeExperimental,
 	})
 
 	var allMatches []lint.Match
-	for _, path := range templates {
+	for _, path := range templatesToLint {
 		matches, err := linter.LintFile(path)
 		if err != nil {
 			return fmt.Errorf("linting %s: %w", path, err)
@@ -86,14 +157,34 @@ func runLint(templates []string, format string, regions []string, ignoreRules []
 		allMatches = append(allMatches, matches...)
 	}
 
-	return outputMatches(allMatches, format)
+	// Determine output format
+	outFormat := finalCfg.Format
+	if outFormat == "" {
+		outFormat = "text"
+	}
+
+	// Determine output file
+	outFile := finalCfg.OutputFile
+
+	// Determine output writer
+	writer := os.Stdout
+	if outFile != "" {
+		f, err := os.Create(outFile)
+		if err != nil {
+			return fmt.Errorf("creating output file: %w", err)
+		}
+		defer f.Close()
+		writer = f
+	}
+
+	return outputMatches(writer, allMatches, outFormat, noColor)
 }
 
-func outputMatches(matches []lint.Match, format string) error {
+func outputMatches(w *os.File, matches []lint.Match, format string, noColor bool) error {
 	switch format {
 	case "text":
 		for _, m := range matches {
-			fmt.Printf("%s:%d:%d: %s %s [%s]\n",
+			fmt.Fprintf(w, "%s:%d:%d: %s %s [%s]\n",
 				m.Location.Filename, m.Location.Start.LineNumber, m.Location.Start.ColumnNumber,
 				m.Level, m.Message, m.Rule.ID)
 		}
@@ -102,13 +193,25 @@ func outputMatches(matches []lint.Match, format string) error {
 		if matches == nil {
 			matches = []lint.Match{}
 		}
-		enc := json.NewEncoder(os.Stdout)
+		enc := json.NewEncoder(w)
 		enc.SetIndent("", "  ")
 		if err := enc.Encode(matches); err != nil {
 			return fmt.Errorf("encoding JSON: %w", err)
 		}
+	case "sarif":
+		if err := output.WriteSARIF(w, matches, version); err != nil {
+			return fmt.Errorf("encoding SARIF: %w", err)
+		}
+	case "junit":
+		if err := output.WriteJUnit(w, matches); err != nil {
+			return fmt.Errorf("encoding JUnit: %w", err)
+		}
+	case "pretty":
+		if err := output.WritePretty(w, matches, noColor); err != nil {
+			return fmt.Errorf("writing pretty output: %w", err)
+		}
 	default:
-		return fmt.Errorf("unknown format: %s (valid: text, json)", format)
+		return fmt.Errorf("unknown format: %s (valid: text, json, sarif, junit, pretty)", format)
 	}
 
 	if len(matches) > 0 {

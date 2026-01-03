@@ -50,17 +50,18 @@ type Condition struct {
 
 // Parameter represents a CloudFormation parameter.
 type Parameter struct {
-	Node           *yaml.Node
-	Type           string
-	Default        any
-	AllowedValues  []any
-	AllowedPattern string
-	MinValue       *float64
-	MaxValue       *float64
-	MinLength      *int
-	MaxLength      *int
-	Description    string
-	NoEcho         bool
+	Node                  *yaml.Node
+	Type                  string
+	Default               any
+	AllowedValues         []any
+	AllowedPattern        string
+	MinValue              *float64
+	MaxValue              *float64
+	MinLength             *int
+	MaxLength             *int
+	Description           string
+	ConstraintDescription string
+	NoEcho                bool
 }
 
 // Resource represents a CloudFormation resource.
@@ -303,6 +304,8 @@ func (t *Template) parseParameters(node *yaml.Node) error {
 					if val.Decode(&v) == nil {
 						param.NoEcho = v
 					}
+				case "ConstraintDescription":
+					param.ConstraintDescription = val.Value
 				}
 			}
 		}

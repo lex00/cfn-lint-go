@@ -7,6 +7,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.15.0] - 2026-01-03
+
+### Added
+
+- **Phase 16**: Multiple output formats
+  - SARIF 2.1.0 format for GitHub Code Scanning integration
+  - JUnit XML format for CI/CD test reporting
+  - Pretty format with colorized output and code context
+  - `--output` flag to write results to file
+  - `--no-color` flag to disable colors in pretty format
+
+- **Phase 17**: Configuration file support
+  - Support for `.cfnlintrc`, `.cfnlintrc.yaml`, `.cfnlintrc.yml`, `.cfnlintrc.json`
+  - Auto-discovery from current directory up to git root
+  - `--config` flag to specify explicit config file
+  - Config options: templates, ignore_templates, regions, ignore_checks, include_checks, configure_rules, format, output_file
+  - CLI flags override config file settings
+
+- **Phase 18**: Complete CLI options for Python cfn-lint parity
+  - `--include-checks` flag to include specific rules even if ignored
+  - `--include-experimental` flag for experimental rules
+  - `--regions` flag for AWS region validation
+  - Templates can now be specified from config file
+
+- **Phase 19**: Missing parameter rules
+  - E2004: Parameter NoEcho configuration for sensitive parameters
+  - E2012: Parameter Type validation with SSM parameter types
+  - E2014: Parameter ConstraintDescription usage validation
+  - Added ConstraintDescription field to Parameter struct
+
+- **Phase 20**: Ecosystem integrations
+  - GitHub Action (`action.yml`) with SARIF upload support
+  - Pre-commit hook configuration (`.pre-commit-hooks.yaml`)
+  - Comprehensive integration documentation (`docs/INTEGRATIONS.md`)
+
+### Changed
+
+- CLI now supports templates from config file, making templates argument optional
+- Updated README with all new features and integration examples
+- Updated rule count: 265 rules (was 262)
+- E2xxx category now has 9 rules (was 6)
+
+### Fixed
+
+- Template parameter parsing now includes ConstraintDescription field
+
 ## [0.14.0] - 2026-01-03
 
 ### Added

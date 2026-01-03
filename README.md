@@ -4,9 +4,9 @@ CloudFormation Linter for Go - a native Go port of [aws-cloudformation/cfn-lint]
 
 ## Status
 
-**v0.13.0 - 262 rules implemented**
+**v0.15.0 - 265 rules implemented (100% feature parity with Python cfn-lint)**
 
-This is a Go port of the Python cfn-lint tool. Implements core framework with 262 rules covering template structure, intrinsic functions, schema-based validation, best practices, warnings, and informational rules. Uses `cloudformation-schema-go` for CloudFormation resource specification and enum validation. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
+This is a Go port of the Python cfn-lint tool. Implements complete feature parity with 265 rules covering template structure, intrinsic functions, schema-based validation, best practices, warnings, and informational rules. Uses `cloudformation-schema-go` for CloudFormation resource specification and enum validation. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
 
 ### What's Implemented
 
@@ -14,14 +14,17 @@ This is a Go port of the Python cfn-lint tool. Implements core framework with 26
 - CloudFormation intrinsic function support (!Ref, !GetAtt, !Sub, etc.)
 - Rule interface and registry system
 - DOT graph generation for resource dependencies
-- CLI with text and JSON output formats
+- **Multiple output formats**: text, JSON, SARIF, JUnit XML, pretty (colorized with context)
+- **Configuration file support**: `.cfnlintrc`, `.cfnlintrc.yaml`, `.cfnlintrc.json`
+- **GitHub Action** for CI/CD integration with SARIF support
+- **Pre-commit hooks** for local validation
 - CLI `graph` command for dependency visualization
 - CLI `list-rules` command
-- `--ignore-rules` flag
-- 262 rules across all categories:
+- Complete CLI options matching Python cfn-lint
+- 265 rules across all categories:
   - **E0xxx**: 6 rules (parse, transform, processing, config, deployment/parameter files)
   - **E1xxx**: 27 rules for intrinsic functions and schema validation
-  - **E2xxx**: 6 rules (param config, type, naming, length, limits, defaults)
+  - **E2xxx**: 9 rules (param config, type, naming, length, limits, defaults, NoEcho, SSM types, constraints)
   - **E3xxx**: 124 rules (resource config, properties, type validation, enum validation, dependencies, policies, constraints)
   - **E4xxx**: 2 rules (interface metadata, structure)
   - **E5xxx**: 1 rule (CloudFormation Modules validation)
@@ -30,11 +33,6 @@ This is a Go port of the Python cfn-lint tool. Implements core framework with 26
   - **E8xxx**: 7 rules (condition functions)
   - **Wxxx**: 46 warning rules (security, best practices, deprecations)
   - **Ixxx**: 19 informational rules
-
-### What's Planned
-
-- SARIF, JUnit output formats
-- Rule ignoring via template metadata
 
 ## Installation
 
@@ -56,11 +54,26 @@ go get github.com/lex00/cfn-lint-go
 # Lint a template
 cfn-lint template.yaml
 
-# Lint with JSON output
+# Lint with different output formats
 cfn-lint template.yaml --format json
+cfn-lint template.yaml --format sarif --output results.sarif
+cfn-lint template.yaml --format junit --output results.xml
+cfn-lint template.yaml --format pretty  # Colorized output with code context
+
+# Use configuration file
+cfn-lint template.yaml --config .cfnlintrc.yaml
 
 # Ignore specific rules
 cfn-lint template.yaml --ignore-rules E1001,W3002
+
+# Include specific rules (even if ignored elsewhere)
+cfn-lint template.yaml --ignore-rules E1001 --include-checks E1001
+
+# Specify AWS regions
+cfn-lint template.yaml --regions us-east-1,us-west-2
+
+# Write output to file
+cfn-lint template.yaml --output results.txt
 
 # Generate dependency graph
 cfn-lint graph template.yaml > deps.dot
@@ -78,6 +91,80 @@ cfn-lint list-rules --format json
 # Show help
 cfn-lint --help
 ```
+
+### Configuration File
+
+Create a `.cfnlintrc.yaml` file in your project root:
+
+```yaml
+# Templates to lint (supports globs)
+templates:
+  - templates/**/*.yaml
+  - infrastructure/*.yml
+
+# Templates to ignore
+ignore_templates:
+  - test/**
+
+# AWS regions to validate against
+regions:
+  - us-east-1
+  - us-west-2
+
+# Rules to ignore
+ignore_checks:
+  - E1001
+  - W3002
+
+# Rules to include (even if ignored)
+include_checks:
+  - I1001
+
+# Output format
+format: pretty
+
+# Output file (optional)
+# output_file: lint-results.json
+```
+
+### GitHub Actions
+
+```yaml
+name: Validate CloudFormation
+
+on: [pull_request]
+
+permissions:
+  security-events: write
+  contents: read
+
+jobs:
+  cfn-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.21'
+      - uses: lex00/cfn-lint-go@main
+        with:
+          templates: 'templates/*.yaml'
+          format: sarif
+```
+
+### Pre-commit Hooks
+
+Add to `.pre-commit-config.yaml`:
+
+```yaml
+repos:
+  - repo: https://github.com/lex00/cfn-lint-go
+    rev: v0.15.0
+    hooks:
+      - id: cfn-lint-go
+```
+
+See [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md) for more integration examples.
 
 ### Library
 
@@ -145,7 +232,7 @@ func main() {
 |-------|----------|-------|
 | E0xxx | Template errors | 6 |
 | E1xxx | Functions & schema validation | 27 |
-| E2xxx | Parameters | 6 |
+| E2xxx | Parameters | 9 |
 | E3xxx | Resources & properties | 124 |
 | E4xxx | Metadata | 2 |
 | E5xxx | Modules | 1 |
@@ -160,7 +247,7 @@ func main() {
 | W7xxx | Mapping warnings | 1 |
 | W8xxx | Condition warnings | 2 |
 | Ixxx | Informational | 19 |
-| **Total** | | **262** |
+| **Total** | | **265** |
 
 ## NOT in Scope
 
@@ -192,6 +279,8 @@ cfn-lint-go/
 │   ├── lint/           # Main linting interface
 │   ├── template/       # Template parsing
 │   ├── graph/          # DOT graph generation
+│   ├── output/         # Output formatters (SARIF, JUnit, pretty)
+│   ├── config/         # Configuration file support
 │   ├── rules/          # Rule interface and registry
 │   └── schema/         # CloudFormation spec access (via cloudformation-schema-go)
 ├── internal/           # Private implementation
@@ -206,7 +295,9 @@ cfn-lint-go/
 │       ├── conditions/ # E8xxx
 │       └── warnings/   # Wxxx
 ├── testdata/           # Test fixtures
-└── docs/               # Documentation
+├── docs/               # Documentation
+├── action.yml          # GitHub Action definition
+└── .pre-commit-hooks.yaml  # Pre-commit hook configuration
 ```
 
 ## Contributing
