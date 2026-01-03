@@ -23,11 +23,13 @@ type Template struct {
 	Resources                map[string]*Resource
 	Outputs                  map[string]*Output
 	Metadata                 map[string]any
+	Rules                    map[string]*Rule
 
 	// Raw nodes for validation rules that need position info
 	MetadataNode   *yaml.Node
 	MappingsNode   *yaml.Node
 	ConditionsNode *yaml.Node
+	RulesNode      *yaml.Node
 
 	// Filename for error reporting.
 	Filename string
@@ -79,6 +81,20 @@ type Output struct {
 	Condition   string
 }
 
+// Rule represents a CloudFormation rule for parameter validation.
+type Rule struct {
+	Node          *yaml.Node
+	RuleCondition any              // Optional: determines when the rule takes effect
+	Assertions    []RuleAssertion  // Required: at least one assertion
+}
+
+// RuleAssertion represents an assertion within a CloudFormation rule.
+type RuleAssertion struct {
+	Node              *yaml.Node
+	Assert            any    // Required: condition that must evaluate to true
+	AssertDescription string // Optional: error message when assertion fails
+}
+
 // ParseFile parses a CloudFormation template from a file.
 func ParseFile(path string) (*Template, error) {
 	data, err := os.ReadFile(path)
@@ -109,6 +125,7 @@ func Parse(data []byte) (*Template, error) {
 		Resources:  make(map[string]*Resource),
 		Outputs:    make(map[string]*Output),
 		Metadata:   make(map[string]any),
+		Rules:      make(map[string]*Rule),
 	}
 
 	if err := tmpl.parseRoot(); err != nil {
@@ -165,6 +182,11 @@ func (t *Template) parseRoot() error {
 				if meta, ok := decoded.(map[string]any); ok {
 					t.Metadata = meta
 				}
+			}
+		case "Rules":
+			t.RulesNode = value
+			if err := t.parseRules(value); err != nil {
+				return err
 			}
 		}
 	}
@@ -365,6 +387,55 @@ func (t *Template) parseOutputs(node *yaml.Node) error {
 			}
 		}
 		t.Outputs[name] = out
+	}
+	return nil
+}
+
+func (t *Template) parseRules(node *yaml.Node) error {
+	if node.Kind != yaml.MappingNode {
+		return nil
+	}
+
+	for i := 0; i < len(node.Content); i += 2 {
+		name := node.Content[i].Value
+		ruleNode := node.Content[i+1]
+
+		rule := &Rule{
+			Node:       ruleNode,
+			Assertions: []RuleAssertion{},
+		}
+
+		if ruleNode.Kind == yaml.MappingNode {
+			for j := 0; j < len(ruleNode.Content); j += 2 {
+				key := ruleNode.Content[j].Value
+				val := ruleNode.Content[j+1]
+
+				switch key {
+				case "RuleCondition":
+					rule.RuleCondition = parseYAMLNode(val)
+				case "Assertions":
+					if val.Kind == yaml.SequenceNode {
+						for _, assertNode := range val.Content {
+							assertion := RuleAssertion{Node: assertNode}
+							if assertNode.Kind == yaml.MappingNode {
+								for k := 0; k < len(assertNode.Content); k += 2 {
+									assertKey := assertNode.Content[k].Value
+									assertVal := assertNode.Content[k+1]
+									switch assertKey {
+									case "Assert":
+										assertion.Assert = parseYAMLNode(assertVal)
+									case "AssertDescription":
+										assertion.AssertDescription = assertVal.Value
+									}
+								}
+							}
+							rule.Assertions = append(rule.Assertions, assertion)
+						}
+					}
+				}
+			}
+		}
+		t.Rules[name] = rule
 	}
 	return nil
 }
