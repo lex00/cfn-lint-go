@@ -83,9 +83,10 @@ func (r *I3011) Match(tmpl *template.Template) []rules.Match {
 		if res.Node != nil && res.Node.Kind == yaml.MappingNode {
 			for i := 0; i < len(res.Node.Content); i += 2 {
 				key := res.Node.Content[i]
-				if key.Value == "DeletionPolicy" {
+				switch key.Value {
+				case "DeletionPolicy":
 					hasDeletionPolicy = true
-				} else if key.Value == "UpdateReplacePolicy" {
+				case "UpdateReplacePolicy":
 					hasUpdateReplacePolicy = true
 				}
 			}
