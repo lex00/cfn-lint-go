@@ -1,0 +1,38 @@
+# Regression test: Deeply nested intrinsic functions should be handled correctly
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template with deeply nested functions
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+  Zones:
+    Type: CommaDelimitedList
+    Default: "us-east-1a,us-east-1b,us-east-1c"
+
+Resources:
+  # Deeply nested function calls
+  ComplexBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join
+        - '-'
+        - - !Sub "${AWS::StackName}"
+          - !Select
+            - 0
+            - !Split
+              - '-'
+              - !Select
+                - 0
+                - !Ref Zones
+          - !If
+            - IsProd
+            - prod
+            - !Ref Environment
+
+Conditions:
+  IsProd: !Equals [!Ref Environment, prod]
+
+Outputs:
+  BucketName:
+    Value: !Ref ComplexBucket

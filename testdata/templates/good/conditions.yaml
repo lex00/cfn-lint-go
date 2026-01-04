@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template demonstrating conditions
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+  EnableLogging:
+    Type: String
+    Default: 'true'
+    AllowedValues:
+      - 'true'
+      - 'false'
+
+Conditions:
+  IsProduction: !Equals [!Ref Environment, prod]
+  IsNotProduction: !Not [!Condition IsProduction]
+  EnableLoggingCondition: !Equals [!Ref EnableLogging, 'true']
+  ProductionWithLogging: !And
+    - !Condition IsProduction
+    - !Condition EnableLoggingCondition
+  DevOrStaging: !Or
+    - !Equals [!Ref Environment, dev]
+    - !Equals [!Ref Environment, staging]
+
+Resources:
+  MainBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${AWS::StackName}-main"
+
+  LoggingBucket:
+    Type: AWS::S3::Bucket
+    Condition: EnableLoggingCondition
+    Properties:
+      BucketName: !Sub "${AWS::StackName}-logs"
+
+  ProductionAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Condition: IsProduction
+    Properties:
+      AlarmName: !Sub "${AWS::StackName}-production-alarm"
+      MetricName: NumberOfObjects
+      Namespace: AWS/S3
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 1000
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: BucketName
+          Value: !Ref MainBucket
+
+Outputs:
+  MainBucketArn:
+    Description: ARN of the main bucket
+    Value: !GetAtt MainBucket.Arn
+  LoggingBucketArn:
+    Description: ARN of the logging bucket
+    Condition: EnableLoggingCondition
+    Value: !GetAtt LoggingBucket.Arn

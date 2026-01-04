@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template with circular dependency (triggers E3004)
+
+Resources:
+  ResourceA:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${ResourceB}-a"
+    DependsOn: ResourceB
+
+  ResourceB:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${ResourceC}-b"
+    DependsOn: ResourceC
+
+  ResourceC:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${ResourceA}-c"
+    DependsOn: ResourceA

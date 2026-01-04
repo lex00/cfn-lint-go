@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template with invalid resource type (triggers E3002)
+
+Resources:
+  # Invalid resource type - should trigger E3002
+  MyResource:
+    Type: AWS::Invalid::ResourceType
+    Properties:
+      SomeProperty: value
+
+  # Another invalid type
+  AnotherResource:
+    Type: Custom::NonExistent::Type
+    Properties:
+      AnotherProperty: value
+
+  # Valid resource for comparison
+  ValidBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: valid-bucket

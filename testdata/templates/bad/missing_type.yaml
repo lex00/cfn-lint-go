@@ -1,0 +1,13 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template with missing Type property (triggers E3001)
+
+Resources:
+  MyBucket:
+    # Missing Type property - should trigger E3001
+    Properties:
+      BucketName: my-bucket
+
+  MyValidBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: valid-bucket

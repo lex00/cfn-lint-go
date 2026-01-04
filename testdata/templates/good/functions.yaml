@@ -1,0 +1,114 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template demonstrating intrinsic functions
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+  AvailabilityZones:
+    Type: CommaDelimitedList
+    Default: "us-east-1a,us-east-1b"
+  CidrBlock:
+    Type: String
+    Default: "10.0.0.0/16"
+
+Mappings:
+  RegionMap:
+    us-east-1:
+      AMI: ami-12345678
+      Name: Virginia
+    us-west-2:
+      AMI: ami-87654321
+      Name: Oregon
+
+Resources:
+  # Demonstrates !Ref
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref CidrBlock
+      EnableDnsHostnames: true
+      EnableDnsSupport: true
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-vpc"
+
+  # Demonstrates !Sub
+  Subnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: "10.0.1.0/24"
+      AvailabilityZone: !Select [0, !Ref AvailabilityZones]
+      Tags:
+        - Key: Name
+          Value: !Sub
+            - "${StackName}-subnet-${AZ}"
+            - StackName: !Ref AWS::StackName
+              AZ: !Select [0, !Ref AvailabilityZones]
+
+  # Demonstrates !GetAtt and !Join
+  OutputRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub "${AWS::StackName}-role"
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Tags:
+        - Key: VpcId
+          Value: !Ref VPC
+
+  # Demonstrates !FindInMap
+  TestInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
+      InstanceType: t3.micro
+      SubnetId: !Ref Subnet1
+      Tags:
+        - Key: Region
+          Value: !FindInMap [RegionMap, !Ref "AWS::Region", Name]
+
+  # Demonstrates !Split and !Join
+  Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Join
+        - '-'
+        - - !Ref AWS::StackName
+          - !Select [0, !Split ["-", !Ref Environment]]
+          - bucket
+      Tags:
+        - Key: Environment
+          Value: !Ref Environment
+
+  # Demonstrates !Base64
+  LaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateName: !Sub "${AWS::StackName}-template"
+      LaunchTemplateData:
+        ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
+        InstanceType: t3.micro
+        UserData:
+          Fn::Base64: !Sub |
+            #!/bin/bash
+            echo "Stack: ${AWS::StackName}"
+            echo "Region: ${AWS::Region}"
+
+Outputs:
+  VpcId:
+    Value: !Ref VPC
+  SubnetId:
+    Value: !Ref Subnet1
+  RoleArn:
+    Value: !GetAtt OutputRole.Arn
+  InstanceId:
+    Value: !Ref TestInstance
+  BucketDomainName:
+    Value: !GetAtt Bucket.DomainName

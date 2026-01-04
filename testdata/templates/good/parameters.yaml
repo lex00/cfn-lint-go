@@ -1,0 +1,146 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template demonstrating various parameter types
+
+Parameters:
+  # String parameter with constraints
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+    Description: The deployment environment
+    ConstraintDescription: Must be dev, staging, or prod
+
+  # String with pattern validation
+  ProjectName:
+    Type: String
+    Default: myproject
+    MinLength: 3
+    MaxLength: 20
+    AllowedPattern: "^[a-z][a-z0-9-]*$"
+    Description: Project name (lowercase alphanumeric with hyphens)
+
+  # Number parameter
+  InstanceCount:
+    Type: Number
+    Default: 2
+    MinValue: 1
+    MaxValue: 10
+    Description: Number of instances to create
+
+  # CommaDelimitedList
+  SubnetIds:
+    Type: CommaDelimitedList
+    Description: List of subnet IDs
+
+  # AWS-specific parameter types
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC to deploy into
+
+  KeyPairName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: EC2 Key Pair for SSH access
+
+  SecurityGroupId:
+    Type: AWS::EC2::SecurityGroup::Id
+    Description: Security group for instances
+
+  ImageId:
+    Type: AWS::EC2::Image::Id
+    Default: ami-12345678
+    Description: AMI ID for instances
+
+  AvailabilityZone:
+    Type: AWS::EC2::AvailabilityZone::Name
+    Description: Availability zone
+
+  # SSM Parameter types
+  LatestAmiId:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+    Description: Latest Amazon Linux 2 AMI from SSM
+
+  # List types
+  SubnetIdList:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: List of subnet IDs for multi-AZ deployment
+
+  # NoEcho for secrets
+  DatabasePassword:
+    Type: String
+    NoEcho: true
+    MinLength: 8
+    MaxLength: 41
+    Description: Database admin password
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Environment Configuration
+        Parameters:
+          - Environment
+          - ProjectName
+      - Label:
+          default: Network Configuration
+        Parameters:
+          - VpcId
+          - SubnetIds
+          - SubnetIdList
+          - AvailabilityZone
+          - SecurityGroupId
+      - Label:
+          default: Instance Configuration
+        Parameters:
+          - InstanceCount
+          - ImageId
+          - LatestAmiId
+          - KeyPairName
+      - Label:
+          default: Security
+        Parameters:
+          - DatabasePassword
+    ParameterLabels:
+      Environment:
+        default: Deployment Environment
+      VpcId:
+        default: VPC ID
+
+Resources:
+  # Simple resource that uses parameters
+  SecurityGroupRule:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref SecurityGroupId
+      IpProtocol: tcp
+      FromPort: 22
+      ToPort: 22
+      CidrIp: 10.0.0.0/8
+      Description: !Sub "SSH access for ${ProjectName}"
+
+  # Use SSM parameter
+  TestInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref LatestAmiId
+      InstanceType: t3.micro
+      KeyName: !Ref KeyPairName
+      SubnetId: !Select [0, !Ref SubnetIdList]
+      SecurityGroupIds:
+        - !Ref SecurityGroupId
+      Tags:
+        - Key: Name
+          Value: !Sub "${ProjectName}-${Environment}"
+        - Key: InstanceNumber
+          Value: "1"
+
+Outputs:
+  EnvironmentOutput:
+    Value: !Ref Environment
+  ProjectNameOutput:
+    Value: !Ref ProjectName
+  InstanceCountOutput:
+    Value: !Ref InstanceCount

@@ -4,6 +4,7 @@ package formats
 import (
 	"fmt"
 	"regexp"
+	"strings"
 
 	"github.com/lex00/cfn-lint-go/pkg/rules"
 	"github.com/lex00/cfn-lint-go/pkg/template"
@@ -116,7 +117,7 @@ func isSecurityGroupProperty(propName string) bool {
 func isIntrinsicFunction(v any) bool {
 	if m, ok := v.(map[string]any); ok {
 		for key := range m {
-			if key == "Ref" || key[:4] == "Fn::" {
+			if key == "Ref" || strings.HasPrefix(key, "Fn::") {
 				return true
 			}
 		}
