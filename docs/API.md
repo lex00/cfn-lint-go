@@ -260,6 +260,48 @@ types := sam.GetSAMResourceTypes()
 - `AWS::Serverless::Connector`
 - `AWS::Serverless::GraphQLApi`
 
+#### SAM Transformation
+
+```go
+// Transform SAM template to CloudFormation
+result, err := sam.Transform(tmpl, nil)
+if err != nil {
+    log.Fatal(err)
+}
+
+// Access the transformed CloudFormation template
+cfnTemplate := result.Template
+
+// Access the source map for error location mapping
+sourceMap := result.SourceMap
+
+// Transform with custom options
+opts := &sam.TransformOptions{
+    Region:    "us-west-2",
+    AccountID: "123456789012",
+    StackName: "my-app",
+}
+result, err := sam.Transform(tmpl, opts)
+
+// Get default transform options
+opts := sam.DefaultTransformOptions()
+```
+
+#### Source Mapping
+
+```go
+// Create a source map
+sm := sam.NewSourceMap()
+
+// Add resource mapping (CFN resource -> SAM resource)
+sm.AddResourceMapping("MyFunctionRole", "MyFunction", 10, 5)
+
+// Map an error location back to SAM source
+loc := sm.MapError("MyFunctionRole", "Properties.Code", 100)
+fmt.Printf("Original location: %s\n", loc.String())
+// Output: "MyFunction:10:5"
+```
+
 ### pkg/schema
 
 CloudFormation resource specification access via `cloudformation-schema-go`.
