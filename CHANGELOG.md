@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.0.0] - 2026-01-03
 
 ### Added
 
@@ -430,10 +430,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Notes
 
 - This is a Go port of [aws-cloudformation/cfn-lint](https://github.com/aws-cloudformation/cfn-lint)
-- SAM transform support is not included (users should run `sam build` first)
-- See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy
 
-[Unreleased]: https://github.com/lex00/cfn-lint-go/compare/v0.15.0...HEAD
+[1.0.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v1.0.0
 [0.15.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.15.0
 [0.14.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.14.0
 [0.13.0]: https://github.com/lex00/cfn-lint-go/releases/tag/v0.13.0

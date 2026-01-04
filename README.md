@@ -4,7 +4,7 @@ CloudFormation Linter for Go - a native Go port of [aws-cloudformation/cfn-lint]
 
 ## Status
 
-**v0.15.0 - 270 rules implemented (100% feature parity with Python cfn-lint)**
+**v1.0.0 - 270 rules implemented (100% feature parity with Python cfn-lint)**
 
 This is a Go port of the Python cfn-lint tool. Implements complete feature parity with 270 rules covering template structure, intrinsic functions, schema-based validation, best practices, warnings, and informational rules. Uses `cloudformation-schema-go` for CloudFormation resource specification and enum validation.
 
@@ -180,7 +180,7 @@ Add to `.pre-commit-config.yaml`:
 ```yaml
 repos:
   - repo: https://github.com/lex00/cfn-lint-go
-    rev: v0.15.0
+    rev: v1.0.0
     hooks:
       - id: cfn-lint-go
 ```
