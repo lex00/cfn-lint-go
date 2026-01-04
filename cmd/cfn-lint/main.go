@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/lex00/cfn-lint-go/pkg/config"
+	"github.com/lex00/cfn-lint-go/pkg/docgen"
 	"github.com/lex00/cfn-lint-go/pkg/graph"
 	"github.com/lex00/cfn-lint-go/pkg/lint"
 	"github.com/lex00/cfn-lint-go/pkg/output"
@@ -83,6 +84,7 @@ Examples:
 
 	cmd.AddCommand(graphCmd())
 	cmd.AddCommand(listRulesCmd())
+	cmd.AddCommand(updateDocumentationCmd())
 
 	return cmd
 }
@@ -302,6 +304,48 @@ func listRulesCmd() *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&format, "format", "f", "text", "Output format: text, json")
+
+	return cmd
+}
+
+func updateDocumentationCmd() *cobra.Command {
+	var outputFile string
+
+	cmd := &cobra.Command{
+		Use:   "update-documentation",
+		Short: "Update RULES.md documentation from registered rules",
+		Long: `Generate or update the RULES.md documentation file from all registered rules.
+
+This command reads all registered rules and generates a markdown file
+with categorized rule listings.
+
+Examples:
+    cfn-lint update-documentation
+    cfn-lint update-documentation --output docs/RULES.md`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			allRules := rules.All()
+
+			// Default to docs/RULES.md
+			if outputFile == "" {
+				outputFile = "docs/RULES.md"
+			}
+
+			f, err := os.Create(outputFile)
+			if err != nil {
+				return fmt.Errorf("creating output file: %w", err)
+			}
+			defer f.Close()
+
+			if err := docgen.GenerateRulesMarkdown(f, allRules); err != nil {
+				return fmt.Errorf("generating documentation: %w", err)
+			}
+
+			fmt.Fprintf(os.Stderr, "Updated %s with %d rules\n", outputFile, len(allRules))
+			return nil
+		},
+	}
+
+	cmd.Flags().StringVarP(&outputFile, "output", "o", "", "Output file (default: docs/RULES.md)")
 
 	return cmd
 }
