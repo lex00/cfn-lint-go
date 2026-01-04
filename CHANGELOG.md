@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **SAM Integration Phase 1**: Foundation and SAM detection
+  - New `pkg/sam` package for SAM template handling
+  - `IsSAMTemplate()` function to detect SAM templates by Transform or resource types
+  - `IsSAMResourceType()` function to check for AWS::Serverless::* resource types
+  - Support for all 9 SAM resource types: Function, Api, HttpApi, SimpleTable, LayerVersion, Application, StateMachine, Connector, GraphQLApi
+  - Helper functions: `GetSAMResourceTypes()`, `HasSAMResources()`, `HasServerlessTransform()`, `GetSAMResources()`
+
+### Changed
+
+- Updated `cloudformation-schema-go` from v0.6.0 to v1.0.0
+- Added `aws-sam-translator-go` v1.1.0 dependency (for Phase 2 transformation)
+
 ## [0.15.0] - 2026-01-03
 
 ### Added

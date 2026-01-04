@@ -211,6 +211,55 @@ digraph G {
 }
 ```
 
+### pkg/sam
+
+SAM (Serverless Application Model) template detection and transformation.
+
+```go
+import "github.com/lex00/cfn-lint-go/pkg/sam"
+```
+
+#### SAM Detection
+
+```go
+// Check if template is a SAM template
+if sam.IsSAMTemplate(tmpl) {
+    fmt.Println("This is a SAM template")
+}
+
+// Check if a resource type is a SAM type
+if sam.IsSAMResourceType("AWS::Serverless::Function") {
+    fmt.Println("This is a SAM resource type")
+}
+
+// Check for SAM transform declaration
+if sam.HasServerlessTransform(tmpl) {
+    fmt.Println("Template has AWS::Serverless-2016-10-31 transform")
+}
+
+// Get all SAM resources from template
+samResources := sam.GetSAMResources(tmpl)
+for name, res := range samResources {
+    fmt.Printf("SAM resource: %s (%s)\n", name, res.Type)
+}
+
+// Get list of all supported SAM resource types
+types := sam.GetSAMResourceTypes()
+// Returns: ["AWS::Serverless::Function", "AWS::Serverless::Api", ...]
+```
+
+#### Supported SAM Resource Types
+
+- `AWS::Serverless::Function`
+- `AWS::Serverless::Api`
+- `AWS::Serverless::HttpApi`
+- `AWS::Serverless::SimpleTable`
+- `AWS::Serverless::LayerVersion`
+- `AWS::Serverless::Application`
+- `AWS::Serverless::StateMachine`
+- `AWS::Serverless::Connector`
+- `AWS::Serverless::GraphQLApi`
+
 ### pkg/schema
 
 CloudFormation resource specification access via `cloudformation-schema-go`.
