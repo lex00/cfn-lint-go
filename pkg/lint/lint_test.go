@@ -33,9 +33,17 @@ Resources:
 		t.Fatalf("Lint failed: %v", err)
 	}
 
-	// Valid template should have no matches
-	if len(matches) != 0 {
-		t.Errorf("Expected 0 matches for valid template, got %d", len(matches))
+	// Filter to error-level matches only (warnings/informational are expected for best practices)
+	var errors []Match
+	for _, m := range matches {
+		if m.Level == "Error" {
+			errors = append(errors, m)
+		}
+	}
+
+	// Valid template should have no error-level matches
+	if len(errors) != 0 {
+		t.Errorf("Expected 0 error-level matches for valid template, got %d", len(errors))
 	}
 }
 

@@ -35,6 +35,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Error line number mapping back to original SAM template
   - New `DisableSAMTransform` option to skip automatic SAM transformation
 
+- **SAM Integration Phase 3**: SAM-Specific Rules (5 new rules)
+  - E0010: SAM transform failed (documentation rule for transform errors)
+  - W3100: SAM Function missing MemorySize (default 128MB may not be optimal)
+  - W3101: SAM Function missing Timeout (default 3s may be too short)
+  - W3102: SAM Api missing StageName (consider setting explicit stage)
+  - I3101: SAM resource expansion info (describes CFN resources generated)
+  - Updated E3038 to note behavior with SAM transform enabled
+
 - **Test Fixture Alignment (Issue #64)**: Aligned test structure with upstream AWS cfn-lint project
   - Created `testdata/templates/good/` with valid templates by feature (basic, conditions, functions, parameters, resources)
   - Created `testdata/templates/bad/` with invalid templates by error type (missing_type, invalid_ref, circular_dependency, etc.)
