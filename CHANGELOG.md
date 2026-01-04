@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Phase 6 Documentation Alignment**: Aligned documentation structure with upstream AWS cfn-lint project
+  - Added `docs/getting_started/` directory with navigation hub
+  - Created `docs/getting_started/README.md` - installation and usage guide
+  - Moved integration content to `docs/getting_started/integration.md`
+  - Added `docs/getting_started/rules.md` - rule creation guide
+  - Added `docs/custom_rules.md` - custom rules documentation
+  - Added `update-documentation` CLI command for auto-generating RULES.md
+  - Added `pkg/docgen` package for documentation generation
+  - Updated README.md with new documentation section
+
 - **SAM Integration Phase 1**: Foundation and SAM detection
   - New `pkg/sam` package for SAM template handling
   - `IsSAMTemplate()` function to detect SAM templates by Transform or resource types

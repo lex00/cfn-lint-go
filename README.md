@@ -88,6 +88,9 @@ cfn-lint list-rules
 # List rules as JSON
 cfn-lint list-rules --format json
 
+# Update RULES.md documentation
+cfn-lint update-documentation
+
 # Show help
 cfn-lint --help
 ```
@@ -164,7 +167,7 @@ repos:
       - id: cfn-lint-go
 ```
 
-See [docs/INTEGRATIONS.md](docs/INTEGRATIONS.md) for more integration examples.
+See [docs/getting_started/integration.md](docs/getting_started/integration.md) for more integration examples.
 
 ### Library
 
@@ -281,6 +284,7 @@ cfn-lint-go/
 │   ├── graph/          # DOT graph generation
 │   ├── output/         # Output formatters (SARIF, JUnit, pretty)
 │   ├── config/         # Configuration file support
+│   ├── docgen/         # Documentation generator
 │   ├── rules/          # Rule interface and registry
 │   └── schema/         # CloudFormation spec access (via cloudformation-schema-go)
 ├── internal/           # Private implementation
@@ -299,6 +303,15 @@ cfn-lint-go/
 ├── action.yml          # GitHub Action definition
 └── .pre-commit-hooks.yaml  # Pre-commit hook configuration
 ```
+
+## Documentation
+
+- [Getting Started](docs/getting_started/README.md) - Installation and basic usage
+- [Integration Guide](docs/getting_started/integration.md) - CI/CD, IDE, and pre-commit integration
+- [Rules Reference](docs/RULES.md) - All available rules
+- [Rule Creation Guide](docs/getting_started/rules.md) - How to create new rules
+- [Custom Rules](docs/custom_rules.md) - Creating organization-specific rules
+- [API Reference](docs/API.md) - Library API documentation
 
 ## Contributing
 
