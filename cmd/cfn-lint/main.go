@@ -8,6 +8,7 @@ import (
 	"text/tabwriter"
 
 	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v3"
 
 	"github.com/lex00/cfn-lint-go/pkg/config"
 	"github.com/lex00/cfn-lint-go/pkg/docgen"
@@ -15,6 +16,7 @@ import (
 	"github.com/lex00/cfn-lint-go/pkg/lint"
 	"github.com/lex00/cfn-lint-go/pkg/output"
 	"github.com/lex00/cfn-lint-go/pkg/rules"
+	"github.com/lex00/cfn-lint-go/pkg/sam"
 	"github.com/lex00/cfn-lint-go/pkg/template"
 
 	// Import rule packages to register them
@@ -51,6 +53,8 @@ func rootCmd() *cobra.Command {
 		ignoreRules         []string
 		includeRules        []string
 		includeExperimental bool
+		noSAMTransform      bool
+		showTransformed     bool
 	)
 
 	cmd := &cobra.Command{
@@ -65,11 +69,14 @@ Examples:
     cfn-lint template.yaml --format junit --output results.xml
     cfn-lint template.yaml --format pretty
     cfn-lint *.yaml --ignore-rules E1001,W3002
-    cfn-lint template.yaml --config .cfnlintrc.yaml`,
+    cfn-lint template.yaml --config .cfnlintrc.yaml
+    cfn-lint sam-template.yaml                    # Auto-detect and transform SAM
+    cfn-lint sam-template.yaml --no-sam-transform # Lint SAM as-is (skip transform)
+    cfn-lint sam-template.yaml --show-transformed # Output transformed CloudFormation`,
 		Version: version,
 		Args:    cobra.ArbitraryArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return runLint(args, format, outputFile, configFile, noColor, regions, ignoreRules, includeRules, includeExperimental)
+			return runLint(args, format, outputFile, configFile, noColor, regions, ignoreRules, includeRules, includeExperimental, noSAMTransform, showTransformed)
 		},
 	}
 
@@ -81,6 +88,8 @@ Examples:
 	cmd.Flags().StringSliceVarP(&ignoreRules, "ignore-rules", "i", nil, "Rule IDs to ignore (comma-separated)")
 	cmd.Flags().StringSliceVar(&includeRules, "include-checks", nil, "Rule IDs to include (even if ignored)")
 	cmd.Flags().BoolVar(&includeExperimental, "include-experimental", false, "Include experimental rules")
+	cmd.Flags().BoolVar(&noSAMTransform, "no-sam-transform", false, "Skip SAM to CloudFormation transformation (lint SAM templates as-is)")
+	cmd.Flags().BoolVar(&showTransformed, "show-transformed", false, "Output transformed CloudFormation template (for SAM debugging)")
 
 	cmd.AddCommand(graphCmd())
 	cmd.AddCommand(listRulesCmd())
@@ -89,7 +98,7 @@ Examples:
 	return cmd
 }
 
-func runLint(templates []string, format, outputFile, configFile string, noColor bool, regions []string, ignoreRules, includeRules []string, includeExperimental bool) error {
+func runLint(templates []string, format, outputFile, configFile string, noColor bool, regions []string, ignoreRules, includeRules []string, includeExperimental bool, noSAMTransform, showTransformed bool) error {
 	// Load config file if specified or found
 	var cfg *config.Config
 	if configFile != "" {
@@ -144,10 +153,58 @@ func runLint(templates []string, format, outputFile, configFile string, noColor 
 		}
 	}
 
+	// Determine if SAM transform should be disabled
+	// CLI flag takes precedence, then config, then default (false = transform enabled)
+	disableSAMTransform := noSAMTransform
+	if !noSAMTransform && finalCfg.SAM != nil {
+		// If config specifies auto_transform: false, disable transform
+		disableSAMTransform = !finalCfg.SAM.AutoTransform
+	}
+
+	// Build SAM transform options from config
+	var samOpts *sam.TransformOptions
+	if finalCfg.SAM != nil && finalCfg.SAM.TransformOptions != nil {
+		opts := finalCfg.SAM.TransformOptions
+		samOpts = &sam.TransformOptions{
+			Region:    opts.Region,
+			AccountID: opts.AccountID,
+			StackName: opts.StackName,
+			Partition: opts.Partition,
+		}
+	}
+
+	// Handle --show-transformed flag: output transformed template and exit
+	if showTransformed {
+		for _, path := range templatesToLint {
+			tmpl, err := template.ParseFile(path)
+			if err != nil {
+				return fmt.Errorf("parsing %s: %w", path, err)
+			}
+
+			// Transform SAM template if applicable
+			if sam.IsSAMTemplate(tmpl) && !disableSAMTransform {
+				result, err := sam.Transform(tmpl, samOpts)
+				if err != nil {
+					return fmt.Errorf("transforming SAM template %s: %w", path, err)
+				}
+				if err := outputTransformedTemplate(result.Template, path); err != nil {
+					return err
+				}
+			} else {
+				if err := outputTransformedTemplate(tmpl, path); err != nil {
+					return err
+				}
+			}
+		}
+		return nil
+	}
+
 	linter := lint.New(lint.Options{
 		Regions:             finalCfg.Regions,
 		IgnoreRules:         effectiveIgnoreRules,
 		IncludeExperimental: finalCfg.IncludeExperimental,
+		DisableSAMTransform: disableSAMTransform,
+		SAMTransformOptions: samOpts,
 	})
 
 	var allMatches []lint.Match
@@ -180,6 +237,139 @@ func runLint(templates []string, format, outputFile, configFile string, noColor 
 	}
 
 	return outputMatches(writer, allMatches, outFormat, noColor)
+}
+
+// outputTransformedTemplate outputs a template as YAML to stdout.
+func outputTransformedTemplate(tmpl *template.Template, sourcePath string) error {
+	// Build a map representation of the template
+	data := make(map[string]any)
+
+	if tmpl.AWSTemplateFormatVersion != "" {
+		data["AWSTemplateFormatVersion"] = tmpl.AWSTemplateFormatVersion
+	}
+	if tmpl.Description != "" {
+		data["Description"] = tmpl.Description
+	}
+	if tmpl.Transform != nil {
+		data["Transform"] = tmpl.Transform
+	}
+
+	if len(tmpl.Parameters) > 0 {
+		params := make(map[string]any)
+		for name, p := range tmpl.Parameters {
+			param := make(map[string]any)
+			if p.Type != "" {
+				param["Type"] = p.Type
+			}
+			if p.Description != "" {
+				param["Description"] = p.Description
+			}
+			if p.Default != nil {
+				param["Default"] = p.Default
+			}
+			if len(p.AllowedValues) > 0 {
+				param["AllowedValues"] = p.AllowedValues
+			}
+			if p.AllowedPattern != "" {
+				param["AllowedPattern"] = p.AllowedPattern
+			}
+			if p.MinValue != nil {
+				param["MinValue"] = *p.MinValue
+			}
+			if p.MaxValue != nil {
+				param["MaxValue"] = *p.MaxValue
+			}
+			if p.MinLength != nil {
+				param["MinLength"] = *p.MinLength
+			}
+			if p.MaxLength != nil {
+				param["MaxLength"] = *p.MaxLength
+			}
+			if p.NoEcho {
+				param["NoEcho"] = true
+			}
+			if p.ConstraintDescription != "" {
+				param["ConstraintDescription"] = p.ConstraintDescription
+			}
+			params[name] = param
+		}
+		data["Parameters"] = params
+	}
+
+	if len(tmpl.Mappings) > 0 {
+		mappings := make(map[string]any)
+		for name, m := range tmpl.Mappings {
+			mappings[name] = m.Values
+		}
+		data["Mappings"] = mappings
+	}
+
+	if len(tmpl.Conditions) > 0 {
+		conditions := make(map[string]any)
+		for name, c := range tmpl.Conditions {
+			conditions[name] = c.Expression
+		}
+		data["Conditions"] = conditions
+	}
+
+	if len(tmpl.Resources) > 0 {
+		resources := make(map[string]any)
+		for name, r := range tmpl.Resources {
+			res := make(map[string]any)
+			res["Type"] = r.Type
+			if len(r.Properties) > 0 {
+				res["Properties"] = r.Properties
+			}
+			if len(r.DependsOn) > 0 {
+				if len(r.DependsOn) == 1 {
+					res["DependsOn"] = r.DependsOn[0]
+				} else {
+					res["DependsOn"] = r.DependsOn
+				}
+			}
+			if r.Condition != "" {
+				res["Condition"] = r.Condition
+			}
+			if len(r.Metadata) > 0 {
+				res["Metadata"] = r.Metadata
+			}
+			resources[name] = res
+		}
+		data["Resources"] = resources
+	}
+
+	if len(tmpl.Outputs) > 0 {
+		outputs := make(map[string]any)
+		for name, o := range tmpl.Outputs {
+			out := make(map[string]any)
+			out["Value"] = o.Value
+			if o.Description != "" {
+				out["Description"] = o.Description
+			}
+			if len(o.Export) > 0 {
+				out["Export"] = o.Export
+			}
+			if o.Condition != "" {
+				out["Condition"] = o.Condition
+			}
+			outputs[name] = out
+		}
+		data["Outputs"] = outputs
+	}
+
+	if len(tmpl.Metadata) > 0 {
+		data["Metadata"] = tmpl.Metadata
+	}
+
+	// Output as YAML
+	output, err := yaml.Marshal(data)
+	if err != nil {
+		return fmt.Errorf("serializing template: %w", err)
+	}
+
+	fmt.Printf("# Transformed template from: %s\n", sourcePath)
+	fmt.Print(string(output))
+	return nil
 }
 
 func outputMatches(w *os.File, matches []lint.Match, format string, noColor bool) error {

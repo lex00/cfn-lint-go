@@ -16,6 +16,7 @@ This is a Go port of the Python cfn-lint tool. Implements complete feature parit
 - DOT graph generation for resource dependencies
 - **Multiple output formats**: text, JSON, SARIF, JUnit XML, pretty (colorized with context)
 - **Configuration file support**: `.cfnlintrc`, `.cfnlintrc.yaml`, `.cfnlintrc.json`
+- **SAM template support**: automatic transformation to CloudFormation with source mapping
 - **GitHub Action** for CI/CD integration with SARIF support
 - **Pre-commit hooks** for local validation
 - CLI `graph` command for dependency visualization
@@ -91,6 +92,15 @@ cfn-lint list-rules --format json
 # Update RULES.md documentation
 cfn-lint update-documentation
 
+# SAM template support (auto-transforms to CloudFormation)
+cfn-lint sam-template.yaml
+
+# Skip SAM transformation (lint as-is)
+cfn-lint sam-template.yaml --no-sam-transform
+
+# Show transformed CloudFormation (for debugging)
+cfn-lint sam-template.yaml --show-transformed
+
 # Show help
 cfn-lint --help
 ```
@@ -128,6 +138,14 @@ format: pretty
 
 # Output file (optional)
 # output_file: lint-results.json
+
+# SAM template configuration
+sam:
+  auto_transform: true  # Set to false to skip SAM transformation
+  transform_options:
+    region: us-east-1
+    account_id: "123456789012"
+    stack_name: my-sam-app
 ```
 
 ### GitHub Actions
@@ -254,7 +272,6 @@ func main() {
 
 ## NOT in Scope
 
-- SAM transform support (use `sam build` first)
 - Dynamic rule loading (`--append-rules`)
 
 ## Development
@@ -286,6 +303,7 @@ cfn-lint-go/
 │   ├── config/         # Configuration file support
 │   ├── docgen/         # Documentation generator
 │   ├── rules/          # Rule interface and registry
+│   ├── sam/            # SAM template detection and transformation
 │   └── schema/         # CloudFormation spec access (via cloudformation-schema-go)
 ├── internal/           # Private implementation
 │   └── rules/          # Rule implementations

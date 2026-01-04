@@ -11,6 +11,31 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// SAMTransformOptions configures SAM template transformation.
+type SAMTransformOptions struct {
+	// Region is the AWS region for transformation context.
+	Region string `yaml:"region" json:"region"`
+
+	// AccountID is the AWS account ID for transformation context.
+	AccountID string `yaml:"account_id" json:"account_id"`
+
+	// StackName is the CloudFormation stack name for transformation context.
+	StackName string `yaml:"stack_name" json:"stack_name"`
+
+	// Partition is the AWS partition (aws, aws-cn, aws-us-gov).
+	Partition string `yaml:"partition" json:"partition"`
+}
+
+// SAMConfig configures SAM template handling.
+type SAMConfig struct {
+	// AutoTransform enables automatic SAM to CloudFormation transformation.
+	// When true (default), SAM templates are automatically transformed before linting.
+	AutoTransform bool `yaml:"auto_transform" json:"auto_transform"`
+
+	// TransformOptions configures the SAM transformation.
+	TransformOptions *SAMTransformOptions `yaml:"transform_options" json:"transform_options"`
+}
+
 // Config represents the cfn-lint configuration.
 type Config struct {
 	// Templates is a list of template files or glob patterns to lint.
@@ -39,6 +64,9 @@ type Config struct {
 
 	// OutputFile is the file to write output to.
 	OutputFile string `yaml:"output_file" json:"output_file"`
+
+	// SAM configures SAM template handling.
+	SAM *SAMConfig `yaml:"sam" json:"sam"`
 }
 
 // ConfigFileNames lists the config file names to search for, in order of preference.
@@ -201,6 +229,87 @@ func Merge(base, override *Config) *Config {
 		result.OutputFile = override.OutputFile
 	} else {
 		result.OutputFile = base.OutputFile
+	}
+
+	// SAM: override takes precedence if set
+	result.SAM = mergeSAMConfig(base.SAM, override.SAM)
+
+	return result
+}
+
+// mergeSAMConfig merges two SAM configs, with override taking precedence.
+func mergeSAMConfig(base, override *SAMConfig) *SAMConfig {
+	if override == nil && base == nil {
+		return nil
+	}
+
+	if override == nil {
+		// Copy base
+		result := &SAMConfig{
+			AutoTransform: base.AutoTransform,
+		}
+		if base.TransformOptions != nil {
+			result.TransformOptions = &SAMTransformOptions{
+				Region:    base.TransformOptions.Region,
+				AccountID: base.TransformOptions.AccountID,
+				StackName: base.TransformOptions.StackName,
+				Partition: base.TransformOptions.Partition,
+			}
+		}
+		return result
+	}
+
+	if base == nil {
+		// Copy override
+		result := &SAMConfig{
+			AutoTransform: override.AutoTransform,
+		}
+		if override.TransformOptions != nil {
+			result.TransformOptions = &SAMTransformOptions{
+				Region:    override.TransformOptions.Region,
+				AccountID: override.TransformOptions.AccountID,
+				StackName: override.TransformOptions.StackName,
+				Partition: override.TransformOptions.Partition,
+			}
+		}
+		return result
+	}
+
+	// Both exist, override takes precedence
+	result := &SAMConfig{
+		AutoTransform: override.AutoTransform,
+	}
+
+	// Merge TransformOptions
+	if override.TransformOptions != nil {
+		result.TransformOptions = &SAMTransformOptions{
+			Region:    override.TransformOptions.Region,
+			AccountID: override.TransformOptions.AccountID,
+			StackName: override.TransformOptions.StackName,
+			Partition: override.TransformOptions.Partition,
+		}
+		// Fill in missing fields from base if present
+		if base.TransformOptions != nil {
+			if result.TransformOptions.Region == "" {
+				result.TransformOptions.Region = base.TransformOptions.Region
+			}
+			if result.TransformOptions.AccountID == "" {
+				result.TransformOptions.AccountID = base.TransformOptions.AccountID
+			}
+			if result.TransformOptions.StackName == "" {
+				result.TransformOptions.StackName = base.TransformOptions.StackName
+			}
+			if result.TransformOptions.Partition == "" {
+				result.TransformOptions.Partition = base.TransformOptions.Partition
+			}
+		}
+	} else if base.TransformOptions != nil {
+		result.TransformOptions = &SAMTransformOptions{
+			Region:    base.TransformOptions.Region,
+			AccountID: base.TransformOptions.AccountID,
+			StackName: base.TransformOptions.StackName,
+			Partition: base.TransformOptions.Partition,
+		}
 	}
 
 	return result
