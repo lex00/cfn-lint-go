@@ -3,6 +3,7 @@ package lint
 
 import (
 	"github.com/lex00/cfn-lint-go/pkg/rules"
+	"github.com/lex00/cfn-lint-go/pkg/sam"
 	"github.com/lex00/cfn-lint-go/pkg/template"
 )
 
@@ -22,6 +23,13 @@ type Options struct {
 
 	// IncludeExperimental enables experimental rules.
 	IncludeExperimental bool
+
+	// DisableSAMTransform disables automatic SAM transformation.
+	// When true, SAM templates are linted as-is without transformation.
+	DisableSAMTransform bool
+
+	// SAMTransformOptions configures SAM transformation behavior.
+	SAMTransformOptions *sam.TransformOptions
 }
 
 // Match represents a linting issue found in a template (Python cfn-lint compatible format).
@@ -89,6 +97,44 @@ func (l *Linter) LintFile(path string) ([]Match, error) {
 
 // Lint lints a parsed CloudFormation template.
 func (l *Linter) Lint(tmpl *template.Template, filename string) ([]Match, error) {
+	// Check if SAM transformation is needed
+	if sam.IsSAMTemplate(tmpl) && !l.options.DisableSAMTransform {
+		return l.lintSAM(tmpl, filename)
+	}
+
+	return l.lintCloudFormation(tmpl, filename, nil)
+}
+
+// lintSAM handles SAM template linting with transformation.
+func (l *Linter) lintSAM(tmpl *template.Template, filename string) ([]Match, error) {
+	// Transform SAM to CloudFormation
+	result, err := sam.Transform(tmpl, l.options.SAMTransformOptions)
+	if err != nil {
+		// Return SAM transform error as a lint error
+		return []Match{{
+			Rule: MatchRule{
+				ID:               "E0010",
+				Description:      "Checks that SAM templates can be transformed",
+				ShortDescription: "SAM transform failed",
+				Source:           "https://github.com/lex00/cfn-lint-go",
+			},
+			Location: MatchLocation{
+				Start:    MatchPosition{LineNumber: 1, ColumnNumber: 1},
+				End:      MatchPosition{LineNumber: 1, ColumnNumber: 1},
+				Path:     []any{},
+				Filename: filename,
+			},
+			Level:   "Error",
+			Message: err.Error(),
+		}}, nil
+	}
+
+	// Lint the transformed template
+	return l.lintCloudFormation(result.Template, filename, result.SourceMap)
+}
+
+// lintCloudFormation lints a CloudFormation template with optional source mapping.
+func (l *Linter) lintCloudFormation(tmpl *template.Template, filename string, sourceMap *sam.SourceMap) ([]Match, error) {
 	var matches []Match
 
 	for _, rule := range l.rules {
@@ -104,6 +150,20 @@ func (l *Linter) Lint(tmpl *template.Template, filename string) ([]Match, error)
 				path[i] = p
 			}
 
+			// Get line/column, potentially mapping back to SAM source
+			line, column := rm.Line, rm.Column
+			if sourceMap != nil && len(rm.Path) >= 2 {
+				// Try to get resource name from path
+				if rm.Path[0] == "Resources" {
+					resourceName := rm.Path[1]
+					mappedLoc := sourceMap.MapError(resourceName, "", rm.Line)
+					if mappedLoc.Line > 0 {
+						line = mappedLoc.Line
+						column = mappedLoc.Column
+					}
+				}
+			}
+
 			matches = append(matches, Match{
 				Rule: MatchRule{
 					ID:               rule.ID(),
@@ -112,8 +172,8 @@ func (l *Linter) Lint(tmpl *template.Template, filename string) ([]Match, error)
 					Source:           rule.Source(),
 				},
 				Location: MatchLocation{
-					Start:    MatchPosition{LineNumber: rm.Line, ColumnNumber: rm.Column},
-					End:      MatchPosition{LineNumber: rm.Line, ColumnNumber: rm.Column},
+					Start:    MatchPosition{LineNumber: line, ColumnNumber: column},
+					End:      MatchPosition{LineNumber: line, ColumnNumber: column},
 					Path:     path,
 					Filename: filename,
 				},

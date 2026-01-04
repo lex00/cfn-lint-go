@@ -4,10 +4,6 @@ import (
 	"strings"
 
 	"github.com/lex00/cfn-lint-go/pkg/template"
-
-	// Import aws-sam-translator-go for future use in transformation.
-	// This will be used in Phase 2 for SAM to CloudFormation transformation.
-	_ "github.com/lex00/aws-sam-translator-go/pkg/translator"
 )
 
 // SAMTransform is the AWS SAM transform identifier.

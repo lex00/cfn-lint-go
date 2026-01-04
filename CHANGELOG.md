@@ -16,10 +16,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Support for all 9 SAM resource types: Function, Api, HttpApi, SimpleTable, LayerVersion, Application, StateMachine, Connector, GraphQLApi
   - Helper functions: `GetSAMResourceTypes()`, `HasSAMResources()`, `HasServerlessTransform()`, `GetSAMResources()`
 
+- **SAM Integration Phase 2**: SAM Transformation Pipeline
+  - `Transform()` function to convert SAM templates to CloudFormation using aws-sam-translator-go
+  - `TransformBytes()` convenience function for byte-to-byte transformation
+  - `SourceMap` type for mapping transformed CFN resources back to original SAM template locations
+  - `TransformOptions` for configuring region, account ID, stack name, and partition
+  - Automatic SAM detection and transformation in the linter
+  - Error line number mapping back to original SAM template
+  - New `DisableSAMTransform` option to skip automatic SAM transformation
+
 ### Changed
 
 - Updated `cloudformation-schema-go` from v0.6.0 to v1.0.0
-- Added `aws-sam-translator-go` v1.1.0 dependency (for Phase 2 transformation)
+- Added `aws-sam-translator-go` v1.1.0 dependency
+- Linter now automatically transforms SAM templates before linting
 
 ## [0.15.0] - 2026-01-03
 
