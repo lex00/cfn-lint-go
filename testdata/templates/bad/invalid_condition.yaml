@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template with invalid condition references
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+
+Conditions:
+  IsProduction: !Equals [!Ref Environment, prod]
+
+Resources:
+  # References a non-existent condition - should trigger error
+  ConditionalBucket:
+    Type: AWS::S3::Bucket
+    Condition: NonExistentCondition
+    Properties:
+      BucketName: conditional-bucket
+
+  ValidBucket:
+    Type: AWS::S3::Bucket
+    Condition: IsProduction
+    Properties:
+      BucketName: production-bucket

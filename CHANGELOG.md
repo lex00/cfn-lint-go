@@ -43,11 +43,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - I3101: SAM resource expansion info (describes CFN resources generated)
   - Updated E3038 to note behavior with SAM transform enabled
 
+- **Test Fixture Alignment (Issue #64)**: Aligned test structure with upstream AWS cfn-lint project
+  - Created `testdata/templates/good/` with valid templates by feature (basic, conditions, functions, parameters, resources)
+  - Created `testdata/templates/bad/` with invalid templates by error type (missing_type, invalid_ref, circular_dependency, etc.)
+  - Created `testdata/templates/sam/` with SAM test templates (function_basic, api_with_auth, full_application)
+  - Created `testdata/templates/issues/` for regression tests
+  - Created `internal/testutil/testutil.go` with test utilities (ProjectRoot, LoadTemplate, LintFile, AssertNoErrors, etc.)
+  - Created `pkg/lint/lint_integration_test.go` with comprehensive integration tests
+
 ### Changed
 
 - Updated `cloudformation-schema-go` from v0.6.0 to v1.0.0
 - Added `aws-sam-translator-go` v1.1.0 dependency
 - Linter now automatically transforms SAM templates before linting
+
+### Fixed
+
+- Fixed panic in E1150 security group format validation rule when map keys are shorter than 4 characters
 
 ## [0.15.0] - 2026-01-03
 
