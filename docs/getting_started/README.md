@@ -6,10 +6,12 @@ Welcome to cfn-lint-go! This guide will help you get started with validating you
 
 - [Installation](#installation)
 - [Basic Usage](#basic-usage)
+- [SAM Templates](#sam-templates)
 - [Configuration](#configuration)
 - [Integration Guide](integration.md) - CI/CD, IDE, and pre-commit integration
 - [Rule Creation Guide](rules.md) - How to create new rules
 - [Custom Rules](../custom_rules.md) - Loading custom rules
+- [SAM Template Support](../SAM.md) - Full SAM documentation
 
 ## Installation
 
@@ -78,6 +80,44 @@ cfn-lint template.yaml --ignore-rules E1001,W3002
 # Include rules even if ignored elsewhere
 cfn-lint template.yaml --ignore-rules E1001 --include-checks E1001
 ```
+
+## SAM Templates
+
+cfn-lint-go natively supports AWS SAM templates through [aws-sam-translator-go](https://github.com/lex00/aws-sam-translator-go).
+
+### Automatic Detection
+
+SAM templates are automatically detected and transformed to CloudFormation before linting:
+
+```bash
+# Just lint like any template - SAM is auto-detected
+cfn-lint sam-template.yaml
+```
+
+### SAM-Specific Options
+
+```bash
+# Skip SAM transformation (lint as-is)
+cfn-lint sam-template.yaml --no-sam-transform
+
+# Output the transformed CloudFormation (for debugging)
+cfn-lint sam-template.yaml --show-transformed
+```
+
+### SAM Configuration
+
+Configure SAM behavior in `.cfnlintrc.yaml`:
+
+```yaml
+sam:
+  auto_transform: true
+  transform_options:
+    region: us-east-1
+    account_id: "123456789012"
+    stack_name: my-app
+```
+
+For complete SAM documentation, see [SAM Template Support](../SAM.md).
 
 ## Configuration
 

@@ -325,6 +325,7 @@ cfn-lint-go/
 ## Documentation
 
 - [Getting Started](docs/getting_started/README.md) - Installation and basic usage
+- [SAM Template Support](docs/SAM.md) - SAM transformation via aws-sam-translator-go
 - [Integration Guide](docs/getting_started/integration.md) - CI/CD, IDE, and pre-commit integration
 - [Rules Reference](docs/RULES.md) - All available rules
 - [Rule Creation Guide](docs/getting_started/rules.md) - How to create new rules
