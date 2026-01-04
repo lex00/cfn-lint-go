@@ -4,9 +4,9 @@ CloudFormation Linter for Go - a native Go port of [aws-cloudformation/cfn-lint]
 
 ## Status
 
-**v0.15.0 - 265 rules implemented (100% feature parity with Python cfn-lint)**
+**v0.15.0 - 270 rules implemented (100% feature parity with Python cfn-lint)**
 
-This is a Go port of the Python cfn-lint tool. Implements complete feature parity with 265 rules covering template structure, intrinsic functions, schema-based validation, best practices, warnings, and informational rules. Uses `cloudformation-schema-go` for CloudFormation resource specification and enum validation. See [docs/RESEARCH.md](docs/RESEARCH.md) for the full porting strategy.
+This is a Go port of the Python cfn-lint tool. Implements complete feature parity with 270 rules covering template structure, intrinsic functions, schema-based validation, best practices, warnings, and informational rules. Uses `cloudformation-schema-go` for CloudFormation resource specification and enum validation.
 
 ### What's Implemented
 
@@ -22,18 +22,18 @@ This is a Go port of the Python cfn-lint tool. Implements complete feature parit
 - CLI `graph` command for dependency visualization
 - CLI `list-rules` command
 - Complete CLI options matching Python cfn-lint
-- 265 rules across all categories:
-  - **E0xxx**: 6 rules (parse, transform, processing, config, deployment/parameter files)
-  - **E1xxx**: 27 rules for intrinsic functions and schema validation
-  - **E2xxx**: 9 rules (param config, type, naming, length, limits, defaults, NoEcho, SSM types, constraints)
-  - **E3xxx**: 124 rules (resource config, properties, type validation, enum validation, dependencies, policies, constraints)
+- 270 rules across all categories:
+  - **E0xxx**: 7 rules (parse, transform, processing, config, SAM, deployment/parameter files)
+  - **E1xxx**: 39 rules (intrinsic functions, schema validation, format validation)
+  - **E2xxx**: 14 rules (param config, type, naming, length, limits, defaults, NoEcho, SSM types, constraints)
+  - **E3xxx**: 119 rules (resource config, properties, type validation, enum validation, dependencies, policies, constraints)
   - **E4xxx**: 2 rules (interface metadata, structure)
   - **E5xxx**: 1 rule (CloudFormation Modules validation)
   - **E6xxx**: 9 rules (output structure, types, naming, exports)
   - **E7xxx**: 3 rules (mapping config, naming, limits)
   - **E8xxx**: 7 rules (condition functions)
-  - **Wxxx**: 46 warning rules (security, best practices, deprecations)
-  - **Ixxx**: 19 informational rules
+  - **Wxxx**: 49 warning rules (security, best practices, deprecations)
+  - **Ixxx**: 20 informational rules
 
 ## Installation
 
@@ -251,10 +251,10 @@ func main() {
 
 | Range | Category | Count |
 |-------|----------|-------|
-| E0xxx | Template errors | 6 |
-| E1xxx | Functions & schema validation | 27 |
-| E2xxx | Parameters | 9 |
-| E3xxx | Resources & properties | 124 |
+| E0xxx | Template errors | 7 |
+| E1xxx | Functions & schema validation | 39 |
+| E2xxx | Parameters | 14 |
+| E3xxx | Resources & properties | 119 |
 | E4xxx | Metadata | 2 |
 | E5xxx | Modules | 1 |
 | E6xxx | Outputs | 9 |
@@ -262,13 +262,13 @@ func main() {
 | E8xxx | Conditions | 7 |
 | W1xxx | Template warnings | 15 |
 | W2xxx | Parameter warnings | 10 |
-| W3xxx | Resource warnings | 15 |
+| W3xxx | Resource warnings | 18 |
 | W4xxx | Metadata warnings | 2 |
 | W6xxx | Output warnings | 1 |
 | W7xxx | Mapping warnings | 1 |
 | W8xxx | Condition warnings | 2 |
-| Ixxx | Informational | 19 |
-| **Total** | | **265** |
+| Ixxx | Informational | 20 |
+| **Total** | | **270** |
 
 ## NOT in Scope
 

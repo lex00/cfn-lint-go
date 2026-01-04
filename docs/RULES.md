@@ -6,7 +6,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 ## Current Status
 
-**269 rules implemented**
+**270 rules implemented**
 
 ## Rule Categories
 
@@ -17,6 +17,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 | E2xxx | Parameters | 14 |
 | E3xxx | Resources | 119 |
 | E4xxx | Metadata | 2 |
+| E5xxx | Modules | 1 |
 | E6xxx | Outputs | 9 |
 | E7xxx | Mappings | 3 |
 | E8xxx | Conditions | 7 |
@@ -32,7 +33,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 | I3xxx | Resource Informational | 9 |
 | I6xxx | Output Informational | 2 |
 | I7xxx | Mapping Informational | 2 |
-| **Total** | | **269** |
+| **Total** | | **270** |
 
 ## Implemented Rules
 
@@ -241,6 +242,12 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 |------|-------------|--------|
 | E4001 | Interface metadata error | Implemented |
 | E4002 | Metadata section is valid | Implemented |
+
+### E5xxx - Modules
+
+| Rule | Description | Status |
+|------|-------------|--------|
+| E5001 | Modules resource validation | Implemented |
 
 ### E6xxx - Outputs
 

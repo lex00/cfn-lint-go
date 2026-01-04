@@ -27,6 +27,7 @@ import (
 	_ "github.com/lex00/cfn-lint-go/internal/rules/informational"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/mappings"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/metadata"
+	_ "github.com/lex00/cfn-lint-go/internal/rules/modules"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/outputs"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/parameters"
 	_ "github.com/lex00/cfn-lint-go/internal/rules/resources"
