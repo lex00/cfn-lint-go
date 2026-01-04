@@ -1,0 +1,27 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "JSON format template for parser testing",
+  "Parameters": {
+    "Environment": {
+      "Type": "String",
+      "Default": "dev"
+    }
+  },
+  "Resources": {
+    "MyBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Fn::Sub": "${AWS::StackName}-bucket"
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "BucketArn": {
+      "Value": {
+        "Fn::GetAtt": ["MyBucket", "Arn"]
+      }
+    }
+  }
+}

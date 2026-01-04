@@ -1,0 +1,14 @@
+# Regression test: Template with empty Resources section should be handled gracefully
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template with empty resources section
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+
+Resources: {}
+
+Outputs:
+  EnvironmentValue:
+    Value: !Ref Environment

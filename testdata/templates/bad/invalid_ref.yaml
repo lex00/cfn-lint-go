@@ -1,0 +1,27 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template with invalid Ref (triggers E1001)
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+
+Resources:
+  MyBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      # References a non-existent parameter - should trigger E1001
+      BucketName: !Ref NonExistentParameter
+
+  MyFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: my-function
+      Runtime: python3.12
+      Handler: index.handler
+      # References a non-existent resource - should trigger E1010
+      Role: !GetAtt NonExistentRole.Arn
+      Code:
+        ZipFile: |
+          def handler(event, context):
+              return "Hello"

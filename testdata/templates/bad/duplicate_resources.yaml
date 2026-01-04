@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template with invalid property format (triggers E3012)
+
+Resources:
+  # DeletionPolicy should be a string, not a list
+  InvalidBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: 
+      - Retain  # This should be a string, not a list - should trigger E3012
+    Properties:
+      BucketName: test-bucket
+
+  # Another error - invalid UpdateReplacePolicy type
+  AnotherBucket:
+    Type: AWS::S3::Bucket
+    UpdateReplacePolicy:
+      Key: Value  # This should be a string, not a map
+    Properties:
+      BucketName: test-bucket-2

@@ -1,0 +1,26 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template with invalid intrinsic function usage
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+
+Resources:
+  # Invalid GetAtt - missing attribute (triggers E1020)
+  BucketWithBadGetAtt:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !GetAtt OtherBucket
+
+  # Invalid Sub - incorrect variable syntax
+  BucketWithBadSub:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${UndefinedVariable}-bucket"
+
+  # Reference to use in other examples
+  OtherBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: other-bucket

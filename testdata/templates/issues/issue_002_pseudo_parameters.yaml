@@ -1,0 +1,24 @@
+# Regression test: All pseudo parameters should be recognized
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Template using all pseudo parameters
+
+Resources:
+  TestBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "${AWS::StackName}-${AWS::AccountId}-${AWS::Region}"
+      Tags:
+        - Key: StackId
+          Value: !Ref AWS::StackId
+        - Key: Region
+          Value: !Ref AWS::Region
+        - Key: AccountId
+          Value: !Ref AWS::AccountId
+        - Key: StackName
+          Value: !Ref AWS::StackName
+        - Key: URLSuffix
+          Value: !Ref AWS::URLSuffix
+        - Key: Partition
+          Value: !Ref AWS::Partition
+        - Key: NotificationARNs
+          Value: !Join [",", !Ref AWS::NotificationARNs]
