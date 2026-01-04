@@ -14,6 +14,9 @@ func init() {
 }
 
 // E3038 validates that templates with Serverless resources have the Serverless transform.
+// Note: When SAM transform is enabled in the linter (default), SAM templates are
+// transformed to CloudFormation before rules run, so this rule won't match.
+// This rule is primarily useful when DisableSAMTransform is set to true.
 type E3038 struct{}
 
 func (r *E3038) ID() string {

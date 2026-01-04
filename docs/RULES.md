@@ -6,13 +6,13 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 
 ## Current Status
 
-**264 rules implemented**
+**269 rules implemented**
 
 ## Rule Categories
 
 | Prefix | Category | Count |
 |--------|----------|-------|
-| E0xxx | Template Errors | 6 |
+| E0xxx | Template Errors | 7 |
 | E1xxx | Functions | 39 |
 | E2xxx | Parameters | 14 |
 | E3xxx | Resources | 119 |
@@ -22,17 +22,17 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 | E8xxx | Conditions | 7 |
 | W1xxx | Template Warnings | 15 |
 | W2xxx | Parameter Warnings | 10 |
-| W3xxx | Resource Warnings | 15 |
+| W3xxx | Resource Warnings | 18 |
 | W4xxx | Metadata Warnings | 2 |
 | W6xxx | Output Warnings | 1 |
 | W7xxx | Mapping Warnings | 1 |
 | W8xxx | Condition Warnings | 2 |
 | I1xxx | Template Informational | 3 |
 | I2xxx | Parameter Informational | 4 |
-| I3xxx | Resource Informational | 8 |
+| I3xxx | Resource Informational | 9 |
 | I6xxx | Output Informational | 2 |
 | I7xxx | Mapping Informational | 2 |
-| **Total** | | **264** |
+| **Total** | | **269** |
 
 ## Implemented Rules
 
@@ -44,6 +44,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 | E0001 | Template transformation error | Implemented |
 | E0002 | Rule processing error | Implemented |
 | E0003 | Configuration error | Implemented |
+| E0010 | SAM transform failed | Implemented |
 | E0100 | Deployment file syntax validation | Implemented |
 | E0200 | Parameter file syntax validation | Implemented |
 
@@ -321,6 +322,9 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 | W3034 | Parameter value range check | Implemented |
 | W3037 | IAM permission configuration | Implemented |
 | W3045 | S3 bucket policies for access control | Implemented |
+| W3100 | SAM Function missing MemorySize | Implemented |
+| W3101 | SAM Function missing Timeout | Implemented |
+| W3102 | SAM Api missing StageName | Implemented |
 | W3660 | Multiple resources modifying RestApi | Implemented |
 | W3663 | SourceAccount required | Implemented |
 | W3687 | Ports not for certain protocols | Implemented |
@@ -384,6 +388,7 @@ cfn-lint-go implements rules from [aws-cloudformation/cfn-lint](https://github.c
 | I3037 | Duplicates in list that allows duplicates | Implemented |
 | I3042 | ARN should use pseudo parameters | Implemented |
 | I3100 | Legacy instance type generations | Implemented |
+| I3101 | SAM resource expansion info | Implemented |
 | I3510 | IAM statement resources match actions | Implemented |
 
 ### I6xxx - Output Informational
