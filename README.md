@@ -306,7 +306,7 @@ See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for how to contribute.
 
 ## License
 
-MIT License - see [LICENSE](LICENSE)
+Apache License 2.0 - see [LICENSE](LICENSE)
 
 ## Related Projects
 
