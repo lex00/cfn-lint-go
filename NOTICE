@@ -1,0 +1,14 @@
+cfn-lint-go
+Copyright 2026 Albert Artigues
+
+This project is a Go implementation inspired by and derived from cfn-lint,
+a Python-based CloudFormation linter originally developed by Amazon Web Services.
+
+Original Project:
+  cfn-lint - CloudFormation Linter
+  https://github.com/aws-cloudformation/cfn-lint
+  Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  Licensed under the MIT No Attribution License (MIT-0)
+
+The rule implementations in this project are based on the validation logic
+and rule definitions from the original cfn-lint project.
