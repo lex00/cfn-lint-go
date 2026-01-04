@@ -381,3 +381,184 @@ func TestConfigFileNames(t *testing.T) {
 		t.Errorf("First config file name should be .cfnlintrc, got %s", ConfigFileNames[0])
 	}
 }
+
+func TestLoad_SAMConfig(t *testing.T) {
+	content := `
+templates:
+  - "*.yaml"
+sam:
+  auto_transform: true
+  transform_options:
+    region: us-west-2
+    account_id: "987654321098"
+    stack_name: my-sam-app
+`
+	tmpFile, err := os.CreateTemp("", "config-*.yaml")
+	if err != nil {
+		t.Fatalf("Failed to create temp file: %v", err)
+	}
+	defer os.Remove(tmpFile.Name())
+
+	if _, writeErr := tmpFile.WriteString(content); writeErr != nil {
+		t.Fatalf("Failed to write temp file: %v", writeErr)
+	}
+	tmpFile.Close()
+
+	cfg, err := Load(tmpFile.Name())
+	if err != nil {
+		t.Fatalf("Load failed: %v", err)
+	}
+
+	if cfg.SAM == nil {
+		t.Fatal("Expected SAM config to be non-nil")
+	}
+
+	if !cfg.SAM.AutoTransform {
+		t.Error("Expected AutoTransform to be true")
+	}
+
+	if cfg.SAM.TransformOptions == nil {
+		t.Fatal("Expected TransformOptions to be non-nil")
+	}
+
+	if cfg.SAM.TransformOptions.Region != "us-west-2" {
+		t.Errorf("Expected region 'us-west-2', got %s", cfg.SAM.TransformOptions.Region)
+	}
+
+	if cfg.SAM.TransformOptions.AccountID != "987654321098" {
+		t.Errorf("Expected account_id '987654321098', got %s", cfg.SAM.TransformOptions.AccountID)
+	}
+
+	if cfg.SAM.TransformOptions.StackName != "my-sam-app" {
+		t.Errorf("Expected stack_name 'my-sam-app', got %s", cfg.SAM.TransformOptions.StackName)
+	}
+}
+
+func TestLoad_SAMConfigDefaults(t *testing.T) {
+	content := `
+templates:
+  - "*.yaml"
+sam:
+  auto_transform: false
+`
+	tmpFile, err := os.CreateTemp("", "config-*.yaml")
+	if err != nil {
+		t.Fatalf("Failed to create temp file: %v", err)
+	}
+	defer os.Remove(tmpFile.Name())
+
+	if _, writeErr := tmpFile.WriteString(content); writeErr != nil {
+		t.Fatalf("Failed to write temp file: %v", writeErr)
+	}
+	tmpFile.Close()
+
+	cfg, err := Load(tmpFile.Name())
+	if err != nil {
+		t.Fatalf("Load failed: %v", err)
+	}
+
+	if cfg.SAM == nil {
+		t.Fatal("Expected SAM config to be non-nil")
+	}
+
+	if cfg.SAM.AutoTransform {
+		t.Error("Expected AutoTransform to be false")
+	}
+}
+
+func TestMerge_SAMConfig(t *testing.T) {
+	base := &Config{
+		Templates: []string{"base/*.yaml"},
+		SAM: &SAMConfig{
+			AutoTransform: false,
+			TransformOptions: &SAMTransformOptions{
+				Region: "us-east-1",
+			},
+		},
+	}
+
+	override := &Config{
+		Templates: []string{"override/*.yaml"},
+		SAM: &SAMConfig{
+			AutoTransform: true,
+			TransformOptions: &SAMTransformOptions{
+				Region:    "eu-west-1",
+				AccountID: "123456789012",
+			},
+		},
+	}
+
+	result := Merge(base, override)
+
+	if result.SAM == nil {
+		t.Fatal("Expected SAM config in result")
+	}
+
+	if !result.SAM.AutoTransform {
+		t.Error("Expected AutoTransform to be true from override")
+	}
+
+	if result.SAM.TransformOptions == nil {
+		t.Fatal("Expected TransformOptions in result")
+	}
+
+	if result.SAM.TransformOptions.Region != "eu-west-1" {
+		t.Errorf("Expected region 'eu-west-1', got %s", result.SAM.TransformOptions.Region)
+	}
+
+	if result.SAM.TransformOptions.AccountID != "123456789012" {
+		t.Errorf("Expected account_id '123456789012', got %s", result.SAM.TransformOptions.AccountID)
+	}
+}
+
+func TestMerge_SAMConfigNilBase(t *testing.T) {
+	base := &Config{
+		Templates: []string{"base/*.yaml"},
+	}
+
+	override := &Config{
+		SAM: &SAMConfig{
+			AutoTransform: true,
+		},
+	}
+
+	result := Merge(base, override)
+
+	if result.SAM == nil {
+		t.Fatal("Expected SAM config in result")
+	}
+
+	if !result.SAM.AutoTransform {
+		t.Error("Expected AutoTransform to be true from override")
+	}
+}
+
+func TestMerge_SAMConfigNilOverride(t *testing.T) {
+	base := &Config{
+		Templates: []string{"base/*.yaml"},
+		SAM: &SAMConfig{
+			AutoTransform: true,
+			TransformOptions: &SAMTransformOptions{
+				Region: "us-east-1",
+			},
+		},
+	}
+
+	override := &Config{
+		Templates: []string{"override/*.yaml"},
+	}
+
+	result := Merge(base, override)
+
+	if result.SAM == nil {
+		t.Fatal("Expected SAM config in result from base")
+	}
+
+	if !result.SAM.AutoTransform {
+		t.Error("Expected AutoTransform to be true from base")
+	}
+
+	if result.SAM.TransformOptions.Region != "us-east-1" {
+		t.Errorf("Expected region 'us-east-1', got %s", result.SAM.TransformOptions.Region)
+	}
+}

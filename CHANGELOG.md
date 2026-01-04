@@ -19,6 +19,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added `pkg/docgen` package for documentation generation
   - Updated README.md with new documentation section
 
+- **SAM Integration Phase 4**: CLI & Configuration for SAM (#63)
+  - New `--no-sam-transform` CLI flag to skip SAM to CloudFormation transformation and lint SAM templates as-is
+  - New `--show-transformed` CLI flag to output the transformed CloudFormation template for debugging
+  - New `sam` section in config file for SAM-related settings:
+    - `auto_transform`: Enable/disable automatic SAM transformation (default: true)
+    - `transform_options`: Configure region, account_id, stack_name, and partition for transformation
+  - SAM transform options can now be configured via `.cfnlintrc` config file
+
 - **SAM Integration Phase 1**: Foundation and SAM detection
   - New `pkg/sam` package for SAM template handling
   - `IsSAMTemplate()` function to detect SAM templates by Transform or resource types
