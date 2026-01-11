@@ -74,7 +74,7 @@ Examples:
     cfn-lint sam-template.yaml                    # Auto-detect and transform SAM
     cfn-lint sam-template.yaml --no-sam-transform # Lint SAM as-is (skip transform)
     cfn-lint sam-template.yaml --show-transformed # Output transformed CloudFormation`,
-		Version: version,
+		Version: getVersion(),
 		Args:    cobra.ArbitraryArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return runLint(args, format, outputFile, configFile, noColor, regions, ignoreRules, includeRules, includeExperimental, noSAMTransform, showTransformed)
@@ -392,7 +392,7 @@ func outputMatches(w *os.File, matches []lint.Match, format string, noColor bool
 			return fmt.Errorf("encoding JSON: %w", err)
 		}
 	case "sarif":
-		if err := output.WriteSARIF(w, matches, version); err != nil {
+		if err := output.WriteSARIF(w, matches, getVersion()); err != nil {
 			return fmt.Errorf("encoding SARIF: %w", err)
 		}
 	case "junit":
