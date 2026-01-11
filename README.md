@@ -2,6 +2,7 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/lex00/cfn-lint-go.svg)](https://pkg.go.dev/github.com/lex00/cfn-lint-go)
 [![CI](https://github.com/lex00/cfn-lint-go/actions/workflows/ci.yml/badge.svg)](https://github.com/lex00/cfn-lint-go/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/lex00/cfn-lint-go/graph/badge.svg)](https://codecov.io/gh/lex00/cfn-lint-go)
 [![Go Report Card](https://goreportcard.com/badge/github.com/lex00/cfn-lint-go)](https://goreportcard.com/report/github.com/lex00/cfn-lint-go)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
